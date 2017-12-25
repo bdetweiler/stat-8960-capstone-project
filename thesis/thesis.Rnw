@@ -4,22 +4,26 @@
 
 %load any additional packages
 \usepackage{amssymb}
-\usepackage{amsmath}
-\DeclareMathOperator*{\argmin}{arg\!min}
-
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{lipsum}
+\usepackage{array}
+\usepackage{float}
 
 %input macros (i.e. write your own macros file called mymacros.tex 
 %and uncomment the next line)
 %\include{mymacros}
 
-\title{C. diff Modeling}   %note \\[1ex] is a line break in the title
+\title{Clostridium Difficile\\[1ex]     %your thesis title,
+       (Working Title)}   %note \\[1ex] is a line break in the title
 
 \author{Brian Detweiler}
 \college{College of Arts and Sciences}  %your college
 
 %\renewcommand{\submittedtext}{change the default text here if needed}
-\degree{M.S. Mathematics, concentrating in Data Science}     %the degree
-\degreedate{May, 2017}         %the degree date
+\degree{Master of Science}     %the degree
+\degreedate{May 13, 2017}         %the degree date
 
 %end the preamble and start the document
 \begin{document}
@@ -57,21 +61,30 @@
 @
 <<chapter2, child='chapter2.Rnw'>>=
 @
+<<chapter3, child='chapter3.Rnw'>>=
+@
+<<chapter4, child='chapter4.Rnw'>>=
+@
+<<chapter5, child='chapter5.Rnw'>>=
+@
 <<conclusions, child='conclusions.Rnw'>>=
 @
 
 %now enable appendix numbering format and include any appendices
-\appendix
-<<appendix1, child='appendix1.Rnw'>>=
-@
-<<appendix2, child='appendix2.Rnw'>>=
-@
+%\appendix
+%<<appendix1, child='appendix1.Rnw'>>=
+%@
+%<<appendix2, child='appendix2.Rnw'>>=
+%@
 
 %next line adds the Bibliography to the contents page
 \addcontentsline{toc}{chapter}{Bibliography}
 %uncomment next line to change bibliography name to references
 %\renewcommand{\bibname}{References}
-\bibliography{refs}        %use a bibtex bibliography file refs.bib
-\bibliographystyle{plain}  %use the plain bibliography style
+\bibliography{thesis}        %use a bibtex bibliography file refs.bib
+% \bibliographystyle{plain}  %use the plain bibliography style
+\bibliographystyle{unsrt}
 
+%Sets the bibliography style to UNSRT and imports the 
+%bibliography file "samples.bib".
 \end{document}

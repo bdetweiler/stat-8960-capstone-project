@@ -1,0 +1,94 @@
+\chapter{Intrinsic Data Quality}
+
+Intrinsic quality is a measure of perception. How is the data received by the consumer? Is it believable?
+If an organization's 10-K SEC filing shows that the organization had \$90 billion in revenue last quarter, 
+how much can you trust it? Given that the record quarterly revenue for any company in history is held by
+Fannie May, pulling in \$58.7 billion in the first quarter of 2013 \cite{fanniemae}, it would be prudent to be skeptical
+of the statement.
+
+Human data entry is often a a root cause for inaccurate data. Machine generated data can be engineered to be perfect with 
+the help of unit and integration testing, but humans can never be perfect. We are error prone and should be expected to 
+make mistakes. Data entry forms can be designed to prevent most casual errors, for example, by requiring numeric fields
+to only accept numerals, or by requiring a Social Security Number to be exactly eight digits. However, when humans enter
+data manually, there is always a cause for concern over the accuracy of the data. 
+
+Data accuracy concerns can also show up in ways we couldn't imagine. Sensor data, for example, can be inaccurate if
+the sensor is not calibrated correctly. These are low level concerns that we must try to correct at the root, rather
+than apply data cleaning and transformation techniques once the data has already been entered.
+
+Many argue that data cannot be objective. As long as humans are choosing what data is captured, there is always 
+inherent subjectivity in the data. That should not stop us from striving for objectivity, however. When it comes to
+building robust models, training with subjective data is likely to produce poor results. Striving for objectivity
+is scientific in nature, and should be part of a holistic data quality approach.
+
+Finally, the reputation that the data carries, both in content, and by way of its provider can have a huge impact
+on the perception of the data quality. If systems have produced erronious data for years, but have recently been fixed,
+the reputation the data source carries will be hard to shake until it is able to change its reputation. Reputation is
+something built over time. It is an intangible indicator that exists entirely in our minds as a consequence of 
+its performance in a combination of the other data quality dimensions. If we generally regard a data source as
+unbelievable, inaccurate, or unobjective, that becomes its reputation. It can only be changed by proving itself 
+over time.
+
+\section{Believability}
+
+There is an ubiquitous quote often attributed to Edgar Allen Poe along the lines of,  
+"Believe nothing you hear, and only one half that you see". Although perhaps hyperbolic, it is 
+good advice to anyone looking at data. Perhaps more reasonable advice is given by Kyle Polich on his
+Data Skeptic podcast, in which he reminds the listener to "keep thinking skeptically of and with data". \cite{dataskeptic}
+This is a good introductory advice when looking at our first data quality metric, \textbf{Believability}.
+
+In today's world of automated data sources and official looking graphics, it is easy to fall in to the trap of 
+accepting claims about data at face value. And this can be dangerous when money is involved. If your bank account
+statement showed a negative balance but you know you had several thousands of dollars earlier in the week and you 
+don't recall purchasing anything, would you accept that at face value? Likely not. Then why do we accept other claims,
+however official looking, at face value without first seeing if it passes the smoke test of believability?
+
+It may come as a surprise to most, including congress, to learn that SEC filings are incredibly easy to fake. 
+The SEC's \textit{Edgar} online filing system is essentially an unchecked honor system. In 2015, Nedko Nedev filed a claim
+that he was making an offer to purchase Avon, and the stock price shot up from \$6.60 to \$8.00 a share in under an hour of 
+trading. This, of course, is outright stock manipulation, and Nedev was later indicted. \cite{fakedeal} 
+
+Even more often than SEC filings, companies' claims about their own success stories can be hyper inflated to the realm
+of the unbelievable. Citron Research regularly uncovers these misgivings and their reports are followed closely by 
+short sellers. For instance, on October 4th, 2017, Citron released a report accusing Shopify of being a get-rich-quick scheme.
+Citron made the astute observation that of the 500,000 websites Shopify claims as subscribers, they were only able to 
+identify 25,000 actual merchants. The rest were "partners" which amounted to an MLM scheme similar to Herbalife. \cite{shopify}
+
+The common denominator in these stories is the believability of the data. Where the believability is low, it is best to be skeptical.
+Of course, in order to measure something, we must establish metrics on which to evaluate it. The believability quality dimension 
+finds its primary metrics in the data provenance. Where the data originate, why was it generated, and what is its revision history? 
+Pratt and Madnick \cite{provenance} devised a computational model of provenance by breaking believability into three submetrics 
+consisting of \textbf{trustworthiness of source, reasonableness of data}, and \textbf{temporality of data} (measured as both transaction time and valid time). Reasonableness was further broken down into \textbf{possibility, consistency,} and \textbf{consistency over sources}. Temporality was further broken down into \textbf{transaction and valid times closeness} and \textbf{valid times overlap}.
+
+Using the provenance model gives us a computational method of measuring the believability of data, but of course, we can also
+just use the sight test. If it looks too good to be true, it probably is and skepticism and further research is advised.
+
+\section{Accuracy}
+
+Accuracy refers to a measurement of closeness of the stated value to a standard or known value. Usually, the standard value is
+the truth, and the stated value is either an estimate or a concrete calculation or statement. Getting this wrong, particularly
+in the financial world, can net you a hefty fine, or even prison time.
+
+Take, for instance, Ocwen Financial Corp., who were ordered by the SEC to pay \$2 million for using a flawed, undisclosed
+methodology to value complex mortgate assets. \cite{ocwen} \cite{ocwenreuters} Ocwen had not produced inaccurate numbers
+to be intentionally deceptive, but rather had not vetted the flawed methodology that caused the problems. The lesson here
+is that extreme care must go into any data generation involving financial figures. Simply using the "we didn't know" defense
+will not hold up in court and organizations are better off ensuring that they in fact do know everything about their
+data generating processes involving financial figures.
+
+\section{Objectivity}
+
+Objectivity removes interpretation, and hence, bias from the data. Observations are based on facts, rather than opinion.
+\cite{youtube} Objectivity is easier to find in data which is backed by science. Number of widgets in a warehouse's inventory is easily backed by observation. Subjectivity tends to creep in when something can be interpreted in more ways than one. For instance, the subject
+matter of a photo. 
+
+\begin{figure}[t]
+  \includegraphics[scale=.25]{images/cat-shoe.jpg}
+  \centering
+  \caption{Assuming we must choose a noun to categorize this image, is it an image of a cat or a shoe? 
+           This would be subject to interpretation}
+\end{figure}
+
+\section{Reputation}
+
+\lipsum 

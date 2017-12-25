@@ -21,7 +21,7 @@
 \raggedbottom
 
 %define the default submitted text
-\newcommand{\submittedtext}{{A graduate project submitted for}}
+\newcommand{\submittedtext}{{A thesis submitted for}}
 
 %
 % DECLARATIONS
