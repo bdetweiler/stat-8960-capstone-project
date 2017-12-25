@@ -1,0 +1,7 @@
+\begin{abstract}
+  \textit{Clostridium difficile} Infection (CDI) is an endospore-forming bacterium that is highly contagious, spreading by person-to-person touch
+  or direct contact with contaminated objects and surfaces. Symptoms range from mild diarrhea and abdominal pain to life-threatening inflammation of 
+  the intestines. Particularly at risk are the elderly with past history of hospitalization and patients treated with antimicrobial therapy. 
+  In this project, we will explore CDI in the hospital and nursing home setting, modeling the risk, if exposed, from patient-to-patient contact and 
+  patient-to-health-care provider contact.
+\end{abstract}
