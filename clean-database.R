@@ -13,10 +13,11 @@ library('DBI')
 MonetDBLite::monetdblite_shutdown()
 con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
 
-# DBI::dbSendQuery(con, "DROP TABLE nis")
-DBI::dbGetQuery(con, "SELECT COUNT(nis_key) as count FROM nis")
+DBI::dbSendQuery(con, "")
+
 # Create NIS table
-create.table.sql <- readLines('data/sql/nis-create-table.sql')
+# create.table.sql <- readLines('data/sql/nis-create-table.sql')
 create.table.sql <- paste(create.table.sql, collapse = "")
-DBI::dbSendQuery(con, create.table.sql)
+DBI::dbSendQuery(con, "SELECT COUNT(*) FROM nis")
+DBI::dbSendQuery(con, .table.sql)
 

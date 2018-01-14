@@ -1,0 +1,6 @@
+base
+MonetDB.R
+MonetDBLite
+dplyr
+dbplyr
+DBI

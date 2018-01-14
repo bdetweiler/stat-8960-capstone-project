@@ -1,0 +1,143 @@
+---
+title: 'Grad Project: Week 1'
+author: "Brian Detweiler"
+date: "January 14, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library('MonetDB.R')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center')
+```
+# At a glance
+
+  * Obtained 43 GB of H-CUP National Inpatient Survey (NIS) data from 2001-2014 in CSV format
+  * Chose R and MonetDB as an analytics platform
+  * Wrote scripts to import CSVs into MonetDB table
+
+# Intro
+
+This is the first in a series of articles detailing the progress and process behind my graduate project, 
+intended primarily to keep my advisors informed, but also to detail my process for anyone else interested 
+in doing a similar project - and because I am a believer in strong documentation! I aim to deliver these 
+weekly to keep my project on track and to keep my advisors informed. All code, as always, is available
+at my [Github](http://github.com/bdetweiler).
+
+# About the project
+
+I am finally beginning my graduate project for my Master's in Mathematics, concentrating in Data Science. For various reasons,
+I have landed on modelling in infectious disease known as Clostridium Difficile, or C. *diff* Infection (CDI). The disease
+causes colitis, inflammation of the colon, and is pervasive in hospitals and nursing homes. I'll be focussing on 
+more technical aspects here until I get into the actual model design and analysis.
+
+The first choice is platform. To me, there are only two reasonable choices for serious data analysis: \textsf{R} or Python. 
+Sure, people do useful things with SAS, SPSS, and Stata. But those people aren't programmers. I do like Python a lot, but
+I've become quite fond of \textsf{R} throughout grad school, primarily for it's fully integrated platform, RStudio
+(this post was written in RMarkdown using RStudio). For me, that was the easiest decision.
+
+The dataset is from [ARHQ](https://www.ahrq.gov/). 
+It is the [H-CUP National Inpatient Survey (NIS)](https://www.hcup-us.ahrq.gov/nisoverview.jsp) from years 2001 to 2014. 
+I obtained this through Ryan W. Walters, PhD at Creighton University, after completing the Data Usage Agreement.
+
+These files total 43 GB and are broken out by year. 
+They average around 3 GB per CSV file. My PC is a beast, with an Intel i7 with 8 cores and 64 GB of RAM, but it is not 
+feasible to load all of these files into \textsf{R}. While each file is only 3 GB, when R reads in a CSV,
+it creates a data frame which nearly doubles the total memory required. So to read in 43 GB of these CSVs, 
+I would need 128 GB of RAM. If you need more than 64 GB of RAM in 2018, it may be time to take a step back and rethink your approach.
+
+```
+$ l -ha NIS* | awk '{print $5, $9}'
+2.7G NIS2001.csv                                                          
+2.9G NIS2002.csv                                                          
+3.0G NIS2003.csv                                                          
+3.1G NIS2004.csv                                                          
+3.1G NIS2005.csv                                                          
+3.1G NIS2006.csv                                                          
+3.4G NIS2007.csv                                                          
+3.4G NIS2008.csv                                                          
+3.5G NIS2009.csv
+3.6G NIS2010.csv
+3.7G NIS2011.csv
+2.6G NIS2012.csv
+2.6G NIS2013.csv
+2.8G NIS2014.csv
+
+```
+
+# Analytics Architecture
+
+Instead of keeping these around in R, we're going to import these into a MonetDB database.
+MonetDB is a column-store RDBMS, similar to HP Vertica or MariaDB. MonetDB is the pioneer of columnar databases, 
+and pound-for-pound, dollar-for-dollar (which is zero, since it's open source), it can't be beat. I actually
+stumbled on MonetDB while searching for ways to deal with the HCUP data in R. 
+
+The HCUP website offers some turnkey solutions for SAS, SPSS, and Stata users, but nothing for R or Python. 
+However, I presume even the former three would run into the same difficulties of dealing with such large datasets and 
+ultimately be resigned to either evaluating a single year at a time, or using some sort of database. Hadoop is, 
+of course an option, but while this data is quite large, I'll only be using a subset (the patients with C. *diff*), 
+so the actual  data I'll be analyzing will be much smaller than the 43 GB of CSVs mentioned earlier. 
+For this reason, MonetDB fits the solution nicely.
+
+# Challenges
+
+Immediately, I ran into inconsistencies in formatting. Columns were either present or missing in some years, and in 2014, 
+they had been rearranged inexplicably. Seemingly obvious data types, such as an integer for "age" could not be presumed.
+The database handled missing data not with null values, but with codes such as ".A" for invalid, ".B" for unavailable, 
+or ".C" for inconsistent, etc. This is unhelpful for me. If the data is invalid, unavailable, or inconsistent is 
+inconsequential to me. I either have it or I don't. This will need to be dealt with. 
+
+# Lots of Manual Work
+
+First wanted to get the data into a database to begin with, so I began by making a text file of the headers
+from each CSV.
+
+```
+$ head -n1 NIS* > headers.csv
+```
+This created a file of each NIS file's headers. I then copied and pasted each line into a
+[LibreOffice spreadsheet](https://github.com/bdetweiler/stat-8960-capstone-project/blob/master/data/headers.xlsx)
+and did a lot of manual adjustment. I listed data types for each column as well, including the "ideal" data type 
+(meaning, what I would want that column to be in an ideal world), the \textsf{R} data type when reading in the
+CSV, and the MonetDB data type when creating the table. 
+
+I then created a tab for each year and transposed the adjusted headers to show vertically. I then copied and pasted
+those into a text file and used Vim to lowercase all the column names and changed \textsf{key} to \textsf{nis_key} and
+\textsf{year} to \textsf{nis_year}, because those are reserved words in MonetDB. Once I had the header files and the 
+\textsf{R} data types files, I was able to use \textsf{read.csv} and define the column names and types in R, and then
+used the \textsf{MonetDBLite} driver to write the data frame to the database. 
+
+Once I had this all perfected (which took pretty much the whole week), the entire import process took nearly all my
+available RAM and about an hour and a half to complete. Once completed, I am left with a very fast column store
+database with a single denormalized table consisting of 216 columns and a lot of rows. Like, over-100-million a lot.
+
+```{r, warning=FALSE, include=FALSE, cache=TRUE}
+  MonetDBLite::monetdblite_shutdown()
+  con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nis_db")
+```
+
+```{r, warning=FALSE, cache=TRUE}
+  row.count <- DBI::dbGetQuery(con, "SELECT COUNT(nis_key) as count FROM nis")
+```
+
+```{r, echo=FALSE, cache=TRUE}
+  row.count
+```
+
+```{r, warning=FALSE, include=FALSE, cache=TRUE}
+  MonetDBLite::monetdblite_shutdown()
+  con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nis_db")
+```
+
+# Next Steps
+
+Unfortunately, I am not quite ready to do any exploratory data analysis or anything fun just yet. As mentioned in the challenges
+above, the data still is not in the right structure. I want to get rid of all of the invalid/inconsistent/missing codes and replace
+them will null values. Then I want to alter the table so those columns are of the correct data type. This will let me offload a
+lot of processing to the database rather than having to bring it into R, manipulate it, and then do the calculations. 
+
+I hope to accomplish this by next week along with some exploratory data analysis so I can see what I'm actually working with
+(i.e. How many cases of C. *diff* am I actually working with here). 
