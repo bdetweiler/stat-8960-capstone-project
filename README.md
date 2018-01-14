@@ -1,6 +1,6 @@
 # stat-8960-capstone-project
 
-## A Graduate Project Presented for a Master's in Mathematics
+## A Graduate Project Presented for a Master's in Mathematics at the University of Nebraska, Omaha
 ### By Brian Detweiler
 
 Clostridium Difficile Infection (C. diff, or CDI) is a highly contagious endospore forming bacterium that is thransferred through
