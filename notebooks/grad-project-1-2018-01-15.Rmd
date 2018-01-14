@@ -31,7 +31,7 @@ at my [Github](http://github.com/bdetweiler).
 
 I am finally beginning my graduate project for my Master's in Mathematics, concentrating in Data Science. For various reasons,
 I have landed on modelling in infectious disease known as Clostridium Difficile, or C. *diff* Infection (CDI). The disease
-causes colitis, inflammation of the colon, and is pervasive in hospitals and nursing homes. I'll be focussing on 
+causes colitis, inflammation of the colon, and is pervasive in hospitals and nursing homes. I'll be focusing on 
 more technical aspects here until I get into the actual model design and analysis.
 
 The first choice is platform. To me, there are only two reasonable choices for serious data analysis: \textsf{R} or Python. 
