@@ -218,3 +218,11 @@ TSWLatexianTemp*
 
 # expex forward references with \gathertags
 *-tags.tex
+
+data/*.csv
+data/nis_db/
+
+.RData
+.Rhistory
+
+
