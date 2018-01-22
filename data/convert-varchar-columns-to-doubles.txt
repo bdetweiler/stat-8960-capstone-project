@@ -1,0 +1,9 @@
+totchg
+hospwt
+discwtcharge
+hosp_rnfteapd
+hosp_lpnfteapd
+hosp_nafteapd
+wageindex
+ccr_nis
+hosp_bedsize

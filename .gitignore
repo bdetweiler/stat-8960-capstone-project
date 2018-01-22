@@ -225,4 +225,9 @@ data/nis_db/
 .RData
 .Rhistory
 
+*.RData
+*.rdb
+*.rdx
 
+*.swp
+.~lock.*

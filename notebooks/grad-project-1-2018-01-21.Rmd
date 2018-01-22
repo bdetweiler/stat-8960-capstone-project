@@ -1,0 +1,150 @@
+---
+title: 'Grad Project: Week 2'
+author: "Brian Detweiler"
+date: "January 21, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library('MonetDB.R')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center')
+```
+# At a glance
+
+  * Met with external advisors to solidify project goals
+  * Slightly modified project goals to assessing effectiveness of Fecal Microbiota Transplants (FMT)
+  * Located corresponding codes for FMT in the dataset
+  * Next Step: Obtain Nationwide Readmission Database (NRD) and assess feasibility of new project goals
+  
+
+# Solidifying Project Goals
+
+Earlier this week, I met with my external advisors at Creighton to regroup and come up with a more concrete plan.
+Having gone through the data myself, I have a better idea of what kind of project we can actually do. Since the initial
+plan was to model the risk of contracting C. *diff* given patient-to-patient or patient-to-healthcare provider contact
+in hospitals and nursing homes, taking antimicrobial stewardship programs into account.
+
+However, the H-CUP NIS database, while rich with data, is limited. Nursing homes are not included, and there is no way to 
+even identify a hospital after 2011, let alone determine if it has a stewardship program. 
+
+After some discussion, we came to a consensus on assessing the use of Fecal Microbiota Transplants (FMT) 
+and the effect on readmission rates. This requires inclusion of another database, the 
+[Nationwide Readmission Database (NRD)](https://www.hcup-us.ahrq.gov/nrdoverview.jsp). 
+
+__Note:__ Aetna provides some good background on C. *diff* and FMTs here: [http://www.aetna.com/cpb/medical/data/800_899/0844.html](http://www.aetna.com/cpb/medical/data/800_899/0844.html)
+
+# Determining FMT Procedure Codes
+
+The disease C. *diff* is coded in the DXx columns (DX1, DX2, ..., DX25) as 00845, which corresponds to ICD-9-CM code 
+[008.45](http://www.icd9data.com/2014/Volume1/001-139/001-009/008/008.45.htm). Using this code, we can filter our
+database on any patient that has been diagnosed with C. *diff*.
+
+Of interest in those results, is what procedure was used. Procedure codes are listed in the PRx columns (PR1, PR2, ..., PR15).
+These correspond to ICD-9-CM, however, there are no ICD-9-CM codes for FMTs. There are Current Procedural Terminology (CPT)
+and Healthcare Common Procedure Coding System (HCPCS) codes for it though. 
+The HCPCS codes is  __[G0455](http://www.coding-pro.com/hcpcs/hcpcs_details.php?hcpcs_code=G0455)__, 
+*"Preparation with instillation of fecal microbiota by any method, including assessment of donor specimen"*
+and the CPT Code is __44705__, *"Preparation of fecal microbiota for instillation, including assessment of donor specimen"*. 
+These are used for billing and 
+[insurance purposes](https://tuftshealthplan.com/documents/providers/guidelines/medical-necessity-guidelines/fecal-microbial-transplant-(fmt)-for-cdi). 
+What ARHQ have done is created their own codes that abstract the CPT/HCPCS codes, using their own 
+[Clinical Classifications Software for Services and Procedures (CCS-Services and Procedures)](https://www.hcup-us.ahrq.gov/toolssoftware/ccs_svcsproc/ccssvcproc.jsp).
+This is a lossy encoding, meaning we cannot always get back the actual CPT/HCPCS code given a CCS code. 
+
+These are stored in the PRCCSx columns (PRCCS1, PRCCS2, ..., PRCCS15). The encoding is given in ranges, so some programming
+was required to break the ranges into discrete values in order to do the many-to-one mappings. 
+
+Some codes begin with a letter, such as our __G0455__, and some end with a letter. Many have leading zeros that are significant.
+This must all be taken into account as three separate cases.
+
+```
+ccs.codes <- read.csv('data/formats/2017_ccs_services_procedures.csv', stringsAsFactors=FALSE)
+ccs.codes$Code.Range <- gsub("'", "", ccs.codes$Code.Range)
+
+final.df <- data.frame(Code=c(""), CCS=c(""), CCS.Label=c(""))
+
+for (i in 1:dim(ccs.codes)[1]) {
+  
+  print(paste0("row: ", i))
+  
+  # Get the current code range in row i
+  code.range <- ccs.codes$Code.Range[i] 
+
+  # Split it into two codes
+  code.range <- unlist(strsplit(code.range, "-"))
+
+  tmp.df <- c()
+  
+  # Look for codes with a letter at the beginning of the code
+  if (length(grep("^([A-Z]).*", code.range, ignore.case = FALSE, perl = TRUE, value = FALSE)) == 2) {
+    
+    gsub("^([A-Z]).*", "\1", code.range)
+    letters <- gsub("^([A-Z]).*", "\\1", code.range)
+    numbers <- gsub("^[A-Z](.*)", "\\1", code.range)
+    leading.zeros <- gsub("^(0*).*", "\\1", numbers)
+
+    # If there is no range only use the existing code, otherwise use the range 
+    if (numbers[1] == numbers[2]) {
+      tmp.df <- data.frame(Code=as.character(paste0(letters[1], leading.zeros[1], as.integer(numbers[1]))))
+    } else {
+      tmp.df <- data.frame(Code=as.character(paste0(letters, leading.zeros, seq(as.integer(numbers[1])), as.integer(numbers[2]), by=1)))
+    }
+
+  }
+
+  # Look for codes with a letter at the end of the code
+  if (length(grep(".*([A-Z])$", code.range, ignore.case = FALSE, perl = TRUE, value = FALSE)) == 2) {
+    letters <- gsub(".*([A-Z])$", "\\1", code.range)
+    numbers <- gsub("(.*)[A-Z]$", "\\1", code.range)
+    leading.zeros <- gsub("^(0*).*", "\\1", numbers)
+
+    # If there is no range only use the existing code, otherwise use the range 
+    if (numbers[1] == numbers[2]) {
+      tmp.df <- data.frame(Code=as.character(paste0(leading.zeros[1], as.integer(numbers[1]), letters[1])))
+    } else {
+      tmp.df <- data.frame(Code=as.character(paste0(leading.zeros, seq(as.integer(numbers[1]), as.integer(numbers[2]), by=1), letters)))
+    }
+  } 
+
+
+  # Look for codes with no letters
+  if (length(grep("^([0-9])+$", code.range, ignore.case = FALSE, perl = TRUE, value = FALSE)) == 2) {
+    numbers <- gsub("^(.*)$", "\\1", code.range)
+    leading.zeros <- gsub("^(0*).*", "\\1", numbers)
+    
+    # If there is no range only use the existing code, otherwise use the range 
+    if (numbers[1] == numbers[2]) {
+      tmp.df <- data.frame(Code=as.character(paste0(leading.zeros[1], as.integer(numbers[1]))))
+    } else {
+      tmp.df <- data.frame(Code=as.character(paste0(leading.zeros, seq(as.integer(numbers[1]), as.integer(numbers[2]), by=1))))
+    }
+  } 
+  
+  tmp.df$CCS <- as.character(ccs.codes$CCS[i])
+  tmp.df$CCS.Label <- as.character(ccs.codes$CCS.Label[i])
+  
+  final.df <- rbind(final.df, tmp.df) 
+}
+final.df <- final.df[-1, ]
+write.csv(final.df, "nis-ccs-codes.csv", row.names=FALSE)
+```
+Finally, we can do a lookup for our codes and we find they are coded as 
+CCS code __95__, *Other non-OR lower GI therapeutic procedures*. 
+
+We can now use this in conjunction with our C. *diff* diagnosis code to make an assumption that the patient was treated
+with an FMT. 
+
+
+# Next Steps
+
+The next major milestone is in obtaining, cleaning, and importing the NRD dataset. 
+There will be some addition overhead there, similar to the NIS dataset. I anticipate that will take about another week.
+Once the NRD database is up, I can assess the feasibility of this new project goal using the available data.
+
+I also need to keep in mind, the assumption that CCS code __95__ corresponds to an FMT is not precise. 
+This will require a little more digging into to validate the assumption.
+

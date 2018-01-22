@@ -28,163 +28,73 @@ library('DBI')
 # MonetDB connection to a permanent file
 # Call the below line if you get an error about connecting
 MonetDBLite::monetdblite_shutdown()
-mdb <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data")
-mdb <- dbConnect(MonetDBLite::MonetDBLite(), "data")
-?dbConnect
-nis <- read.csv("data/NIS2001.csv", stringsAsFactors=FALSE)
-create <- "CREATE TABLE nis (\"KEY\" DOUBLE PRECISION,
-                  \"YEAR\" STRING,
-                  \"AGE\" STRING,
-                  \"AMONTH\" STRING,
-                  \"AQTR\" STRING,
-                  \"ASEASON\" STRING,
-                  \"ASOURCE\" STRING,
-                  \"ATYPE\" STRING,
-                  \"AWEEKEND\" STRING,
-                  \"DIED\" STRING,
-                  \"DQTR\" STRING,
-                  \"DRG\" STRING,
-                  \"DX1\" STRING,
-                  \"DX2\" STRING,
-                  \"DX3\" STRING,
-                  \"DX4\" STRING,
-                  \"DX5\" STRING,
-                  \"DX6\" STRING,
-                  \"DX7\" STRING,
-                  \"DX8\" STRING,
-                  \"DX9\" STRING,
-                  \"DX10\" STRING,
-                  \"DX11\" STRING,
-                  \"DX12\" STRING,
-                  \"DX13\" STRING,
-                  \"DX14\" STRING,
-                  \"DX15\" STRING,
-                  \"DXCCS1\" STRING,
-                  \"DXCCS2\" STRING,
-                  \"DXCCS3\" STRING,
-                  \"DXCCS4\" STRING,
-                  \"DXCCS5\" STRING,
-                  \"DXCCS6\" STRING,
-                  \"DXCCS7\" STRING,
-                  \"DXCCS8\" STRING,
-                  \"DXCCS9\" STRING,
-                  \"DXCCS10\" STRING,
-                  \"DXCCS11\" STRING,
-                  \"DXCCS12\" STRING,
-                  \"DXCCS13\" STRING,
-                  \"DXCCS14\" STRING,
-                  \"DXCCS15\" STRING,
-                  \"PR1\" STRING,
-                  \"PR2\" STRING,
-                  \"PR3\" STRING,
-                  \"PR4\" STRING,
-                  \"PR5\" STRING,
-                  \"PR6\" STRING,
-                  \"PR7\" STRING,
-                  \"PR8\" STRING,
-                  \"PR9\" STRING,
-                  \"PR10\" STRING,
-                  \"PR11\" STRING,
-                  \"PR12\" STRING,
-                  \"PR13\" STRING,
-                  \"PR14\" STRING,
-                  \"PR15\" STRING,
-                  \"PRDAY1\" STRING,
-                  \"PRDAY2\" STRING,
-                  \"PRDAY3\" STRING,
-                  \"PRDAY4\" STRING,
-                  \"PRDAY5\" STRING,
-                  \"PRDAY6\" STRING,
-                  \"PRDAY7\" STRING,
-                  \"PRDAY8\" STRING,
-                  \"PRDAY9\" STRING,
-                  \"PRDAY10\" STRING,
-                  \"PRDAY11\" STRING,
-                  \"PRDAY12\" STRING,
-                  \"PRDAY13\" STRING,
-                  \"PRDAY14\" STRING,
-                  \"PRDAY15\" STRING,
-                  \"PRCCS1\" STRING,
-                  \"PRCCS2\" STRING,
-                  \"PRCCS3\" STRING,
-                  \"PRCCS4\" STRING,
-                  \"PRCCS5\" STRING,
-                  \"PRCCS6\" STRING,
-                  \"PRCCS7\" STRING,
-                  \"PRCCS8\" STRING,
-                  \"PRCCS9\" STRING,
-                  \"PRCCS10\" STRING,
-                  \"PRCCS11\" STRING,
-                  \"PRCCS12\" STRING,
-                  \"PRCCS13\" STRING,
-                  \"PRCCS14\" STRING,
-                  \"PRCCS15\" STRING,
-                  \"DISPUNIFORM\" STRING,
-                  \"FEMALE\" STRING,
-                  \"LOS\" STRING,
-                  \"MDC\" STRING,
-                  \"NDX\" STRING,
-                  \"PAY1\" STRING,
-                  \"RACE\" STRING,
-                  \"TOTCHG\" STRING,
-                  \"ZIPINC_QRTL\" STRING,
-                  \"NIS_STRATUM\" STRING,
-                  \"NPR\" STRING,
-                  \"CHF\" STRING,
-                  \"VALVE\" STRING,
-                  \"PULMCIRC\" STRING,
-                  \"PERIVASC\" STRING,
-                  \"HTN_C\" STRING,
-                  \"PARA\" STRING,
-                  \"NEURO\" STRING,
-                  \"CHRNLUNG\" STRING,
-                  \"DM\" STRING,
-                  \"DMCX\" STRING,
-                  \"HYPOTHY\" STRING,
-                  \"RENLFAIL\" STRING,
-                  \"LIVER\" STRING,
-                  \"ULCER\" STRING,
-                  \"AIDS\" STRING,
-                  \"LYMPH\" STRING,
-                  \"METS\" STRING,
-                  \"TUMOR\" STRING,
-                  \"ARTH\" STRING,
-                  \"COAG\" STRING,
-                  \"OBESE\" STRING,
-                  \"WGHTLOSS\" STRING,
-                  \"LYTES\" STRING,
-                  \"BLDLOSS\" STRING,
-                  \"ANEMDEF\" STRING,
-                  \"ALCOHOL\" STRING,
-                  \"DRUG\" STRING,
-                  \"PSYCH\" STRING,
-                  \"DEPRESS\" STRING,
-                  \"HOSPID\" STRING,
-                  \"HOSPNAME\" STRING,
-                  \"HOSPADDR\" STRING,
-                  \"HOSPSTCO\" STRING,
-                  \"HOSPST\" STRING,
-                  \"HOSPCITY\" STRING,
-                  \"HOSPZIP\" STRING,
-                  \"HOSPWT\" STRING,
-                  \"DISCWT\" DOUBLE PRECISION,
-                  \"HOSP_BEDSIZE\" STRING,
-                  \"HOSP_CONTROL\" INTEGER,
-                  \"HOSP_LOCTEACH\" INTEGER,
-                  \"HOSP_REGION\" INTEGER,
-                  \"HOSP_LOCATION\" INTEGER,
-                  \"HOSP_TEACH\" INTEGER,
-                  \"N_DISC_U\" INTEGER,
-                  \"N_HOSP_U\" INTEGER,
-                  \"S_DISC_U\" INTEGER,
-                  \"S_HOSP_U\" INTEGER,
-                  \"TOTAL_DISC\" INTEGER,
-                  \"WAGEINDEX\" DOUBLE PRECISION,
-                  \"CCR_NIS\" DOUBLE PRECISION )"
-print(create)
-dbSendQuery(mdb, create)
-dbSendQuery(mdb, "SELECT * FROM")
-dbSendQuery(mdb, "COPY OFFSET 2
-                  INTO nis
-                  FROM '/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/NIS2001.csv' USING  DELIMITERS ','")
+con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+
+cdi.q <- "SELECT *
+            FROM nis,
+                 nis_code
+           WHERE (
+                    nis.DX1           = '00845'           AND 
+                    nis.PR1           = nis_code.nis_code AND
+                    nis_code.nis_type = 'i9prf'
+                 )
+        ORDER BY nis_code"
+
+              #OR 
+                  #nis.DX2  = '00845' OR
+                  #nis.DX3  = '00845' OR
+                  #nis.DX4  = '00845' OR
+                  #nis.DX5  = '00845' OR
+                  #nis.DX6  = '00845' OR
+                  #nis.DX7  = '00845' OR
+                  #nis.DX8  = '00845' OR
+                  #nis.DX9  = '00845' OR
+                  #nis.DX10 = '00845' OR
+                  #nis.DX11 = '00845' OR
+                  #nis.DX12 = '00845' OR
+                  #nis.DX13 = '00845' OR
+                  #nis.DX14 = '00845' OR
+                  #nis.DX15 = '00845' OR
+                  #nis.DX16 = '00845' OR
+                  #nis.DX17 = '00845' OR
+                  #nis.DX18 = '00845' OR
+                  #nis.DX19 = '00845' OR
+                  #nis.DX20 = '00845' OR
+                  #nis.DX21 = '00845' OR
+                  #nis.DX22 = '00845' OR
+                  #nis.DX23 = '00845' OR
+                  #nis.DX24 = '00845' OR
+                  #nis.DX25 = '00845') 
+                   
+
+cdiff <- DBI::dbGetQuery(con, cdi.q)
+
+cdiff.sub <- cdiff %>% select(dx1, pr1, prccs1) %>% filter(prccs1 == '91')
+cdiff.sub
+nis.cdiff <- DBI::dbGetQuery(con, "select * from nis where nis_key = '04200110312351'")
+DBI::dbGetQuery(con, "select * from nis_code where nis_code in (select pr2 from nis where nis_key = '04200110312351')")
+nis.cdiff$
+
+cdiff$pr1[which(cdiff$nis_year == 2014)]
+hist(cdiff$nis_year)
+
+pr <- cdiff$pr1
+pr <- c(pr, cdiff$pr2)
+pr <- c(pr, cdiff$pr3)
+pr <- c(pr, cdiff$pr4)
+pr <- c(pr, cdiff$pr5)
+pr <- c(pr, cdiff$pr6)
+pr <- c(pr, cdiff$pr7)
+pr <- c(pr, cdiff$pr8)
+pr <- c(pr, cdiff$pr9)
+pr <- c(pr, cdiff$pr10)
+pr <- c(pr, cdiff$pr11)
+pr <- c(pr, cdiff$pr12)
+pr <- c(pr, cdiff$pr13)
+pr <- c(pr, cdiff$pr14)
+pr <- c(pr, cdiff$pr15)
+
+pr <- unique(pr)
+
+length(pr)
 ```
