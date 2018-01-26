@@ -1,0 +1,10 @@
+base
+devtools
+MonetDB.R
+MonetDBLite
+dplyr
+dbplyr
+DBI
+ggplot2
+scales
+bindrcpp

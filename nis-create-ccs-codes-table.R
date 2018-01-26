@@ -75,3 +75,12 @@ for (i in 1:dim(ccs.codes)[1]) {
 }
 final.df <- final.df[-1, ]
 write.csv(final.df, "nis-ccs-codes.csv", row.names=FALSE)
+
+# Not sure this file is adequate
+# hcpcs.df <- read.csv('data/formats/2015DHSAddendum_10-30-14.csv', sep=";")
+
+# colnames(final.df)
+# merged.df <- merge(x=final.df, y=hcpcs.df, by.x="Code", by.y="HCPCS.CODE", all.x=TRUE)
+# head(merged.df)
+
+# merged.df[which(!is.na(merged.df$HCPCS.DESC)),]

@@ -1,0 +1,155 @@
+---
+title: "eda.Rmd"
+author: "Brian Detweiler"
+date: "December 25, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.height = 4, fig.width = 4, fig.align = 'center')
+```
+
+## R Markdown
+
+```{r, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+```
+
+
+```{r, warning=FALSE}
+# MonetDB connection to a permanent file
+# Call the below line if you get an error about connecting
+# MonetDBLite::monetdblite_shutdown()
+# con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+
+cdiff <- read.csv('data/cdiff.csv')
+
+cdi.q <- "SELECT *
+            FROM nis
+           WHERE nis.dx1  = '00845' 
+              OR nis.dx2  = '00845' 
+              OR nis.dx3  = '00845' 
+              OR nis.dx4  = '00845' 
+              OR nis.dx5  = '00845' 
+              OR nis.dx6  = '00845' 
+              OR nis.dx7  = '00845' 
+              OR nis.dx8  = '00845' 
+              OR nis.dx9  = '00845' 
+              OR nis.dx10 = '00845' 
+              OR nis.dx11 = '00845' 
+              OR nis.dx12 = '00845' 
+              OR nis.dx13 = '00845' 
+              OR nis.dx14 = '00845' 
+              OR nis.dx15 = '00845'
+              OR nis.dx16 = '00845' 
+              OR nis.dx17 = '00845' 
+              OR nis.dx18 = '00845' 
+              OR nis.dx19 = '00845' 
+              OR nis.dx20 = '00845' 
+              OR nis.dx21 = '00845' 
+              OR nis.dx22 = '00845' 
+              OR nis.dx23 = '00845' 
+              OR nis.dx23 = '00845' 
+              OR nis.dx25 = '00845' 
+              OR nis.dx26 = '00845' 
+              OR nis.dx27 = '00845' 
+              OR nis.dx28 = '00845' 
+              OR nis.dx29 = '00845'
+              OR nis.dx30 = '00845'"
+                   
+
+# cdiff <- DBI::dbGetQuery(con, cdi.q)
+
+diagnosis.position <- c()
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx1)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx2)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx3)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx4)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx5)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx6)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx7)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx8)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx9)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx10)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx11)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx12)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx13)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx14)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx15)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx16)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx17)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx18)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx19)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx20)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx21)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx22)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx23)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx24)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx25)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx26)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx27)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx28)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx29)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx30)[['00845']])
+
+diagnosis.labels <-paste0('dx', seq(1:30))
+diagnosis.labels <- factor(diagnosis.labels, levels = diagnosis.labels)
+
+dx.df <- data.frame(label=diagnosis.labels, count=diagnosis.position)
+
+dx.df[1:20, ] %>% ggplot(aes(x=label, y=count)) +
+  geom_bar(stat = "identity") +
+  labs(x="Diagnosis Number", y="Count", title="C. diff by diagnosis order") +
+  scale_y_continuous(labels=comma)
+
+
+compare.dx.df <- data.frame(label=factor(c('dx1', 'dx2+'), levels=c('dx1', 'dx2+')), count=c(dx.df[1,]$count, sum(dx.df[-1,]$count)))
+compare.dx.df %>% ggplot(aes(x=label, y=count, fill=label)) +
+  geom_bar(stat = "identity") +
+  labs(x="Diagnosis Number", y="Count", title="C. diff diagnosis at admission vs. post-admission") +
+  scale_y_continuous(labels=comma)
+# write.csv(cdiff, 'data/cdiff.csv')
+
+#cdiff.sub <- cdiff %>% select(dx1, pr1, prccs1) %>% filter(prccs1 == '91')
+#cdiff.sub
+#nis.cdiff <- DBI::dbGetQuery(con, "select * from nis where nis_key = '04200110312351'")
+#DBI::dbGetQuery(con, "select * from nis_code where nis_code in (select pr2 from nis where nis_key = '04200110312351')")
+#nis.cdiff$
+
+#cdiff$pr1[which(cdiff$nis_year == 2014)]
+
+data.frame(table(cdiff$nis_year)) %>% ggplot(aes(x=Var1, y=Freq)) +
+  geom_histogram(stat = "identity") +
+  labs(x="Year", y="Count", title="Occurrences of C. diff over the years")
+
+pr <- cdiff$pr1
+pr <- c(pr, cdiff$pr2)
+pr <- c(pr, cdiff$pr3)
+pr <- c(pr, cdiff$pr4)
+pr <- c(pr, cdiff$pr5)
+pr <- c(pr, cdiff$pr6)
+pr <- c(pr, cdiff$pr7)
+pr <- c(pr, cdiff$pr8)
+pr <- c(pr, cdiff$pr9)
+pr <- c(pr, cdiff$pr10)
+pr <- c(pr, cdiff$pr11)
+pr <- c(pr, cdiff$pr12)
+pr <- c(pr, cdiff$pr13)
+pr <- c(pr, cdiff$pr14)
+pr <- c(pr, cdiff$pr15)
+
+pr <- unique(pr)
+
+
+length(pr)
+```

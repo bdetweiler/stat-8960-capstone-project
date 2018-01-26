@@ -1,0 +1,199 @@
+---
+title: 'Grad Project: Week 3'
+author: "Brian Detweiler"
+date: "January 26, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+```
+# At a glance
+
+  * It's a short week and I'll be out of town until Feb 5th
+  * Did some quick exploratory data analysis
+  * Hospital-contracted C. *diff* outnumbers inpatient C. *diff* by over 2:1
+  * Yearly occurrences shows an increasing trend through 2014
+  * Average cost appears to be 3 times higher for patients who acquire C. *diff* in the hospital
+
+# Short week
+
+I am heading out of town this weekend, so my time is somewhat constrained this week. I am also waiting
+on the second dataset, the National Readmission Database (NRD) which is needed to do proceed on this project.
+
+In the mean time, I thought I'd do some quick exploratory data analysis on the NIS dataset just to get a quick
+visualization of what's going on.
+
+```{r data, include=FALSE, warning=FALSE, cache=TRUE}
+# MonetDB connection to a permanent file
+# Call the below line if you get an error about connecting
+# MonetDBLite::monetdblite_shutdown()
+# con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+
+cdiff <- read.csv('../data/cdiff.csv')
+```
+
+# The query
+
+We'll start by getting any observation in which C. *diff* (ICD-9-CM code __00845__) is listed as a diagnosis. 
+Diagnoses are stored in the DXx columns (DX1, DX2, ..., DX30). The following query will bring back anything with 
+a C. *diff* diagnosis.
+
+```
+SELECT *
+  FROM nis
+ WHERE nis.dx1  = '00845' 
+    OR nis.dx2  = '00845' 
+    OR nis.dx3  = '00845' 
+    OR nis.dx4  = '00845' 
+    OR nis.dx5  = '00845' 
+    OR nis.dx6  = '00845' 
+    OR nis.dx7  = '00845' 
+    OR nis.dx8  = '00845' 
+    OR nis.dx9  = '00845' 
+    OR nis.dx10 = '00845' 
+    OR nis.dx11 = '00845' 
+    OR nis.dx12 = '00845' 
+    OR nis.dx13 = '00845' 
+    OR nis.dx14 = '00845' 
+    OR nis.dx15 = '00845'
+    OR nis.dx16 = '00845' 
+    OR nis.dx17 = '00845' 
+    OR nis.dx18 = '00845' 
+    OR nis.dx19 = '00845' 
+    OR nis.dx20 = '00845' 
+    OR nis.dx21 = '00845' 
+    OR nis.dx22 = '00845' 
+    OR nis.dx23 = '00845' 
+    OR nis.dx23 = '00845' 
+    OR nis.dx25 = '00845' 
+    OR nis.dx26 = '00845' 
+    OR nis.dx27 = '00845' 
+    OR nis.dx28 = '00845' 
+    OR nis.dx29 = '00845'
+    OR nis.dx30 = '00845'
+```
+
+According to the [H-CUP NIS documentation](https://www.hcup-us.ahrq.gov/db/vars/dxn/nisnote.jsp),
+
+ > In the HCUP inpatient databases, the first listed diagnosis is the principal diagnosis defined as the condition established after
+ > study to be chiefly responsible for occasioning the admission of the patient to the hospital for care.
+
+That is, __DX1__ is the reason the patient arrived at the hospital. For a __DX1__ of __00845__, the patient contracted
+C. *diff* somewhere else and was brought to the hospital. 
+
+For __DX2__+, it is possible the patient was brought to the hospital for C. *diff* and another reason, but more likely, 
+the patient contracted C. *diff* in the hospital while they were there for the __DX1__ reason. 
+
+This assumption will need a little more expertise to confirm, but we're just spit balling right now.
+
+```{r diagnosis, include=FALSE, warning=FALSE, cache=TRUE}
+
+diagnosis.position <- c()
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx1)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx2)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx3)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx4)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx5)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx6)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx7)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx8)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx9)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx10)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx11)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx12)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx13)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx14)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx15)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx16)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx17)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx18)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx19)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx20)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx21)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx22)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx23)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx24)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx25)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx26)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx27)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx28)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx29)[['00845']])
+diagnosis.position <- c(diagnosis.position, table(cdiff$dx30)[['00845']])
+
+diagnosis.labels <-paste0('dx', seq(1:30))
+diagnosis.labels <- factor(diagnosis.labels, levels = diagnosis.labels)
+
+dx.df <- data.frame(label=diagnosis.labels, count=diagnosis.position)
+```
+
+
+```{r diagnosisplot, warning=FALSE, cache=TRUE, echo=FALSE}
+dx.df[1:20, ] %>% ggplot(aes(x=label, y=count)) +
+  geom_bar(stat = "identity") +
+  labs(x="Diagnosis Number", y="Count", title="C. diff by diagnosis order") +
+  scale_y_continuous(labels=comma)
+
+```
+
+Here, we can see that the initial diagnosis, **DX1** has the highest occurrence of C. *diff*. However, that is to
+be expected. The distribution of secondary hospital-acquired C. *diff* cases are spread over 29 other positions.
+
+If we sum up the secondary diagnoses, we clearly see they outnumber the inpatient diagnoses by more than double.
+
+```{r diagnosiscompare, include=FALSE, warning=FALSE, cache=TRUE}
+compare.dx.df <- data.frame(label=factor(c('dx1', 'dx2+'), levels=c('dx1', 'dx2+')), count=c(dx.df[1,]$count, sum(dx.df[-1,]$count)))
+```
+
+```{r diagnosiscompareplot, include=TRUE, warning=FALSE, cache=TRUE, echo=FALSE}
+compare.dx.df %>% ggplot(aes(x=label, y=count, fill=label)) +
+  geom_bar(stat = "identity") +
+  labs(x="Diagnosis Number", y="Count", title="C. diff diagnosis at admission vs. post-admission") +
+  scale_y_continuous(labels=comma)
+# write.csv(cdiff, 'data/cdiff.csv')
+
+#cdiff.sub <- cdiff %>% select(dx1, pr1, prccs1) %>% filter(prccs1 == '91')
+#cdiff.sub
+#nis.cdiff <- DBI::dbGetQuery(con, "select * from nis where nis_key = '04200110312351'")
+#DBI::dbGetQuery(con, "select * from nis_code where nis_code in (select pr2 from nis where nis_key = '04200110312351')")
+#nis.cdiff$
+
+#cdiff$pr1[which(cdiff$nis_year == 2014)]
+```
+
+Furthermore, the number of C. *diff* observations show an increasing trend. There was a spike in 2011, and a reduction in
+2012, but the overall trend is increasing.
+
+```{r cdiffyears, include=TRUE, warning=FALSE, cache=TRUE, echo=FALSE}
+data.frame(table(cdiff$nis_year)) %>% ggplot(aes(x=Var1, y=Freq)) +
+  geom_histogram(stat = "identity") +
+  labs(x="Year", y="Count", title="Occurrences of C. diff over the years")
+```
+
+```{r cost, include=TRUE, warning=FALSE, cache=TRUE, echo=FALSE}
+cdiff.charge <- cdiff %>% filter(dx1 == '00845' & !is.na(totchg)) %>% select(totchg) %>% summarise(mean(totchg))
+noncdiff.charge <- cdiff %>% filter(dx1 != '00845' & !is.na(totchg)) %>% select(totchg) %>% summarise(mean(totchg))
+```
+
+Patients brought in with C. *diff* paid an average total charge of $`r format(cdiff.charge[[1]], digits=2)`, whereas
+patients who acquired C. *diff* in the hospital paid an average total charge of $`r format(noncdiff.charge[[1]], digits=2)`. 
+
+I would suspect this is because in the latter cases, the patient is already in the hospital for an existing illness or
+procedure, and the addition of C. *diff* causes an increased length of stay. This is only speculation though, and
+should be taken as such.
+
+# Conclusion
+
+There is some good data in here, and I am excited to start digging in and finding something useful. The addition
+of the NRD dataset will add a crucial dimension as I begin to look for what works and what doesn't when treating C. *diff*.
