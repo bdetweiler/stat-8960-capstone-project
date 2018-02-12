@@ -1,0 +1,204 @@
+---
+title: 'Grad Project: Week 5'
+author: "Brian Detweiler"
+date: "February 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+
+```
+# At a glance
+
+ * Still waiting on the NRD dataset
+ * Dove into the age distribution of C. *diff* affected patients
+ * Trends show C. *diff* is increasingly affecting younger individuals
+ * Ages 75-100 are showing short-term decrease in infections
+ * Ages younger than 75 are continuing to increase in infections
+ * Highest increases appear to be in ages 50-75
+
+# More exploratory data analysis
+
+Since I'm still waiting on the NRD dataset, I thought I would do some further exploration of the NIS dataset,
+this time taking a closer look at the ages of the patients diagnosed with C. *diff*. 
+
+```{r data, include=FALSE, warning=FALSE, cache=TRUE}
+# MonetDB connection to a permanent file
+# Call the below line if you get an error about connecting
+# MonetDBLite::monetdblite_shutdown()
+# con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+
+cdiff <- read.csv('../data/cdiff.csv')
+```
+
+Simply plotting the distribution of age, we get the following distribution.
+
+```{r age, echo=FALSE, warning=FALSE, cache=TRUE}
+ages <- cdiff %>% filter(!is.na(age)) %>% select(age)
+mode <- mlv(ages$age, method = "mfv")
+q25 <- quantile(ages$age, 0.25)
+q75 <- quantile(ages$age, 0.75)
+xbar <- mean(ages$age)
+med <- median(ages$age)
+
+cdiff %>% 
+  select(age) %>%
+  ggplot(aes(age, group=1)) +
+    geom_histogram(stat="bin", bins=30) +
+    geom_vline(xintercept = med, col="red") +
+    geom_vline(xintercept = q25, col="blue") +
+    geom_vline(xintercept = q75, col="blue") +
+    labs(title="C. diff infections by age", y="Count", x="Age")
+```
+
+We have an interquartile range of 25, with $q_1$ = `r q25[[1]]` and $q_3$ = `r q75[[1]]`, and a mode of `r mode$M`. The
+blue lines represent the interquartile range.
+
+The mode is interesting here because it represents the peak of the distribution. `r mode$M` is the most common age at which
+C. *diff* is contracted overall. 
+
+Because the distribution is highly left-skewed, the mean ($\overline{x} \approx$ `r round(xbar)`) is not very useful. 
+In such skewed distributions, the median (median = `r med`) proves to be more useful. The red line represents the median.
+
+# Over time
+
+But C. *diff* infections have changed over time. There are numerous reports that [C. *diff* cases are on the rise](https://www.omicsonline.org/open-access/clostridium-difficile-infection-an-increasing-postsurgical-complication-2332-0877.1000176.pdf) (PDF). So there must be a trend over time. Let's take a look at how the rise in C. *diff* over time is affecting 
+various age groups.
+
+```{r age.ridges, echo=FALSE, warning=FALSE, cache=TRUE, message=FALSE}
+cdiff %>% 
+  filter(!is.na(age)) %>% 
+  select(age, nis_year) %>%
+  ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
+    #geom_joy(stat = "identity")
+    geom_density_ridges() +
+    labs(title="C. diff distribution by age over time", x="Age", y="Year")
+
+```
+
+Here we see a clear trend. C. *diff* once affected mostly people in their 70s and 80s, the peak is getting fatter and
+widening out to people in their 50s and 60s. 
+
+# Over time by age groups
+
+Breaking this down further into bin widths of 5 years, we start to see some interesting trends. Age groups 75+ appear to be
+at least on a short-term decline, while all other age groups continue to rise. 
+
+Those particularly affected lie in the 50 - 75 age group. If the trends continue, it is possible that the 70-75 age group 
+could overtake the 75-85 groups as the predominantly affected group. 
+
+```{r ages.time.series, echo=FALSE, warning=FALSE, cache=TRUE, message=FALSE, img.height=6}
+
+ts.by.year <- list()
+
+from <- 1
+to <- 0
+for (i in 1:20) {
+  from <- to
+  to <- from + 5
+
+  age.window <- cdiff %>% 
+    filter(!is.na(age) & age >= from & age < to) %>% 
+    select(nis_year) %>%
+    group_by(nis_year) %>%
+    summarise(count=n())
+
+  
+  my.ts <- ts(age.window$count, start = 2001, end = 2014, frequency = 1)
+  
+  #if (i == 2001) {
+    ts.by.year[[paste0(from, "_", to)]] <- my.ts
+  #} else {
+    #ts(age.window$count, start = 2001, end = 2014, frequency = 1)
+  #}
+}
+
+plot.ts <- data.frame(year=2001:2014)
+plot.ts <- cbind(plot.ts, data.frame('0_5'=ts.by.year[['0_5']]))
+plot.ts <- cbind(plot.ts, data.frame('5_10'=ts.by.year[['5_10']]))
+plot.ts <- cbind(plot.ts, data.frame('10_15'=ts.by.year[['10_15']]))
+plot.ts <- cbind(plot.ts, data.frame('15_20'=ts.by.year[['15_20']]))
+plot.ts <- cbind(plot.ts, data.frame('20_25'=ts.by.year[['20_25']]))
+plot.ts <- cbind(plot.ts, data.frame('25_30'=ts.by.year[['25_30']]))
+plot.ts <- cbind(plot.ts, data.frame('30_35'=ts.by.year[['30_35']]))
+plot.ts <- cbind(plot.ts, data.frame('35_40'=ts.by.year[['35_40']]))
+plot.ts <- cbind(plot.ts, data.frame('40_45'=ts.by.year[['40_45']]))
+plot.ts <- cbind(plot.ts, data.frame('45_50'=ts.by.year[['45_50']]))
+plot.ts <- cbind(plot.ts, data.frame('50_55'=ts.by.year[['50_55']]))
+plot.ts <- cbind(plot.ts, data.frame('55_60'=ts.by.year[['55_60']]))
+plot.ts <- cbind(plot.ts, data.frame('60_65'=ts.by.year[['60_65']]))
+plot.ts <- cbind(plot.ts, data.frame('65_70'=ts.by.year[['65_70']]))
+plot.ts <- cbind(plot.ts, data.frame('70_75'=ts.by.year[['70_75']]))
+plot.ts <- cbind(plot.ts, data.frame('75_80'=ts.by.year[['75_80']]))
+plot.ts <- cbind(plot.ts, data.frame('80_85'=ts.by.year[['80_85']]))
+plot.ts <- cbind(plot.ts, data.frame('85_90'=ts.by.year[['85_90']]))
+plot.ts <- cbind(plot.ts, data.frame('90_95'=ts.by.year[['90_95']]))
+plot.ts <- cbind(plot.ts, data.frame('95_100'=ts.by.year[['95_100']]))
+
+plot.ts.m <- melt(plot.ts, id.vars=c('year'))
+
+labels <- gsub('_', '-', gsub('X', replacement = '', as.character(plot.ts.m$variable)))
+plot.ts.m$variable <- factor(labels, levels = unique(labels))
+
+cols <- c('0-5'   = "#e6e6ff",
+          '5-10'  = "#ccccff",
+          '10-15' = "#b3b3ff",
+          '15-20' = "#9999ff",
+          '20-25' = "#8080ff",
+          '25-30' = "#6666ff",
+          '30-35' = "#4d4dff",
+          '35-40' = "#3333ff",
+          '40-45' = "#1a1aff",
+          '45-50' = "#0000ff",
+          
+          # RED - increasing 
+          '50-55' = "#cc0000",
+          '55-60' = "#b30000",
+          '60-65' = "#990000",
+          '65-70' = "#800000",
+          '70-75' = "#660000",
+          
+          # GREEN - Somewhat decreasing
+          '75-80' = "#006600",
+          '80-85' = "#004d00",
+          '85-90' = "#008000",
+          '90-95' = "#003300",
+          
+          '95-100' = "#000000")
+plot.ts.m %>% 
+  ggplot(aes(x=year, y=value, colour=variable)) +
+    geom_line() +
+    scale_colour_manual(values = cols) +
+    labs(title="Time series of C. diff cases by 5-year age groups", x="Year", y="Count", colour="Ages")
+```
+
+
+# Next Steps
+
+I hope to get the NRD dataset this week which will require the same amount of preprocessing and importing as the NIS 
+dataset, so I anticipate that will keep me busy for at least a week.
+
+Until then, I will continue to examine the NIS dataset and look for any other nuggets of wisdom. 
+
+Particularly, I would like to model the age group as an ARIMA time series and forecast future trends. 
