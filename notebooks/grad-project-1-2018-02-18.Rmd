@@ -1,0 +1,124 @@
+---
+title: 'Grad Project: Week 6'
+author: "Brian Detweiler"
+date: "February 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+# install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+```
+# At a glance
+
+ * Obtained NRD datasets 2010-2013 and 2015
+ * Still need the 2014 dataset
+ * Began import process
+ * Completed Hospitals table import
+ * Will finish importing the rest of the data this week
+
+# We have data!
+
+I was given access to the newly purchased 
+[Nationwide Readmissions Database (NRD)](https://www.hcup-us.ahrq.gov/db/nation/nrd/NRD_Introduction_2013.jsp)
+datasets this weekend, so much of this weekend has been spent downloading these massive files, and sorting through them much
+in the same way I went through the NIS datasets in order to import them into MonetDB for easy querying.
+
+Thankfully, the NRD datasets are very structurally similar to the NIS, so the process we used on the NIS datasets should 
+be fairly simple to modify to work with the NRD. However, setting up the tables definitions, CSV headers, and data types 
+is still a time consuming process but it cannot be skipped. 
+
+# The Nationwide Readmissions Database (NRD)
+
+The NRD is similar to the Nationwide Inpatient Sample, but it has the additional feature of tracking patients readmissions
+within a calendar year.
+
+I have received NRD datasets for years 2010-2013 and 2015. I still need to get the 2014 dataset, but with these, I 
+can begin setting up my database.
+
+Like the NIS, the NRD comes in CSV files. Unlike the NIS, the diagnoses and procedures, severity, and hospital information are all
+stored in separate files and linked by keys. We could create separate tables linked by foreign keys, but since MonetDB is
+a column store database, it is actually fine to denormalize and add more columns. The database will still be just as efficient,
+as long as we're not performing a `SELECT *`.
+
+The only issue is in 2015, the diagnoses and procedures files changed in the fourth quarter. So we will need to keep track of
+these new columns, which will be blank for everything up to 2015 Q4. This is a bit of a hassle and future queries will need to take
+this disparity into account.
+
+# Creating the NRD table
+
+Using the [SAS Load Script](https://www.hcup-us.ahrq.gov/db/nation/nrd/pgms/SASLoad_NRD_2014_Core.SAS) provided by AHRQ,
+we can get some datatype definitions and use that to generate the table creation SQL. I have never used SAS, but
+inspecting the import script, it seems they have defined some type of enum or map datatypes to handle the "missing data" entries.
+There is also a "length" definition for each data element. But this length is counting the enum translation, not the
+raw data. Therefore, we must take the maximum length of the enum keys and the length definition and use that for our
+`VARCHAR` length (nearly everything is a `VARCHAR` to start with because of the missing data fields).
+
+As an example, take the `E_CCSn` fields. They show a length of 3, but are of enum type `N4PF`, which has the following
+definition:
+
+```
+  INVALUE N4PF
+    '-999' = .
+    '-888' = .A
+    '-666' = .C
+    OTHER = (|4.|)
+  ;
+```
+
+Clearly, when read as a string, these can be up to length 4. So we would set the `E_CCSn` fields as `VARCHAR(4)`. 
+
+The other thing we need to do with the SAS import files is get a list of all of the possible fields in the 
+Core, DX/PR Group, and Severity files. We will generate headers files, since none of the CSVs come with headers,
+and then prepend those to the data files. We will also list these in our `headers.xlsx` which we will use to build
+a complete list of column names and data types that will be used in the `CREATE TABLE` sql. 
+
+When this has been done, we see that there are 342 unique columns. Sheesh.
+
+For the hospitals file, we'll create a separate file with foreign keys from the `nrd.hosp_nrd` to `nrd_hospital.hosp_nrd`. 
+
+
+# Importing the NRD
+
+The NRD database is very similar to the NIS database, with many of the same columns. We should be
+able to use most of my existing import scripts with some slight modifications. 
+
+First, since `hosp_nrd` is a foreign key, we must create and populate the `nrd_hospital` table. Thankfully, 
+these files are entirely consistent across years, so the import is straightforward.
+
+```
+  SELECT COUNT(*) 
+    FROM nrd_hospital
+```
+
+```{r, echo=FALSE}
+  q <- DBI::dbGetQuery(con, "SELECT COUNT(*) FROM nrd_hospital")
+  q$L3
+```
+
+# Next Steps
+
+I have a little more work to do to import the rest of the NRD files, but it should be completed in the next few days.
+
+Once that is done, I will likely query for all *C. diff* cases and save those off separately as a CSV for quick access later.

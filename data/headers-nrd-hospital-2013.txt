@@ -1,0 +1,12 @@
+hosp_bedsize
+h_contrl
+hosp_nrd
+hosp_urcat4
+hosp_ur_teach
+nrd_stratum
+n_disc_u
+n_hosp_u
+s_disc_u
+s_hosp_u
+total_disc
+nrd_year

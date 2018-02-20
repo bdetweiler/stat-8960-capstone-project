@@ -221,6 +221,7 @@ TSWLatexianTemp*
 
 data/*.csv
 data/nis_db/
+data/nrd_db/
 
 .RData
 .Rhistory
@@ -231,3 +232,7 @@ data/nis_db/
 
 *.swp
 .~lock.*
+
+*.zip
+data/NRD*
+data/cc*

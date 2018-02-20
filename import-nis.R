@@ -6,7 +6,6 @@ library('DBI')
 
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/')
 
-head(cdiff)
 # We have generated the headers and renamed a few manually - see data/headers.xlsx
 years <- seq(from = 2001, to = 2014, by = 1)
 
