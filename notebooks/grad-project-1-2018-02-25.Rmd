@@ -1,0 +1,211 @@
+---
+title: 'Grad Project: Week 7'
+author: "Brian Detweiler"
+date: "February 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+#con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+```
+
+```{r, echo=FALSE, cache=TRUE}
+cdiff <- read.csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff-nrd.csv', stringsAsFactors = FALSE)
+```
+
+```{r, echo=FALSE, cache=TRUE}
+rowcount <- count(cdiff)[[1]]
+patients <- length(unique(cdiff$nrd_visitlink))
+```
+
+# At a glance
+
+ * NRD data sets fully imported into MonetDB
+ * Ran query for C. *diff* cases 
+ * `r patients` patients tracked across `r rowcount` observations (`r rowcount - patients` readmissions)
+
+# Never enough memory
+
+Time really got away from me this past week! My day job had me occupied for most of the weekend
+so I've been playing catch-up this week.
+
+The NRD dataset has given me quite a bit more trouble than the NIS, mainly due to its massive file sizes,
+but also due to the way they switched formats in the fourth quarter of 2015. That small change pretty much
+doubled the complexity. The Q4 2015 columns couldn't be stored in the normal columns, so we needed to
+create additional columns specifically for Q4 2015. This resulted in 338 columns. Keeping track of all those
+while importing was a challenge.
+
+Furthermore, unlike the NIS dataset, where I was able to read a year's worth of data into memory at a time on
+my 64 GB machine, reading in the core file, the Dx Pr Groups file, and the Severity file, *and then* merging 
+them proved to be too much as I watched it consume all of my memory and then eventually all of my swap. 
+
+I decided to take another route, inspired by a recent project at my day job, which also involved sucking in
+large amounts of data from CSV files and importing them into a database. Our solution to the large file problem
+was to split the files into more readable chunks.
+
+# Splitting the files
+
+`split` is a core utility found on *nix operating systems that takes a file and splits it into multiple files
+based on either bytes or lines. In order to write simple reusable \textsf{R} code, we'll arbitrarily pick
+4 as a reasonable number of files. This will allow us to predictably loop over the import code import each file one at a time.
+
+To start, let's get the line count of the core files, noting that the Dx Pr and Severity files have the same lengths.
+
+```
+$ wc -l NRD_2010_Core_V2.CSV | awk '{print $1"/4"}' | bc
+3476902
+```
+
+Now we can split the files. the `-l` option tells split how many lines to use for each file, and the `-d` option 
+tells it to use a decimal incrementor for each split file name, rather than the default alpha.
+
+```
+$ split -l3476902 -d NRD_2010_Core_V2.CSV NRD_2010_Core_split
+$ split -l3476902 -d NRD_2010_DX_PR_GRPS_V2.CSV NRD_2010_DX_PR_GRPS_split_
+$ split -l3476902 -d NRD_2010_Severity_V2.CSV NRD_2010_Severity_split_
+$ l -h *split* | sed -e 's/  / /g' | cut -f5,9 -d$' '
+1.3G NRD_2010_Core_split_00
+1.3G NRD_2010_Core_split_01
+1.3G NRD_2010_Core_split_02
+1.3G NRD_2010_Core_split_03
+745 NRD_2010_Core_split_04
+867M NRD_2010_DX_PR_GRPS_split_00
+865M NRD_2010_DX_PR_GRPS_split_01
+866M NRD_2010_DX_PR_GRPS_split_02
+866M NRD_2010_DX_PR_GRPS_split_03
+539 NRD_2010_DX_PR_GRPS_split_04
+282M NRD_2010_Severity_split_00
+282M NRD_2010_Severity_split_01
+282M NRD_2010_Severity_split_02
+282M NRD_2010_Severity_split_03
+170 NRD_2010_Severity_split_04
+```
+We see here even the splits for the core files are over a gig each. But the DX PR files with their expansive columns
+eat memory alive when reading in as a data frame. With these splits though, we're able to get through the processing
+with just enough memory.
+
+# Data in data out
+
+Once it's all loaded in the database, the first thing we want to do is query for all the C. *diff* cases like we did
+with the NIS dataset and write those out to a CSV file for future use. As mentioned before, a `select *` query on
+a column store database is very inefficient and not really now these databases are intended to be used.  
+We'll want to write this out, because we don't want to have to do this query again.
+
+This time, in addition to the ICD-9 code of **00845**, we also need to look for the ICD-10 code, **A04.7**. 
+In addition to querying for C. *diff* cases, we need to get the **nrd_visit** link, and return every row
+with that visitlink in it. Patients may be readmitted and contract C. *diff* on the readmission, or they 
+may have initially been admitted with C. *diff* and later readmitted for something else. Whatever the case,
+we want a complete picture of these patients' visits. 
+
+```
+con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+
+q <- DBI::dbGetQuery(con, "SELECT *
+                             FROM nrd
+                            WHERE nrd_visitlink in (SELECT nrd_visitlink
+                                                      FROM nrd 
+                                                     WHERE dx1      = '00845' OR 
+                                                           dx2      = '00845' OR
+                                                           dx3      = '00845' OR
+                                                           dx4      = '00845' OR
+                                                           dx5      = '00845' OR
+                                                           dx6      = '00845' OR
+                                                           dx7      = '00845' OR
+                                                           dx8      = '00845' OR
+                                                           dx9      = '00845' OR
+                                                           dx10     = '00845' OR
+                                                           dx11     = '00845' OR
+                                                           dx12     = '00845' OR
+                                                           dx13     = '00845' OR
+                                                           dx14     = '00845' OR
+                                                           dx15     = '00845' OR
+                                                           dx16     = '00845' OR
+                                                           dx17     = '00845' OR
+                                                           dx18     = '00845' OR
+                                                           dx19     = '00845' OR
+                                                           dx20     = '00845' OR
+                                                           dx21     = '00845' OR
+                                                           dx22     = '00845' OR
+                                                           dx23     = '00845' OR
+                                                           dx24     = '00845' OR
+                                                           dx25     = '00845' OR
+                                                           dx26     = '00845' OR
+                                                           dx27     = '00845' OR
+                                                           dx28     = '00845' OR
+                                                           dx29     = '00845' OR
+                                                           dx30     = '00845' OR
+                                                           i10_dx1  = 'A047'  OR
+                                                           i10_dx2  = 'A047'  OR
+                                                           i10_dx3  = 'A047'  OR
+                                                           i10_dx4  = 'A047'  OR
+                                                           i10_dx5  = 'A047'  OR
+                                                           i10_dx6  = 'A047'  OR
+                                                           i10_dx7  = 'A047'  OR
+                                                           i10_dx8  = 'A047'  OR
+                                                           i10_dx9  = 'A047'  OR
+                                                           i10_dx10 = 'A047'  OR
+                                                           i10_dx11 = 'A047'  OR
+                                                           i10_dx12 = 'A047'  OR
+                                                           i10_dx13 = 'A047'  OR
+                                                           i10_dx14 = 'A047'  OR
+                                                           i10_dx15 = 'A047'  OR
+                                                           i10_dx16 = 'A047'  OR
+                                                           i10_dx17 = 'A047'  OR
+                                                           i10_dx18 = 'A047'  OR
+                                                           i10_dx19 = 'A047'  OR
+                                                           i10_dx20 = 'A047'  OR
+                                                           i10_dx21 = 'A047'  OR
+                                                           i10_dx22 = 'A047'  OR
+                                                           i10_dx23 = 'A047'  OR
+                                                           i10_dx24 = 'A047'  OR
+                                                           i10_dx25 = 'A047'  OR
+                                                           i10_dx26 = 'A047'  OR
+                                                           i10_dx27 = 'A047'  OR
+                                                           i10_dx28 = 'A047'  OR
+                                                           i10_dx29 = 'A047'  OR
+                                                           i10_dx30 = 'A047')")
+write.csv(q, 'data/cdiff-nrd.csv', row.names=FALSE)
+
+```
+
+The resulting CSV is 1.4 GB, which is manageable.
+
+
+Any kind of descriptive statistics on this set as-is is not very useful because these are not unique samples like the NIS dataset, but 
+rather repeat patients tracked across visits, which breaks the independence assumption. 
+
+We will need to be a little more sophisticated about our analysis. AHRQ leaves it up to the analyst (that's us!) to link the patients,
+so we will need to devise a way to do that going forward.
+
+But very quickly, we can see that there are `r rowcount` observations and `r patients` unique patients. 
+That means that `r (rowcount - patients)` of the observations are repeat visits, on which we can track a patient's readmission.
+
+# Next Steps
+
+At this point I have everything I need to begin a thorough analysis. 
+
+With just over a month and a half left before a final deliverable is due, I plan on spending most of March building and
+testing models, and the first half of April writing up my findings for presentation.
+

@@ -1,4 +1,5 @@
-CREATE TABLE nrd (age                   VARCHAR(3),
+CREATE TABLE nrd (key_nrd               VARCHAR(15),
+                  age                   VARCHAR(3),
                   aweekend              VARCHAR(3),
                   died                  VARCHAR(3),
                   discwt                DOUBLE PRECISION,
@@ -115,8 +116,6 @@ CREATE TABLE nrd (age                   VARCHAR(3),
                   e_ccs4                VARCHAR(4),
                   female                VARCHAR(3),
                   hcup_ed               VARCHAR(3),
-                  hosp_nrd              INTEGER,
-                  key_nrd               INTEGER,
                   los                   VARCHAR(5),
                   mdc                   VARCHAR(3),
                   mdc_nopoa             VARCHAR(3),
@@ -336,5 +335,5 @@ CREATE TABLE nrd (age                   VARCHAR(3),
                   cm_ulcer              VARCHAR(3),
                   cm_valve              VARCHAR(3),
                   cm_wghtloss           VARCHAR(3),
-                  FOREIGN KEY (hosp_nrd) REFERENCES nrd_hospital (hosp_nrd) MATCH FULL
+                  hosp_nrd              INTEGER
                  );
