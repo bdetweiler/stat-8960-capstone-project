@@ -236,3 +236,8 @@ data/nrd_db/
 *.zip
 data/NRD*
 data/cc*
+
+*split*
+
+*.pdf
+data/ICD*

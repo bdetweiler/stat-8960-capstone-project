@@ -1,0 +1,171 @@
+---
+title: 'Grad Project: Week 8'
+author: "Brian Detweiler"
+date: "March 8, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+#con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+```
+
+```{r, echo=FALSE, cache=TRUE}
+cdiff <- read.csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff.csv', stringsAsFactors = FALSE)
+```
+
+# At a glance
+
+ * Currently inserting ICD-9-CM and ICD-10-CM descriptions into NRD database for easy translation of codes
+ * Rank Week 5's analysis comparing males and females
+ * Females seem to be at nearly 30\% higher risk for C. *diff*
+ * Males appear to contract it between 3-4 years earlier 
+
+# Making the data readable
+
+By this week I had hoped to be started on my modelling, but it became pretty clear that in order to
+test and verify my hypotheses, I would need to be able to quickly look at and spot check the data.
+
+This means translating ICD-9-CM and ICD-10-CM codes to their human readable nomenclature. To do this, 
+we just need to head on over to [CMS.gov](https://www.cms.gov/Medicare/Coding/ICD9ProviderDiagnosticCodes/codes.html)
+and download the code files. From there, it's some pretty basic \textsf{R} and SQL commands to get them
+loaded into some additional columns in our database.
+
+(NOTE: It is a good idea to test your batch inserts on a small subset, lest you waste two nights thinking the
+script is working while it is, in fact, not.)
+
+# While we wait
+
+In the mean time, while we're waiting for the script to run, let's pop open another RStudio instance and
+go back and look at the NIS database. Upon sending my advisor my 
+[Week 5 Notebook](http://bdetweiler.github.io/projects/grad-project/grad-project-1-2018-02-11.html),
+she asked if we could also display the breakout by sex. We sure can!
+
+```{r, echo=FALSE, cache=TRUE}
+ages <- cdiff %>% filter(!is.na(age)) %>% select(age, female)
+female.ages <- ages %>% filter(female == 1) %>% select(age)
+male.ages <- ages %>% filter(female == 0) %>% select(age)
+
+female.emode <- mlv(female.ages$age, method = "mfv")
+female.q25 <- quantile(female.ages$age, 0.25)
+female.q75 <- quantile(female.ages$age, 0.75)
+female.xbar <- mean(female.ages$age)
+female.med <- median(female.ages$age)
+female.sum <- count(female.ages)
+
+male.emode <- mlv(male.ages$age, method = "mfv")
+male.q25 <- quantile(male.ages$age, 0.25)
+male.q75 <- quantile(male.ages$age, 0.75)
+male.xbar <- mean(male.ages$age)
+male.med <- median(male.ages$age)
+male.sum <- count(male.ages)
+
+male.percent <- (male.sum / female.sum)[[1]]
+
+ggplot(ages, aes(x=age)) +
+    geom_histogram(data = subset(ages, female==1), fill = "red", alpha = 0.3, stat="bin", bins=30) +
+    geom_histogram(data = subset(ages, female==0), fill = "blue", alpha = 0.3, stat="bin", bins=30) +
+    geom_vline(xintercept = female.q25, col="red") +
+    geom_vline(xintercept = female.q75, col="red") +
+    geom_vline(xintercept = male.q25, col="blue") +
+    geom_vline(xintercept = male.q75, col="blue") +
+    geom_vline(xintercept = female.med, col="red", size=1) +
+    geom_vline(xintercept = male.med, col="blue", size=1) +
+    labs(title="C. diff distribution by age and sex", x="Age", y="Count")
+```
+
+This first chart is striking. It appears that females are contracting C. *diff* at a much higher rate
+than their male counterparts. Overall, males contract C. *diff* almost 30\% less than females. However,
+they also seem to contract it at younger ages. The blue bars represent the males first and third quartiles on either side and the median in the middle. Likewise for the females in red. The interquartile ranges of each group
+are off by 3, and the medians are off by 4. 
+
+
+```{r age.ridges, echo=FALSE, warning=FALSE, cache=TRUE, message=FALSE}
+cdiff %>% 
+  filter(!is.na(female)) %>% 
+  filter(!is.na(age)) %>% 
+  mutate(year_sex=paste(nis_year, ifelse(female==1, "F", "M"), sep="_")) %>%
+  select(age, year_sex) %>%
+  ggplot(aes(x = age, y = year_sex, group = year_sex)) + 
+    #geom_joy(stat = "identity")
+    geom_density_ridges() +
+    labs(title="C. diff distribution by age over time", x="Age", y="Year")
+
+```
+
+Here we can see the sexes broken out by year as we did in Week 5. Nothing terribly interesting here, 
+as the males and females seem to follow the overall pattern of expanding into the younger years.
+
+```{r sexes.time.series, echo=FALSE, warning=FALSE, cache=TRUE, message=FALSE, img.height=6}
+
+ts.by.gender <- list()
+
+female.window <- cdiff %>% 
+  select(nis_year, female) %>%
+  filter(female == 1) %>%
+  group_by(nis_year) %>%
+  summarise(count=n())
+
+ts.by.gender[['female']] <- ts(female.window$count, start = 2001, end = 2014, frequency = 1)
+
+male.window <- cdiff %>% 
+  select(nis_year, female) %>%
+  filter(female == 0) %>%
+  group_by(nis_year) %>%
+  summarise(count=n())
+
+ts.by.gender[['male']] <- ts(male.window$count, start = 2001, end = 2014, frequency = 1)
+   
+plot.ts <- data.frame(year=2001:2014)
+plot.ts <- cbind(plot.ts, data.frame('Female'=ts.by.gender[['female']]))
+plot.ts <- cbind(plot.ts, data.frame('Male'=ts.by.gender[['male']]))
+
+plot.ts.m <- melt(plot.ts, id.vars=c('year'))
+
+labels <- gsub('_', '-', gsub('X', replacement = '', as.character(plot.ts.m$variable)))
+plot.ts.m$variable <- factor(labels, levels = unique(labels))
+
+cols <- c('Female'   = "#cc0000",
+          'Male' = "#000000")
+plot.ts.m %>% 
+  ggplot(aes(x=year, y=value, colour=variable)) +
+    geom_line() +
+    geom_smooth(method='loess') +
+    scale_colour_manual(values = cols) +
+    labs(title="Time series of C. diff cases grouped by sex", x="Year", y="Count", colour="Ages") 
+```
+
+Finally, we look at the time series breakdown of each gender group. Both have risen since 2001, but
+the females seem to be on a higher trajectory. The jagged lines represent the data, while the smooth lines
+represent a Loess regression (local smoothing), with the gray section representing the standard error. 
+
+# Next Steps
+
+I anticipate the update script to take a couple days to run. Occasionally RStudio crashes, so I started saving
+a cursor position to a flat file so I know where to start from, but this is a very time consuming process.
+
+I do believe it will be worth it in the long run. Being able to spot check analyses and predictions can provide
+a bit of a sanity check beyond numbers. 
+
+

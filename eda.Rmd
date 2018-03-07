@@ -73,7 +73,7 @@ cdiff.sub <- cdiff %>% select(dx1, pr1, prccs1) %>% filter(prccs1 == '91')
 cdiff.sub
 nis.cdiff <- DBI::dbGetQuery(con, "select * from nis where nis_key = '04200110312351'")
 DBI::dbGetQuery(con, "select * from nis_code where nis_code in (select pr2 from nis where nis_key = '04200110312351')")
-nis.cdiff$
+
 
 cdiff$pr1[which(cdiff$nis_year == 2014)]
 hist(cdiff$nis_year)
