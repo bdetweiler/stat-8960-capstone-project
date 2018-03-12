@@ -1,0 +1,577 @@
+Req #	Category	Request	Published Preliminary Decision	Meeting Decision
+"1. This document contains excerpts from CMS' HCPCS Application Summaries document for external code applications submitted in the 2017-2018 HCPCS coding cycle. For detailed information and full text, refer to the Application Summary documents as published on the CMS' HCPCS website.
+2. Applications that were not timely completed and therefore not processed have been excluded from this list."				
+17.001	Drug & Biol	"Request to establish a new Level II HCPCS code to identify injection, inliximab, biosimilar, Trade Name: Inflecta.
+
+Applicant’s suggested language: “JXXXX, Injection, Infliximab, Biosimilar, 10 mg”."	"This request to establish a new Level II HCPCS code to separately identify Inflectra (infliximab biosimilar) has not been approved. Existing code Q5102 ""Injection, infliximab, biosimilar, 10 mg"" together with existing ZB modifier ""Pfizer/Hospira"" adequately describes Inflectra (infliximab biosimilar) and are available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify Inflectra (infliximab biosimilar) has not been approved. Existing code Q5102 ""Injection, infliximab, biosimilar, 10 mg"" together with existing ZB modifier ""Pfizer/Hospira"" adequately describes Inflectra (infliximab biosimilar) and are available for assignment by insurers if they deem appropriate."
+17.002	Drug & Biol	"1. Request to establish a new Level II HCPCS code to identify STELARA® (ustekinumab) for intravenous infusion.
+
+Applicant’s suggested language: JXXXX: Injection, ustekinumab, 130 mg (one vial), for intravenous infusion.
+
+2. Request to revise existing HCPCS code J3357 which currently reads:"" Injection, ustekinumab, 1 mg""  to instead read:"" Injection,ustekinumab, 1 mg , for subcutaneous injection"", to clearly distinguish its use from the code for the IV formulation.
+
+Applicant’s suggested language: J3357 “Injection, ustekinumab, 1mg, for subcutaneous injection”, to replace the prior description, “Injection, ustekinumab, 1mg.”"	"1) Established Q9989, ""Ustekinumab, For Intravenous Injection, 1mg."" Effective 7/1/17.
+
+2) Discontinue Q9989. Effective 12/31/17.
+
+3) Establish new code JXXXX with same language as Q9989, ""Ustekinumab, For Intravenous Injection, 1mg."" 
+
+New code Q9989 adequately describes STELARA."	"1) Establish Q9989, ""Ustekinumab, For Intravenous Injection, 1mg."" Effective 7/1/17.
+
+2) Discontinue Q9989. Effective 12/31/17.
+
+3) Establish new code J3358 with same language as Q9989, ""Ustekinumab, For Intravenous Injection, 1mg.""  
+
+New code Q9989 adequately describes STELARA."
+17.003	Drug & Biol	"Request to establish a new Level II HCPCS code to identify Nusinersen, Trade Name: (SPINRAZA™).
+
+Applicant’s suggested language: “Injection, nusinersen for intrathecal use, SPINRAZA, 1 mg”"	"Establish Jxxxx, ""injection, nusinersen, 0.1 mg"". "	"Establish J2326, ""injection, nusinersen, 0.1 mg"". "
+17.004	Drug & Biol	"Request to revise existing Level II HCPCS code J7328 which currently reads: ""Hyaluronan or derivative, gel-syn, for intra-articular injection, 0.1 mg, to reflect the products' new name: Trade Name: GELSYN-3.
+
+Applicant's suggested language: J7328, Hyaluronan or Derivative, GELSYN-3, for intra-articular injection, 0.1 mg.
+"	"Revise existing HCPCS code J7328, which currently reads, ""Hyaluronan or derivative, gel-syn, for intra-articular injection, 0.1 mg"", to instead read, ""Hyaluronan or Derivative, GELSYN-3, for intra-articular injection, 0.1 mg."" "	"Revise existing HCPCS code J7328, which currently reads, ""Hyaluronan or derivative, gel-syn, for intra-articular injection, 0.1 mg"", to instead read, ""Hyaluronan or Derivative, GELSYN-3, for intra-articular injection, 0.1 mg."""
+17.005	DME	"Request to revise existing Level II HCPCS Code A4604, which currently reads, “Tubing with integrated heating element for use with Positive Airway Pressure Device”, to remove the phrase ""heating element"" and replace it with ""low condensation, high humidity PAP tubing or high performance PAP tubing.""  
+
+ "	"This request to revise existing Level II HCPCS code A4604 ""Tubing with integrated heating element for use with positive airway pressure device"" has not been approved. The code A4604 was established to identify a heating tube. The device that is the subject of this request is not a heating tube. Existing code A7037 ""Tubing used with positive airway pressure device"" adequately describes the product that is the subject of this request and is available for assignment by insurers if they deem appropriate."	"This request to revise existing Level II HCPCS code A4604 ""Tubing with integrated heating element for use with positive airway pressure device"" has not been approved. The code A4604 was established to identify a heating tube. The device that is the subject of this request is not a heating tube. Existing code A7037 ""Tubing used with positive airway pressure device"" adequately describes the product that is the subject of this request and is available for assignment by insurers if they deem appropriate. "
+17.006	DME	"Request to establish a new Level II HCPCS code to identify a mandibular repositioning device, Trade Name: Narval CC.
+
+Applicant’s suggested language: EXXXX “Oral device/appliance with non-fixed hinges used to reduce upper airway collapsibility, adjustable or non-adjustable, custom fabricated, includes fitting and adjustments”."	"A national program operating need was not identified by Medicare, Medicaid or the Private Insurance sector to establish a new Level II HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid or the Private Insurance sector to establish a new Level II HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."
+17.007	Drug & Biol	"Request to establish a new HCPCS Level II code to identify a levonorgestrel-releasing intrauterine system, 19.5 mg. Trade Name: Kyleena
+
+Applicant's suggested language: ""JXXXX: levonorgestrel-releasing intrauterine contraceptive system (Kyleena), 19.5 mg"".
+
+ "	"1) Establish Q9984 ""Levonorgestrel-releasing Intrauterine Contraceptive System, (Kyleena), 19.5 mg"". Effective 7/1/17.
+
+2) Discontinue Q9984, Effective 12/31/17.
+
+3) Establish Jxxxx, ""Levonorgestrel-releasing Intrauterine Contraceptive System, (Kyleena), 19.5 mg"". 
+
+New code Q9984 adequately describes Kyleena."	"1)  Establish Q9984 ""Levonorgestrel-releasing Intrauterine Contraceptive System, (Kyleena), 19.5 mg"". 
+2)  Discontinue Q9984, Effective 12/31/17.
+
+3)  Establish J7296, ""Levonorgestrel-releasing Intrauterine Contraceptive System, (Kyleena), 19.5 mg"".  "
+17.008	DME	"Request to establish a new Level II HCPCS code to identify a non-invasive neurovascular stimulation operating system, Trade Name: the Willow Curve.
+
+Applicant’s suggested language: EXXXX ""Willow Curve, Low Level Light Therapy Device Emitting Both Red and Infrared Radiation”."	"This request to establish a new Level II HCPCS code to separately identify the Willow Curve Light Therapy device has not been approved. Existing code E0221 ""Infrared heating pad system"" adequately describes the device that is the subject of this request, and it is available for assignment by insurers if they deem appropriate. In fact, the code E0221 was established for the predicate product to the Willow Curve device."	"This request to establish a new Level II HCPCS code to separately identify the Willow Curve Light Therapy device has not been approved. Existing code E0221 ""Infrared heating pad system"" adequately describes the device that is the subject of this request, and it is available for assignment by insurers if they deem appropriate. In fact, the code E0221 was established for the predicate product to the Willow Curve device."
+17.009	Drug & Biol	"Request to establish a new HCPCS code to identify Hydroxyprogesterone Caproate Injection.
+
+Applicant's suggested language ""JXXXX - Hydroxyprogesterone Caproate Injection, USP 250mg/mL""."	"1) Establish Q9985, ""Injection, Hydroxyprogesterone Caproate, Not Otherwise Specified, 10 mg"". Effective 7/1/17.
+
+2) Establish Q9986, ""Injection, Hydroxyprogesterone Caproate, (Makena), 10 mg"". Effective 7/1/17.
+
+3) Discontinue Q9985. Effective 12/31/17.
+
+4) Discontinue Q9986. Effective 12/31/17.
+
+5) Establish JXXXX, ""Injection, Hydroxyprogesterone Caproate, Not Otherwise Specified, 10 mg"". Effective 1/1/18
+
+6) Establish JXXXX, ""Injection, Hydroxyprogesterone Caproate, (Makena), 10 mg"". 
+
+7) Change Medicare coverage indicator for existing code J1725 to ""i"". Effective 7/1/17.
+
+New code Q9985, ""Injection, Hydroxyprogesterone Caproate, Not Otherwise Specified, 10 mg"" adequately describes the product that is the subject of this request."	"1) Establish Q9985, ""Injection, Hydroxyprogesterone Caproate, Not Otherwise Specified, 10 mg"".  Effective 7/1/17.
+
+2) Establish Q9986, ""Injection, Hydroxyprogesterone Caproate, (Makena), 10 mg"".  Effective 7/1/17.
+
+3) Discontinue Q9985.  Effective 12/31/17.
+
+4) Discontinue Q9986.  Effective 12/31/17.
+
+5) Establish J1729, ""Injection, Hydroxyprogesterone Caproate, Not Otherwise Specified, 10 mg"".  
+
+6) Establish J1726, ""Injection, Hydroxyprogesterone Caproate, (Makena), 10 mg"".  
+
+7) Change Medicare coverage indicator for existing code J1725 to ""i"".  Effective 7/1/17.
+
+8) Discontinue J1725 effective 12/31/17."
+17.012	Drug & Biol	"Request to establish a new Level II HCPCS code to identify ocrelizumab; Trade name: OCREVUS.
+
+Applicant's suggested language is : ""JXXXX - Injection, ocrelizumab, 1 mg""."	"Establish JXXXX, ""Injection, ocrelizumab, 1 mg"". "	"Establish J2350, ""Injection, ocrelizumab, 1 mg"". "
+17.013	Drug & Biol	"Request to establish a new Level II HCPCS code to identify Immune Globulin Subcutaneous (Human) 20% Solution, Trade Name: CUVITRU.  
+
+Applicant's suggested language:  JXXXX ""Injection, immune globulin (CUVITRU), 100 mg""."	"Establish JXXXX, ""Injection, Immune Globulin (CUVITRU), 100 mg"". "	"Establish J1555, ""Injection, Immune Globulin (CUVITRU), 100 mg"".  "
+17.014	Drug & Biol	"Request to establish a new Level II HCPCS code to identify bezlotoxumab; Trade name ZINPLAVA.
+
+Applicant's suggested language: JXXXX -"" Injection, bezlotoxumab, 10 mg""."	"Establish JXXXX, ""Injection, Bezlotoxumab, 10 mg."	"Establish J0565, ""Injection, Bezlotoxumab, 10 mg."
+17.015	Drug & Biol	"Request to establish a new Level II HCPCS code to identify a new human placental membrane tissue comprised of both amnion and chorion allograft, Trade Name: NeoPatch Chorioamniotic Membrane Allograft.
+
+Applicant's suggested language: QXXXX ""NeoPatch, per sq cm""."	"Establish QXXXX, ""NeoPatch, per sq centimeter"". "	"Establish Q4176, ""NeoPatch, per sq centimeter"". "
+17.017	Drug & Biol	"Request to revise existing Level II HCPCS code Q4162, which currently reads, ""AmnioPro Flow, Bioskin Flow, BioRenew Flow, Woundex Flow, AmnioGen-A, AmnioGen-C, 0.5 cc"", to omit discontinued products AmnioGen-A, AmnioGen-C, BioRenew Flow, and AmnioPro Flow.
+
+Applicant's suggested language: Q4162, ""WoundEx Flow, BioSkin Flow, 0.5 cc""."	"Revise existing code Q4162, which currently reads, ""Amniopro flow, bioskin flow, biorenew flow, woundex flow, amniogen-a, amniogen-c, 0.5 cc"", to instead read, ""WoundEx Flow, BioSkin Flow, 0.5 cc"". "	"Revise existing code Q4162, which currently reads, ""Amniopro flow, bioskin flow, biorenew flow, woundex flow, amniogen-a, amniogen-c, 0.5 cc"", to instead read, ""WoundEx Flow, BioSkin Flow, 0.5 cc"". "
+17.018	Drug & Biol	"Request to revise existing HCPCS Level II code Q4163, which currently reads: ""Amniopro, bioskin, biorenew, woundex, AmnioGen-45, amniogen-200, per square centimeter"", to omit discontinued brand names: AmnioGen-45, AmnioGen-200, BioRenew and AmnioPro.
+
+Applicant's suggested language: Q4163 ""WoundEx, Bioskin per square centimeter""."	"Revise existing code Q4163, which currently reads, ""Amniopro, bioskin, biorenew, woundex, amniogen-45, amniogen-200, per square centimeter"", to instead read, ""WoundEx, BioSkin, per square centimeter""."	"Revise existing code Q4163, which currently reads, ""Amniopro, bioskin, biorenew, woundex, amniogen-45, amniogen-200, per square centimeter"", to instead read, ""WoundEx, BioSkin, per square centimeter""."
+17.020	Drug & Biol	"Request to establish a new Level II HCPCS code to identify riboflavin 5'-phosphate in 20% dextran ophthalmic solution, Trade Names: Photrexa, Viscous/Photrexa.
+
+Applicant’s suggested language: JXXXX, ""Riboflavin 5’-phosphate, with or without dextran, ophthalmic solution, FDA-approved final product, non-compounded, up to two 3 mL syringes, single patient use""."	"This request to establish a new Level II HCPCS code to separately identify Photrexa has not been approved, because this product is an integral part of a procedure and payment for that service includes payment for Photrexa, if it is used."	"This request to establish a new Level II HCPCS code to separately identify Photrexa has not been approved, because this product is an integral part of a procedure and payment for that service includes payment for Photrexa, if it is used."
+17.023	Drug & Biol	"Request to establish a new Level II HCPCS code to identify atezolizumab, Trade Name: TECENTRIQ.
+
+Applicant's suggested language: “Injection, atezolizumab, 10 mg”"	"Establish JXXXX, ""Injection, Atezolizumab, 10 mg"". "	"Establish J9022, ""Injection, Atezolizumab, 10 mg"". "
+17.024	Drug & Biol	"Request to establish a new Level II HCPCS code to identify granisetron extended-release injection, for subcutaneous use; Trade Name: Sustol®.
+
+Applicant's suggested language: JXXXX, ""Injection, granisetron extended-release, for subcutaneous use (SUSTOL), 1 mg."""	"Establish JXXXX, ""Injection, Granisetron, Extended-Release, 0.1 mg"". "	"Establish J1627, ""Injection, Granisetron, Extended-Release, 0.1 mg"". "
+17.025	Drug & Biol	"Request to revise the dose descriptor of existing HCPCS code A9587 which currently reads: ""Gallium Ga-68, dotatate, diagnostic, 0.1 mCi""; to instead read: ""A9587, Gallium Ga-68, dotatate, diagnostic, to per study dose, up to 5.4 mCi""."	"This request to revise the descriptor of existing code A9587 has not been approved. The requested change does not improve the code. The existing descriptor of A9587, which reads, ""Gallium ga-68, dotatate, diagnostic, 0.1 millicurie"", adequately describes the product that is the subject of this request and is available for assignment by insurers if they deem appropriate."	"This request to revise the descriptor of existing code A9587 has not been approved. The requested change does not improve the code. The existing descriptor of A9587, which reads, ""Gallium ga-68, dotatate, diagnostic, 0.1 millicurie"", adequately describes the product that is the subject of this request and is available for assignment by insurers if they deem appropriate."
+17.026	Drug & Biol	"Request to establish a new Level II HCPCS code to identify acellular liquid amnion, Trade Name: FlowerFlo™.
+
+Applicant’s suggested language: QXXXX, ""FlowerFlo™ injectable, per cc.""
+"	"Establish QXXXX, ""FlowerFlo, 0.1 cc"". "	"Establish Q4177, ""FlowerAmnioFlo, 0.1 cc"". "
+17.027	Drug & Biol	"Request to establish a new Level II HCPCS code to identify a dehydrated amniotic membrane allograft, Trade Name: FlowerPatch™.
+
+Applicant’s suggested language: QXXXX ""FlowerPatch™, per sq cm"". "	"Establish QXXXX, ""FlowerPatch, per sq centimeter"". "	"Establish Q4178, ""FlowerAmnioPatch, per sq centimeter"". 
+
+ "
+17.028	Drug & Biol	"Request to establish a new Level II HCPCS code to identify eteplirsen injection, Trade Name: EXONDYS 51™.
+
+Applicant’s suggested language: JXXXX, EXONDYS 51™ (eteplirsen) injection, for intravenous use, per 1 mg.
+"	"Establish JXXXX, ""Injection, Eteplirsen, 10 mg"". "	"Establish J1428, ""Injection, Eteplirsen, 10 mg"". "
+17.029	Drug & Biol	"Request to establish a new HCPCS code to identify recombinant FACTOR VIII blood clotting factor; Trade Name: AFSTYLA.
+
+Applicant's suggested language: J7XXX-Injection, Factor VIII single chain (Recombinant), per IU."	"Establish JXXXX, ""Injection, factor viii (antihemophilic factor, recombinant), (afstyla), 1 i.u."". "	"Establish J7210, ""Injection, factor viii, (antihemophilic factor, recombinant), (afstyla), 1 i.u.""."
+17.030	Drug & Biol	"Request to establish a new Level II HCPCS code to identify an Antihemophilic Factor, (Recombinant), Trade Name: KOVALTRY.
+
+Applicant's suggested language: "" JXXXX Antihemophilic Factor (Recombinant), per IU""."	"Establish JXXXX, ""injection, factor viii, (Antihemophilic Factor, recombinant), (kovaltry), 1 i.u."". "	"Establish J7211, ""injection, factor viii, (Antihemophilic Factor, recombinant), (kovaltry), 1 i.u."". "
+17.032	Drug & Biol	"Request to establish a new Level II HCPCS code to identify a hydrated acellular (human) dermal allograft matrix, Trade Name: FlowerDerm
+
+Applicant’s suggested language: QXXXX ""FlowerDerm™, per sq cm""."	"Establish QXXXX, ""FlowerDerm, per sq centimeter"". "	"Establish Q4179, ""FlowerDerm, per sq centimeter"". "
+17.033	Drug & Biol	"Request to establish a new Level II HCPCS code to identify aminolevulinic acid hydrochloride, Trade Name: Ameluz.
+
+Applicant's suggested language: ""Ameluz (aminolevulinic acid hydrochloride) gel, 10%, for topical use”.
+"	"Establish JXXXX, ""Aminolevulinic Acid HCL For Topical Administration, 10%, 1 mg"". "	"Establish J7345, ""Aminolevulinic Acid HCL For Topical Administration 10% gel, 10 mg"". "
+17.034	Drug & Biol	"Request to revise existing Leve II HCPCS code Q4133, which currently reads: “Grafix Prime, per square centimeter,” to add another configuration of Grafix Prime: Grafix PL Prime.
+
+Applicant's suggested language: Q4133, ""Grafix PRIME and GrafixPL PRIME: per square centimeter."	"Revise existing code Q4133, which currently reads, ""Grafix prime, per square centimeter"", to instead read, ""Grafix prime and Grafixpl prime, per square centimeter."" "	"Revise existing code Q4133, which currently reads, ""Grafix prime, per square centimeter"", to instead read, ""Grafix prime and Grafixpl prime, per square centimeter."" "
+17.038	Drug & Biol	"Request to discontinue existing Level II HCPCS code J7321 which currently reads: ""Hyaluronan or derivative, hyalgan or supartz, for intra-articular injection, per dose"", and replace it with 2 new codes; one each to identify Hyalgan and Supartz, with their respective (and different) dose descriptors. 
+
+Applicant’s suggested language: JXXX1 Hyaluronan or derivative, Hyalgan®, for intra-articular injection, per 20 mg dose.
+
+Applicant’s suggested language: JXXX2 Hyaluronan or derivative, Hyalgan®, for intra-articular injection, per 25 mg dose."	"This request to establish a new Level II HCPCS code to separately identify Hyalgan has not been approved. Existing code J7321 ""Hyaluronan or derivative, hyalgan or supartz, for intra-articular injection, per dose"" adequately describes Hyalgan and is available for assignment by insurers if they deem appropriate."	"This request to discontinue existing level II HCPCS code J7321 which currently reads: ""Hyaluronan or derivative, hyalgan or supartz, for intra-articular injection, per dose"", and replace it with two new codes; one each to identify Hyalgan, 20 mg and Supartz, 20 mg has not been approved. Code J7321 ""Hyaluronan or derivative, hyalgan or supartz, for intra-articular injection, per dose"", as revised effective 1/1/2018 to read ""Hyaluronan or derivative, hyalgan, Supartz or VISCO-3 for intra-articular injection, per dose"" adequately describes the products of this request, and is available for assignment by insurers if they deem appropriate."
+17.039	Drug & Biol	"Request to establish a new Level II HCPCS code to identify a terminally sterilized, dehydrated human placental allograft, Trade Name: Revita
+
+Applicant’s suggested language: QXXXX, ""Revita, per square centimeter""."	"Establish QXXXX, ""Revita, per square centimeter"". "	"Establish Q4180, ""Revita, per square centimeter"". "
+17.042	Drug & Biol	"Repeat request to establish a new Level II HCPCS code to identify lyophilized, terminally sterilized amniotic fluid, Trade Name: OrthoFlo.
+
+Applicant's suggested language: QXXXX, ""OrthoFlo, (terminally sterilized lyophilized amniotic fluid) per mL""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify OrthoFlo. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify OrthoFlo. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."
+17.043	Drug & Biol	"Request to revise existing HCPCS code S1090.
+
+Applicant's suggested language: Revise existing S code S1090, which currently reads, “Mometasone furoate sinus implant, 370 micrograms”, to instead be a J code and read, “Mometasone furoate sinus implant”."	"Existing code S1090 ""Mometasone Furoate Sinus Implant, 370 Micrograms"" adequately describes the product that is the subject of this request. Existing code C2625 ""Stent, non-coronary, temporary, with delivery system"" is available for use for procedures performed in HOPPS and ASC."	"Existing codes S1090 ""Mometasone Furoate Sinus Implant, 370 Micrograms"" and C2625 ""Stent, Non-Coronary Temporary, With Delivery System"" adequately describe the products that are the subject of this request, and are available for assignment by insurers."
+17.044	Drug & Biol	"Request to revise existing Level II HCPCS code Q4132, which currently reads, ""Grafix CORE, per square centimeter"", to add another configuration of Grafix CORE, Trade Name: GrafixPL CORE.
+
+Applicant's suggested language: Q4132, ""Grafix CORE and GrafixPL CORE, per square centimeter""."	"Revise existing code Q4132, which currently reads, ""Grafix core, per square centimeter"", to instead read ""Grafix CORE and GrafixPL CORE, per square centimeter."" "	"Revise existing code Q4132, which currently reads, ""Grafix core, per square centimeter"", to instead read ""Grafix CORE and GrafixPL CORE, per square centimeter."""
+17.046	Drug & Biol	"Request to establish a new Level II HCPCS code to identify Optiray 350 ioversol injection 74%, Optiray 320 ioversol injection 68% and Optiray 300 ioversol injection 64%; Trade Name: Optiray™ Ultraject™ provided in a Prefilled Syringe®.
+
+Applicant’s suggested language: “JXXXX ""ioversol injection pre-filled syringe"""	"This request to establish a new Level II HCPCS code to separately identify the Optiray Ultraject Prefilled Syringe has not been approved. A separate code is not necessary to describe ioversol in a pre-filled syringe. Existing code Q9967 ""Low osmolar contrast material, 300-399 mg/ml iodine concentration, per ml"" adequately describes Optiray 300, Optiray 320, and Optiray 350; and it is available for assignment by insurers if they deem appropriate. Existing code Q9966 ""Low osmolar contrast material, 200-299 mg/mL iodine concentration, per mL"" adequately describes Optiray 240 and is available for assignment by insurers if they deem appropriate. Separate reporting of the syringe for additional payment may be considered redundant and inappropriate."	"This request to establish a new Level II HCPCS code to separately identify the Optiray Ultraject Prefilled Syringe has not been approved. A separate code is not necessary to describe ioversol in a pre-filled syringe. Existing code Q9967 ""Low osmolar contrast material, 300-399 mg/ml iodine concentration, per ml"" adequately describes Optiray 300, Optiray 320, and Optiray 350; and it is available for assignment by insurers if they deem appropriate. Existing code Q9966 ""Low osmolar contrast material, 200-299 mg/mL iodine concentration, per mL"" adequately describes Optiray 240 and is available for assignment by insurers if they deem appropriate. Separate reporting of the syringe for additional payment may be considered redundant and inappropriate."
+17.047	Drug & Biol	"Request to establish a new level II HCPCS code to identify olaratumab injection for intravenous use, Trade Name: LARTRUVO. 
+
+Applicant's suggested language: JXXXX, ""injection, olaratumab, 1mg"".
+"	"Establish JXXXX, ""Injection, Olaratumab, 10 mg"". "	"Establish J9285, ""Injection, Olaratumab, 10 mg""."
+17.048	Drug & Biol	"Request to establish a single new Level II HCPCS code to identify two porcine-derived extracellular matrices also known as urinary bladder matrix (UBM), Trade Names: Cytal3L and Cytal6L.
+
+Applicant's suggested language: QXXXX ""Cytal 3-Layer/6 Layer, per square centimeter."""	"This request to establish a new Level II HCPCS code to separately identify Cytal Wound Matrix 3-Layer (Cytal3L) and Cytal Wound Matrix 6-Layer (Cytal6L) has not been approved. Existing code Q4166 ""Cytal, per square centimeter"" adequately describes these products and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify Cytal Wound Matrix 3-Layer (Cytal3L) and Cytal Wound Matrix 6-Layer (Cytal6L) has not been approved. Existing code Q4166 ""Cytal, per square centimeter"" adequately describes these products and is available for assignment by insurers if they deem appropriate."
+17.049	Drug & Biol	"Request to establish a new Level II HCPCS codes to identify a hydrogel wound dressing containing 4% Lidocaine Hydrochloride, Trade Name:Astero. Astero.
+
+Applicant's suggested language:
+
+1. JXXXX, Hydrogel wound dressing containing 4% Lidocaine Hydrochloride. Per 1 metered dose.
+
+2. AXXXX, Hydrogel wound dressing containing 4% Lidocaine Hydrochloride. Per 1 metered dose."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify Astero. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify Astero. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."
+17.050	Drug & Biol	"Request to revise the existing Level II HCPCS code Q4158, which currently reads “Marigen, per square centimeter” to  instead read, “Kerecis Omega3, per square centimeter”."	"Revise existing code Q4158, which currently reads, ""Marigen, per square centimeter,"" to instead read, ""Kerecis Omega3, per square centimeter"".."	"Revise existing code Q4158, which currently reads, ""Marigen, per square centimeter,"" to instead read, ""Kerecis Omega3, per square centimeter""."
+17.051	Drug & Biol	"Request to establish a new Level II HCPCS code to identify the Visco-3, a new intra-articular hyaluronic acid injectable product. Trade Name: VISCO-3.
+
+Applicant’s suggested language: JXXXX Hyaluronan or derivative, VISCO-3, for intra-articular injection, per mg"	"Revise existing HCPCS code J7321, which currently reads, ""Hyaluronan or derivative, Hyalgan or Supartz, for intra-articular injection, per dose"", to instead read, ""Hyaluronan or derivative, Hyalgan, Supartz or VISCO-3, for intra-articular injection, per dose"".  Revised code J7321 adequately describes VISCO-3. Use of code J3490 to report VISCO-3 is not appropriate unless specifically assigned in insurer policy."	"Revise existing HCPCS code J7321, which currently reads, ""Hyaluronan or derivative, Hyalgan or Supartz, for intra-articular injection, per dose"", to instead read, ""Hyaluronan or derivative, Hyalgan, Supartz or VISCO-3, for intra-articular injection, per dose"".  Revised code J7321 adequately describes VISCO-3. Use of code J3490 to report VISCO-3 is not appropriate unless specifically assigned in insurer policy."
+17.053	Drug & Biol	"Request to establish a new level II HCPCS code to identify a multi-layer lyophilized human amniotic membrane allograft, Trade Name: Amnio Wound.
+
+Applicant’s suggested language: QXXXX, ""Amnio Wound, per square centimeter""."	"Establish QXXXX, ""Amnio wound, per square centimeter""."	"Establish Q4181, ""Amnio wound, per square centimeter"". "
+17.054	Drug & Biol	"Request to revise existing Level II HCPCS code Q4148, which currently reads, ""Neox 1K, per square centimeter"", to add NEOX CORD RT and CLARIX CORD 1K, and also to add the word ""CORD"" to NEOX 1K.
+
+Applicant's suggested language: Q4148 ""NEOX CORD 1K, NEOX CORD RT, or CLARIX CORD 1K, per square centimeter"".
+"	"Revise existing code Q4148, which currently reads, ""NEOX 1k, per square centimeter"", to instead read, ""NEOX CORD 1K, NEOX CORD RT, or CLARIX CORD 1K, per square centimeter"". "	"Revise existing code Q4148, which currently reads, ""NEOX 1k, per square centimeter"", to instead read, ""NEOX CORD 1K, NEOX CORD RT, or CLARIX CORD 1K, per square centimeter""."
+17.056	Drug & Biol	"Request to establish a new Level II HCPCS code to identify etelcalcetide for IV administration, Trade Name: Parsabiv.
+
+Applicant's suggested language: JXXXX, ""Injection, etelcalcetide, per 2.5 mg"".
+"	"Establish JXXXX, ""Injection, etelcalcetide, 0.1 mg""."	"Establish J0606, Injection, etelcalcetide, 0.1 mg
+
+ "
+17.057	Drug & Biol	"Request to establish a new Level II HCPCS code to identify cinacalcet, Trade Name: Sensipar.
+
+Applicant's suggested language: JXXXX, ""Cinacalcet, oral, 30 mg""."	"Establish JXXXX, ""cinacalcet, oral, 1 mg, (for ESRD on dialysis)""."	"Establish J0604, ""cinacalcet, oral, 1 mg, (for ESRD on dialysis)""."
+17.058	Drug & Biol	"Request to establish a new level II HCPCS code to identify phenylephrine and ketorolac injection 1%/0.3%, Trade Name: Omidria.
+
+Applicant's suggested language: JXXXX, ""injection, phenylephrine and ketorolac 1%/0.3% 4-mL vial""."	"A national program operating need to establish a new code for Omidria was not identified by Medicare, Medicaid, or the Private Insurance Sector. Existing code C9447 ""Injection, Phenylephrine and ketorolac, 4 mL vial"" is available for assignment by insurers if they deem appropriate, to report use of Omidria in a hospital outpatient setting."	"A national program operating need to establish a new code for Omidria was not identified by Medicare, Medicaid, or the Private Insurance Sector. Existing code C9447 ""Injection, Phenylephrine and ketorolac, 4 mL vial"" is available for assignment by insurers if they deem appropriate, to report use of Omidria in a hospital outpatient setting or ASC."
+17.059	Drug & Biol	"Request to revise existing Level II HCPCS code Q4156 to include a cryopreserved, human amniotic membrane graft, Trade Name: CLARIX 100.
+
+Applicant's suggested language: revise existing HCPCS code Q4156 which currently reads Q4156 ""NEOX 100, per square centimeter,"" to instead read ""NEOX 100 or CLARIX 100, per square centimeter"".
+
+ "	"Revise existing code Q4156, which currently reads, ""NEOX 100, per square centimeter,"" to instead read, ""NEOX 100 or CLARIX 100, per square centimeter"". "	"Revise existing code Q4156, which currently reads, ""NEOX 100, per square centimeter,"" to instead read, ""NEOX 100 or CLARIX 100, per square centimeter"". "
+17.060	Drug & Biol	"Request to establish a new Level II HCPCS code to identify avelumab, Trade Name: BAVENCIO.
+
+Applicant's suggested language, ""JXXXX, Injection, avelumab, 10 mg""."	"Establish JXXXX, ""Injection, Avelumab, 10 mg"". "	"Establish J9023, ""Injection, Avelumab, 10 mg""."
+17.061	Drug & Biol	"Request to revise existing HCPCS code A9588 which currently reads: ""fluciclovine 18F, diagnostic 1 mCi,"" to instead read: ""Fluciclovine F-18, diagnostic, per study dose"". Trade Name: Axumin."	"This request to revise A9588 has not been approved. The requested revision does not improve the code. Existing code A9588 ""Fluciclovine f-18, diagnostic, 1 millicurie"" adequately describes the product that is the subject of this request and is it available for assignment by insurers if they deem appropriate."	"This request to revise A9588 has not been approved. The requested revision does not improve the code. Existing code A9588 ""Fluciclovine f-18, diagnostic, 1 millicurie"" adequately describes the product that is the subject of this request and is it available for assignment by insurers if they deem appropriate."
+17.062	Drug & Biol	"Request to establish for a new Level II HCPCS code to identify 0.5 mg lidocaine hydrochloride monohydrate powder, intradermal injection system, Trade Name: Zingo.
+
+Applicant's suggested language, ""JXXXX, Injection, lidocaine HCl, 0.5 mg"".
+
+ "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to separately identify the Zingo system. Zingo, if used, would be included in the procedure or in the supply allowance for the infusion pump. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to separately identify the Zingo system. Zingo, if used, would be included in the procedure or in the supply allowance for the infusion pump. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."
+17.064	S & O	"Request to establish a series of 5 new Level II HCPCS codes to identify an oral electronic vision aid system and its components, Trade Name: BrainPort V100
+
+Applicant's suggested languages:
+
+Lxxx1 Vision Aid Prosthetic System, including intra-oral stimulation device, headset with integrated digital video camera, and patient controller.
+
+Lxxx2 Headset with integrated digital video camera, for use with vision aid prosthetic system, replacement
+
+Lxxx3 Intra-oral stimulation device, for the use with vision and prosthetic system, replacement
+
+Lxxx4 Patient controller for use with vision aid prosthetic system, replacement
+
+Lxxx5 Vision aid prosthetic system training services, individual, up to 10 hours
+"	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."
+17.065	O & P	"Request to establish a new Level II HCPCS code to identify an external foot brace and to consider the device an orthotic. Trade name: Shoebaum Short.
+
+Applicant did not suggest coding language."	"This request to establish a new Level II HCPCS code to separately identify the Shoebaum Short has not been approved. Existing codes L4386 ""Walking boot, non-pneumatic, with or without joints, with or without interface material, prefabricated item that has been trimmed, bent, molded, assembled, or otherwise customized to fit a specific patient by an individual with expertise"" or L4387 ""Walking boot, non-pneumatic, with or without joints, with or without interface material, prefabricated, off-the-shelf"" adequately describes the product, depending on whether the product is customized to fit or off-the-shelf. L4386 or L4387 are available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the Shoebaum Short has not been approved. Existing codes L4386 ""Walking boot, non-pneumatic, with or without joints, with or without interface material, prefabricated item that has been trimmed, bent, molded, assembled, or otherwise customized to fit a specific patient by an individual with expertise"" or L4387 ""Walking boot, non-pneumatic, with or without joints, with or without interface material, prefabricated, off-the-shelf"" adequately describes the product, depending on whether the product is customized to fit or off-the-shelf. L4386 or L4387 are available for assignment by insurers if they deem appropriate."
+17.066	S & O	"Request to assign existing Level II HCPCS code B4153 to an enteral formula, nutritionally complete, hydrolized protein, Trade Name: Ultrient. 
+
+ "	"Existing code B4153 ""Enteral formula, nutritionally complete, hydrolyzed proteins (amino acids and peptide chain), includes fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes Ultrient Ready-to-Feed 1.5 KCal/mL Peptide Formula and it is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used."	"Existing code B4153 ""Enteral formula, nutritionally complete, hydrolyzed proteins (amino acids and peptide chain), includes fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes Ultrient Ready-to-Feed 1.5 KCal/mL Peptide Formula and it is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used."
+17.067	Drug & Biol	"Request to establish a new level II HCPCS code to identify the Optiray Ultraject Prefilled Syringe with Radio Frequency Identification (RFID) technology.
+
+Applicant's suggested language: AXXXX - Ioversol injection Radio Frequency Identification (RFID) pre-filled syringe.
+"	"This request to establish a new Level II HCPCS code to separately identify the Optiray Ultraject Prefilled Syringe with Radio Frequency Identification (RFID) technology has not been approved. Existing code Q9967 ""Low osmolar contrast material, 300-399 mg/ml iodine concentration, per ml"" adequately describes Optiray 300, Optiray 320, and Optiray 350; and it is available for assignment by insurers if they deem appropriate. Separate reporting of the syringe for additional payment may be considered redundant and inappropriate."	"This request to establish a new Level II HCPCS code to separately identify the Optiray Ultraject Prefilled Syringe with Radio Frequency Identification (RFID) technology has not been approved. Existing code Q9967 ""Low osmolar contrast material, 300-399 mg/ml iodine concentration, per ml"" adequately describes Optiray 300, Optiray 320, and Optiray 350; and it is available for assignment by insurers if they deem appropriate. Separate reporting of the syringe for additional payment may be considered redundant and inappropriate."
+17.068	S & O	"Request to establish a new Level II HCPCS code to identify a rechargeable lithium-ion battery for use with the portable pneumatic driver of the SynCardia Total Artificial Heart (TAH-t). Trade Name: Freedom Onboard Battery.
+
+Applicant's suggested language: QXXXX: ""Battery (Li-Ion) for use with portable pneumatic biventricular driver, total artificial heart, each.""
+
+ "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the lithium-ion battery for use with the SynCardia Total Artificial heart. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"This request to establish a new Level II HCPCS code to separately identify this product has not been approved. Reported sales volume is insufficient to support a request for a revision to the national code set. In accordance with HCPCS coding criteria as published on CMS’ HCPCS website, there must be sufficient claims activity or volume, as evidenced by 3 months of marketing activity, so that adding a new code enhances the efficiency of the system and justifies the administrative burden of adding the code."
+17.069	S & O	"Request to establish a new Level II HCPCS code to identify a power spupply system for use with the Freedom portable driver of the Syncardia Total Artificial Heart (TAH-t). Trade Name: Freedom Home AC Power Supply System.
+
+Applicant's suggested language: QXXXX: ""Power supply system for use with portable pneumatic biventricular total artificial heart.""
+
+ "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the power supply system for use with a portable pneumatic biventricular total artificial heart. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"This request to establish a new Level II HCPCS code to separately identify this product has not been approved. Reported sales volume is insufficient to support a request for a revision to the national code set. In accordance with HCPCS coding criteria as published on CMS’ HCPCS website, there must be sufficient claims activity or volume, as evidenced by 3 months of marketing activity, so that adding a new code enhances the efficiency of the system and justifies the administrative burden of adding the code."
+17.070	S & O	"Request to establish 5 new Level II HCPCS codes to identify supplies and accessories for the Freedom Portable Driver System that operates the SynCardia Total Artificial heart (TAH-t) for use outside the hospital.
+
+Applicant's suggested language:
+
+QXXX1 Miscellaneous supply or accessory for use with an implanted total artificial heart;
+
+QXXX2 Miscellaneous supply or accessory for use with any implanted total artificial heart for which payment was not made under Medicare Part A
+
+QXXX3 Filters for use with total artificial heart, replacement only.
+
+QXXX4 Power adaptor for use with total artificial heart, vehicle type.
+
+QXXX5 Backpack/bag for use with total artificial heart, replacement only."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the supplies and accessories for use with the Portable Driver System that operates the SynCardia Total Artificial Hearts that are the subject of this request."	"This request to establish a new Level II HCPCS code to separately identify this product has not been approved. Reported sales volume is insufficient to support a request for a revision to the national code set. In accordance with HCPCS coding criteria as published on CMS’ HCPCS website, there must be sufficient claims activity or volume, as evidenced by 3 months of marketing activity, so that adding a new code enhances the efficiency of the system and justifies the administrative burden of adding the code.
+
+"
+17.071	O & P	"Request to establish a new Level II HCPCS code to identify an external elbow brace, and to consider the device as an orthotic. Trade Name: ErgoBrace G1 EPA Post-op Elbow Brace Over Motion.
+
+Applicant does not suggest coding language."	"1) Establish LXXXX, ""Elbow Orthosis (EO), with adjustable position locking joint(s), prefabricated, off-the-shelf"". 
+
+2) Revise L3760, which currently reads, ""Elbow orthosis, with adjustable position locking joint(s), prefabricated, includes fitting and adjustments, any type"", to instead read, ""Elbow Orthosis (EO), with adjustable position locking joint(s), prefabricated, item that has been trimmed, bent, molded, assembled, or otherwise customized to fit a specific patient by an individual with expertise"".
+
+New code LXXXX or revised code L3760 adequately describes the product that is the subject of this application, depending on whether it is custom fit."	"1) Establish L3761, ""Elbow Orthosis (EO), with adjustable position locking joint(s), prefabricated, off-the-shelf"". 2) Revise L3760, which currently reads, ""Elbow orthosis, with adjustable position locking joint(s), prefabricated, includes fitting and adjustments, any type"", to instead read, ""Elbow Orthosis (EO), with adjustable position locking joint(s), prefabricated, item that has been trimmed, bent, molded, assembled, or otherwise customized to fit a specific patient by an individual with expertise"".
+
+Either new code L3761 or revised code L3760 adequately describes the ErgoBrace that is the subject of this application, depending on whether it is custom fit or off-the-shelf."
+17.072	O & P	"Request to establish a new Level II HCPCS code to identify a foldable under-arm crutch with patented shock absorbers and telescopic tubing, and to consider the device an orthotic. Trade Name: ErgoBaum Dual.
+
+Applicant does not suggest coding language."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."
+17.073	O & P	"Request to establish a new Level II HCPCS code to identify an external knee brace and to consider the device an orthotic. Trade Name: ErgoBrace Post-Op Knee Brace.
+
+Applicant does not suggest coding language."	"This request to establish a new Level II HCPCS code to separately identify the ErgoBrace Post-Op Knee Brace has not been approved. Existing code L1832 ""Knee orthosis, adjustable knee joints (unicentric or polycentric), positional orthosis, rigid support, prefabricated item that has been trimmed, bent, molded, assembled, or otherwise customized to fit a specific patient by an individual with expertise"" or L1833 ""Knee orthosis, adjustable knee joints (unicentric or polycentric), positional orthosis, rigid support, prefabricated, off-the shelf"", depending on whether it is custom fit on delivery or off-the-shelf, adequately describes product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the ErgoBrace Post-Op Knee Brace has not been approved. Existing code L1832 ""Knee orthosis, adjustable knee joints (unicentric or polycentric), positional orthosis, rigid support, prefabricated item that has been trimmed, bent, molded, assembled, or otherwise customized to fit a specific patient by an individual with expertise"" or L1833 ""Knee orthosis, adjustable knee joints (unicentric or polycentric), positional orthosis, rigid support, prefabricated, off-the shelf"", depending on whether it is custom fit on delivery or off-the-shelf, adequately describes product and is available for assignment by insurers if they deem appropriate."
+17.074	O & P	"Request to establish a new Level II HCPCS code to identify an over-the-shoe universal height compensator and balancer, and to consider the device an orthotic. Trade Name: Level-Up, orthosis, corrective shoe.
+
+Applicant does not suggest coding language.
+"	"This request to establish a new Level II HCPCS codes to separately identify the Level-Up has not been approved. The item that is the subject of this request is not primarily medical in nature and, therefore, it is not suitable for coding within HCPCS."	"This request to establish a new Level II HCPCS codes to separately identify the Level-Up has not been approved. The item that is the subject of this request is not primarily medical in nature and, therefore, it is not suitable for coding within HCPCS."
+17.075	O & P	"Request to revise existing Level II HCPCS code E0111 ""Crutch forearm, includes crutches of various materials, adjustable or fixed, each, with tip and handgrips"" to identify an ergonomic crutch with patented shock absorbers and telescopic tubing, and to consider the device an orthotic. Trade Name: ErgoBaum Royal and ErgoBaum Prince.
+
+Applicant does not suggest coding language."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to revise existing code E0111 to identify the product that is the subject of this request. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."	"A national program operating need to establish a code for ErgoBaum Royal and ErgoBaum Prince devices was not identified by Medicare, Medicaid or the Private Insurance Sector. For coding guidance, contact the entity in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor. "
+17.076	O & P	"Request to establish a new Level II HCPCS code to identify a commode chair, and to consider the device an orthotic Trade Name: Mobile Commode Chair.
+
+Applicant does not suggest coding language."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. For coding guidance, contact the individual insurance contractor in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual insurance contractor. For Medicare, contact the Medicare contractor."
+17.077	S & O	"Request to establish a new Level II HCPCS code to identify the SynCardia Freedom portable driver used with the SynCardia Total Artificial Heart (TAH-t), Trade Name: Freedom Portable Driver
+
+Applicant's suggested language: QXXXX ""Pneumatic biventricular driver, portable, total artificial heart.""
+
+ "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the Portable driver used with the Syncardia Total Artificial Heart."	"This request to establish a new Level II HCPCS code to separately identify this product has not been approved. Reported sales volume is insufficient to support a request for a revision to the national code set. In accordance with HCPCS coding criteria as published on CMS’ HCPCS website, there must be sufficient claims activity or volume, as evidenced by 3 months of marketing activity, so that adding a new code enhances the efficiency of the system and justifies the administrative burden of adding the code."
+17.078	DME	"Request to establish two new Level II HCPCS codes to identify a zero-lift transfer and mobility system, differentiated based on patient weight capacity up to, and above 300 lbs. . Trade Name: AgileLife and Mobility System.
+
+Applicant' suggested language for first code: EXXXX ""Zero-lift patient transfer and mobility system, integrated electric bed, pressurized mattress, wheelchair, commode and docking station for bedridden patients, operated by caregiver with a touchscreen pad, patient weight capacity up to 300 lbs"".
+
+Applicant's suggested language for second code: EXXXX ""zero-lift patient transfer and mobility system, integrated electric bed, GRZ air pressure distribution mattress, wheelchair, commode and docking station for bedridden patients, operated by caregiver with a touchscreen pad, patient weight capacity greater than 300 lbs"""	"This request to establish two new Level II HCPCS codes to separately identify the AgileLife Transfer and Mobility System has not been approved, because the request is for capital equipment. Capital equipment is not appropriate for inclusion in the HCPCS Level II code set."	"Existing codes E1035 ""Multi-positional patient transfer system, with integrated seat, operated by caregiver, patient weight capacity up to and including 300 lbs""or E1036 ""Multipositional patient transfer system, extra-wide, with integrated seat, operated by caregiver, patient weight capacity greater that 300 lbs"" adequately describes the device that is the subject of this request."
+17.079	S & O	"Request to assign existing Level II HCPCS code B4150 ""Enteral formula, nutritionally complete with intact nutrients, includes proteins, fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories=1unit"" to a nutritional shake for medical malnutrition, Trade Name: ENU Complete Meal Replacement Powder Mix.
+
+ 
+
+ "	"Existing code B4150 ""Enteral formula, nutritionally complete with intact nutrients, includes proteins, fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes the ENU Meal Replacement Powder Mix and it is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used."	"Existing code B4150 ""Enteral formula, nutritionally complete with intact nutrients, includes proteins, fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes the ENU Meal Replacement Powder Mix and it is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used."
+17.081	S & O	"Request to establish a new Level II HCPCS code to identify an ostomy pouch fill alert sensor. Trade name: OSTOM-i Alert Sensor.
+
+Applicant's suggested language: AXXXX ""OSTOM-i Alert Sensor for electronically monitoring pressure within ostomy/stoma bags. One unit per 3 months"".
+"	"This request to establish a new Level II HCPCS code to separately identify Ostom-i Alert Sensor has not been approved. Existing code A9280 ""Alert or alarm device, not otherwise classified"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify Ostom-i Alert Sensor has not been approved. Existing code A9280 ""Alert or alarm device, not otherwise classified"" adequately describes this product and is available for assignment by insurers if they deem appropriate."
+17.082	S & O	"Request to establish a new Level II HCPCS code to identify an automated uroflowmetry device, trade name: iUFlow device.
+
+Applicant's suggested language: AXXXX ""Automated uroflowmetry device, includes software and accessories"".
+"	"This request to establish a new Level II HCPCS code to separately identify the iUFlow device has not been approved, because this product is an integral part of a procedure and payments for that service includes payment for this uroflowmetry device if it is used."	"This request to establish a new Level II HCPCS code to separately identify the iUFlow device has not been approved, because this product is an integral part of a procedure and payments for that service includes payment for this uroflowmetry device if it is used."
+17.083	Drug & Biol	"Request to revise existing Level II HCPCS code Q4166 which currently reads, ""Cytal, per square centimeter"", to instead read, ""Cytal 1-Layer/2-Layer/Burn, per square centimeter.""
+
+ "	"This request to revise the descriptor of existing code Q4166 has not been approved. Existing code Q4166 ""Cytal, per square centimeter"" adequately describes the products that are the subject of this request, and it is available for assignment by insurers if they deem appropriate."	"This request to revise the descriptor of existing code Q4166 has not been approved. Existing code Q4166 ""Cytal, per square centimeter"" adequately describes the products that are the subject of this request, and it is available for assignment by insurers if they deem appropriate."
+17.084	S & O	"Request to establish a new Level II HCPCS code to identify a digestive enzyme (immobilized lipase) packed cartridge, Trade Name: RELiZoRB.
+
+Applicant's suggested language: ""BXXXX, ""RELiZORB, immobilized lipase cartridge.""
+
+ "	"This request to establish a unique Level II HCPCS code to separately identify the RELiZORB (immobilized lipase) cartridge has not been approved. Existing codes B4034 ""Enteral feeding supply kit; syringe fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"", B4035 ""Enteral feeding supply kit; pump fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"", or B4036 ""Enteral feeding supply kit; gravity fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"", depending of the type of feeding, adequately describes this product."	"This request to establish a unique Level II HCPCS code to separately identify the RELiZORB (immobilized lipase) cartridge has not been approved. The Relizorb cartidge is included in the enteral nutrition supply allowance for tube-feedings, at existing B4035 ""Enteral feeding supply kit; pump fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape""."
+17.085	S & O	"Request to establish a new Level II HCPCS code to identify a mechanical reusable lancing device. Trade name: the Genteel Lancing Device.
+
+Applicant's suggested language: ""A reusable vacuum assisted lancing device with depth control"".
+
+ "	"This request to establish a new Level II HCPCS code to separately identify the Genteel Lancing Device has not been approved. Existing code A4258 ""Spring-powered device for lancet, each"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the Genteel Lancing Device has not been approved. Existing code A4258 ""Spring-powered device for lancet, each"" adequately describes this product and is available for assignment by insurers if they deem appropriate."
+17.086	DME	"Request to establish a new Level II HCPCS code to identify an automated external basal insulin delivery system. Trade Name: MiniMed 670G.
+
+Applicant's suggested language: ""automated basal insulin delivery system, external, insulin""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the product that is the subject of this request. Existing codes E0784 ""External ambulatory infusion pump, insulin"" and S1034 ""Artificial pancreas device system (e.g., low glucose suspend (lgs) feature) including continuous glucose monitor, blood glucose device, insulin pump and computer algorithm that communicates with all of the devices"", S1035 ""Sensor; invasive (e.g., subcutaneous), disposable, for use with artificial pancreas device system"", S1036 ""Transmitter; external, for use with artificial pancreas device system"", and S1037 ""Receiver (monitor); external, for use with artificial pancreas device system"" are available for assignment by insurers if they deem appropriate to identify this device or its components."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the product that is the subject of this request. Existing codes E0784 ""External ambulatory infusion pump, insulin"" and S1034 ""Artificial pancreas device system (e.g., low glucose suspend (lgs) feature) including continuous glucose monitor, blood glucose device, insulin pump and computer algorithm that communicates with all of the devices"", S1035 ""Sensor; invasive (e.g., subcutaneous), disposable, for use with artificial pancreas device system"", S1036 ""Transmitter; external, for use with artificial pancreas device system"", and S1037 ""Receiver (monitor); external, for use with artificial pancreas device system"" are available for assignment by insurers if they deem appropriate to identify this device or its components."
+17.087	S & O	"Request to establish a new Level II HCPCS code to identify a software controlled, pulsatile pressure, off-loading boot and shin device for the treatment of lower limb wounds, Trade Name: PulseFlow DF
+
+Applicant's suggested language: ""Software controlled, ambulatory limb salvage device with an internal pneumatic pump applying pulsatile pressure in the medical aspect of the foot within an off-loading boot and a shin device for the treatment of diabetic and non-diabetic lower limb wounds."""	"This request to establish a new Level II HCPCS code to separately identify the PulseFlowDF has not been approved. Existing code A9283 ""Foot pressure off loading/supportive device, any type, each"" plus A9279 ""Monitoring feature/device, stand-alone or integrated, any type, includes all accessories, components and electronics, not otherwise classified"" together adequately describes the product and is available for assignment by insurers if they deem appropriate."	"Existing code A9283 ""Foot pressure off loading/supportive device, any type, each"" plus A9279 ""Monitoring feature/device, stand-alone or integrated, any type, includes all accessories, components and electronics, not otherwise classified""; together, adequately describe the PulseFlowDF. These codes are available for assignment by insurers if they deem appropriate."
+17.088	S & O	"Request to establish 2 new Level II HCPCS codes, one each to identify a blood pressure lowering device used to treat hypertension; and the belt kit with accessories. Trade Name: RESPeRATE.
+
+Applicant's suggested language:
+
+“Non-invasive respiratory modulation assist device (RESPeRATE), including respiratory effort belt, directing patient respiration rate, and patterns of inhalation and exhalation”
+
+“Respiratory effort belt kit and accessories used with the non-invasive respiratory modulation assist device (RESPeRATE)”"	"This request to establish two new Level II HCPCS codes to identify the RESPeRATE device has not been approved, because this product is an integral part of a procedure and payments for that service includes payment for the RESPeRATE device if it is used."	"This request to establish two new Level II HCPCS codes to identify the RESPeRATE device has not been approved, because this product is an integral part of a procedure and payments for that service includes payment for the RESPeRATE device, if it is used."
+17.089	DME	"Request to establish two new Level II HCPCS codes to identify a tremor-cancelling, micro-controlled motion stabilization device and starter kit, trade name: Liftware. 
+
+Applicant's suggested language:
+
+1) EXXXX ""Movement Stabilizing Adaptive Utensil Starter Kit (includes base, charger and utensil)"".
+
+2) EXXXX ""Movement Stabilizing Adaptive Utensil, each additional""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS codes to identify the movement stabilizing adaptive utensil and starter kit. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS codes to identify the movement stabilizing adaptive utensil and starter kit. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."
+17.090	DME	"Request to establish two new Level II HCPCS to identify: 1) a multi-hour long-duration therapeutic ultrasound device; and 2) a supply of single-use coupling patches. Trade names: Sustained Acoustic Medicine (SAM), SAM Sport, SAM Professional.
+
+Applicant did not suggest coding language."	This request to establish two new Level II HCPCS codes to separately identify the SAM multi-hour long-duration therapeutic ultrasound device and a supply of single-use coupling patches has not been approved. These products are an integral part of a procedure and payments for that service includes payment for the ultrasound device and coupling patches if used. The reporting and use of additional codes could be considered duplicative.	This request to establish two new Level II HCPCS codes to separately identify the SAM multi-hour long-duration therapeutic ultrasound device and a supply of single-use coupling patches has not been approved. This device is FDA cleared for use only when administered and monitored by a healthcare practitioner. The products that are the subject of this application are an integral part of a procedure and payment for that service includes payment for the ultrasound device and coupling patches if used. Reporting using additional codes could be considered duplicative and inappropriate.
+17.091	S & O	"Request to revise existing Level II HCPCS code P9072, which currently reads, “Platelets, pheresis, pathogen reduced or rapid bacterial tested, each unit,” to instead read, “Platelets, pheresis, pathogen reduced, each unit”.
+
+ "	"1) Existing code P9072 ""Platelets, pheresis, pathogen reduced or rapid bacterial tested, each unit"" made not billable to Medicare. Effective 7/1/17.
+
+2) Newly established code Q9988 ""Platelets, Pheresis, Pathogen-Reduced, each unit"", effective 7/1/17, adequately describes pathogen reduced apheresis platelets.
+
+3) Discontinue code P9072. Effective 12/31/17.
+
+4) Discontinue code Q9988. Effective 12/31/17.
+
+5) Establish new code PXXXX to replace Q9988 using the same language. 
+
+6) Establish Q9987 ""Pathogen(s) Test for Platelets"". Effective 7/1/17.
+
+7) Discontinue code Q9987. Effective 12/31/17.
+
+8) Establish new code XXXXX to replace Q9987 using the same language. Effective 1/1/17."	"1)  Existing code P9072 ""Platelets, pheresis, pathogen reduced or rapid bacterial tested, each unit"" made not billable to Medicare. Effective 7/1/17.
+
+2)  Newly established code Q9988 ""Platelets, Pheresis, Pathogen-Reduced, each unit"", effective 7/1/17, adequately describes pathogen reduced apheresis platelets.
+
+3)  Discontinue code P9072. Effective 12/31/17.
+
+4)  Discontinue code Q9988. Effective 12/31/17.
+
+5)  Establish new code P9073 to replace Q9988 using the same language. 
+
+6)  Establish Q9987 ""Pathogen(s) Test for Platelets"". Effective 7/1/17.
+
+7)  Discontinue code Q9987. Effective 12/31/17.
+
+8)  Establish new code P9100 to replace Q9987 using the same language. "
+17.092	O & P	"Request to establish a new Level II HCPCS code to identify the Power Module Patient Cable for the use with a Left Ventricular Assist Device (LVAD). Trade Name: HeartMate Power Module Patient Cable.
+"	"Establish QXXXX, ""Power module patient cable for use with electric or electric/pneumatic ventricular assist device, replacement only"". "	"Establish Q0477, ""Power module patient cable for use with electric or electric/pneumatic ventricular assist device, replacement only"". "
+17.093	S & O	"Request to establish a new Level II HCPCS code to identify a high-precision weight monitoring scale with cellular transmission capability to health care entities. Trade Name: BodyTrace BT004.
+
+ "	"1) Existing code E1639 ""Scale, each"" adequately describes the scale that is the subject of this request and it is available for assignment by insurers if they deem appropriate.
+
+2) Revise the short descriptor of existing code E1639, which currently reads, ""Dialysis scale"", to instead read, ""scale, each"" (removing the word ""dialysis"")."	"1) Existing code E1639 ""Scale, each"" adequately describes the scale that is the subject of this request and it is available for assignment by insurers if they deem appropriate.
+
+2) Revise the short descriptor of existing code E1639, which currently reads, ""Dialysis scale"", to instead read, ""scale, each"" (removing the word ""dialysis"")."
+17.094	DME	"Request to establish a new Level II HCPCS code to identify a Functional Vibrotactile Stimulation Device System, Trade Name: WalkJoy.
+
+Applicant’s suggested language: ""Functional Stimulation Device System”."	"This request to establish a new Level II HCPCS code to separately identify the WalkJoy device (functional Vibrotactile Stimulation Device System) has not been approved. This product is an integral part of a procedure, and payments for that service includes payment for the WalkJoy device if it is used."	"This request to establish a new Level II HCPCS code to separately identify the WalkJoy device (functional Vibrotactile Stimulation Device System) has not been approved. For Medicare, this product is an integral part of a procedure, and payments for that service includes payment for the WalkJoy device if it is used. Non-Medicare insurers did not identify a national program operating need to establish a new code. "
+17.095	S & O	"Request to establish a new Level II HCPCS code to identify an alternating pressure geri chair cushion, Trade Name: Relief Chair Alternating Pressure Geri Chair Cushion.
+
+Applicant did not suggest language for a code."	"This request to establish a new Level II HCPCS code to separately identify the Relief Chair Alternating Pressure w/LAL and IPS Geri Chair Cushion has not been approved. Existing code E2610 ""Wheelchair seat cushion, powered"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"Geri chairs include cushioning. Existing code A9900 ""Miscellaneous DME supply, accessory, and/or service component of another HCPCS code"" is available for assignment by insurers to report the Relief Chair cushion, if they deem appropriate. Separate billing for any cushion could be considered duplicative and inappropriate."
+17.096	S & O	"Request to establish a new Level II HCPCS code to identify an enteral feeding supply kit, full closed for bolus or gravity feeding, with no-spill valve. Trade Name: Safe-T Feed Ready-to-Feed Pouch with ENFit Safety Connector.
+
+Applicant’s suggested language: BXXXX ""Enteral feeding supply kit, full closed for bolus or gravity feeding, with no-spill valve.""Disposable, single-use feeding pouch (with pre-filled formula), includes Enfit nutrition connector and a spill-proof valve to prevent leakage and allow for storage after opening if the formula is not completely used."""	"This request to establish a new Level II HCPCS code to separately identify the Safe-T- Feed Ready-to-Feed Pouch with ENFit Safety Connector has not been approved. Existing code B4034 ""Enteral feeding supply kit; syringe fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"" or B4036 ""Enteral feeding supply kit; gravity fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"", depending on the type of feeding, adequately describes this product."	"This request to establish a new Level II HCPCS code to separately identify the Safe-T- Feed Ready-to-Feed Pouch with ENFit Safety Connector has not been approved. Existing code B4034 ""Enteral feeding supply kit; syringe fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"" or B4036 ""Enteral feeding supply kit; gravity fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"", depending on the type of feeding, adequately describes this product."
+17.097	S & O	"Request to assign existing Level II HCPCS code B4161 to a Ready-to-Feed Peptide Formula for enteral feeding, Trade Name: Ultrient Junior Peptide 1.0 Calorie Pediatric Enteral Nutrition Formula.
+
+ "	"Existing code B4161 ""Enteral formula, for pediatrics, hydrolyzed/amino acids and peptide chain proteins, includes fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes the Ultrient Junior Peptide 1.0 Calorie Pediatric Enteral Nutrition Formula. Code B4161 is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used.
+
+"	"Existing code B4161 ""Enteral formula, for pediatrics, hydrolyzed/amino acids and peptide chain proteins, includes fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes the Ultrient Junior Peptide 1.0 Calorie Pediatric Enteral Nutrition Formula. Code B4161 is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used.
+
+"
+17.098	O & P	"Request to establish a new Level II HCPCS code to identify a fully-adjustable ergonomic cane, and to consider it an orthotic. Trade Name: Ergocane.
+
+Applicant does not suggest coding language."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request. "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new HCPCS code to identify the product that is the subject of this request."
+17.099	S & O	"Request to assign existing Level II HCPCS code B4154 to Ultrient Junior 2.0, Trade Name: Ultrient for Renal Health.
+
+ 
+
+ "	"Existing code B4154 ""Enteral formula, nutritionally complete, for special metabolic needs, excludes inherited disease of metabolism, includes altered composition of proteins, fats, carbohydrates, vitamins and/or minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes Ultrient 2.0 Calorie for Renal Health. Code B4154 is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used.
+
+"	"Existing code B4154 ""Enteral formula, nutritionally complete, for special metabolic needs, excludes inherited disease of metabolism, includes altered composition of proteins, fats, carbohydrates, vitamins and/or minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes Ultrient 2.0 Calorie for Renal Health. Code B4154 is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used.
+
+"
+17.100	S & O	"Request to establish a new Level II HCPCS code to identify a replaceable pump device used to empty the female urinary bladder, Trade Name: InFlow Intraurethral Valve-Pump and Activator.
+
+Applicant's suggested language: LXXXX, Female Urinary Prosthesis, replaceable.
+
+ "	"This request to establish a new Level II HCPCS code to separately identify the inFlow Intraurethral Valve-Pump and Activator has not been approved. Existing code A4335 ""Incontinence supply; miscellaneous"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"A national program operating need to establish a code for the InFlow devicet was not identified by Medicare, Medicaid or the Private Insurance Sector. Existing code A4335 is available for assignment by insurers if they deem appropriate. "
+17.102	S & O	"Request to establish a new Level II HCPCS code to identify wearable moist-heat or cooling breastfeeding relief packs. Trade Name: Rachel's Remedy.
+
+Applicant's suggested language: ""Moist heat device for use prior to or during use with breast pump.""
+"	"This request to establish a new Level II HCPCS code to separately identify Rachel's Remedy Breastfeeding Relief Packs has not been approved. Existing code A9273 ""Hot water bottle, ice cap or collar, heat and/or cold wrap, any type"" adequately describes the product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify Rachel's Remedy Breastfeeding Relief Packs has not been approved. Existing code A9273 ""Hot water bottle, ice cap or collar, heat and/or cold wrap, any type"" adequately describes the product and is available for assignment by insurers if they deem appropriate."
+17.103	S & O	"Repeat request to establish two new Level II HCPCS codes and to revise two existing Level II HCPCS codes in order to distinguish SpeediCath and other hydrophilic-coated intermittent urinary catheters from intermittent urinary catheters that are not coated, and currently share the same codes.
+
+Applicants suggested language:
+
+Establish ""AXXXX - Hydrophilic-coated intermittent urinary catheter; straight tip, with sterile lubricating coating, each"".
+
+""Establish AXXXX - Hydrophilic-coated intermittent urinary catheter; Coudé tip, with sterile lubricating coating, each"".
+
+Revise A4351, which currently reads, ""Intermittent urinary catheter; straight tip, with or without coating (Teflon, silicone, silicone elastomer, or hydrophilic, etc.), each"", to instead read,  ""Intermittent urinary catheter; straight tip, without coating (Teflon, silicone, silicone elastomer, etc.), each.""
+
+Revise A4352, which currently reads, ""Intermittent urinary catheter; Coudé tip, with or without coating (Teflon, silicone, silicone elastomer, or hydrophilic, etc.), each"", to instead read, ""Intermittent urinary 
+ "	"This request to establish two new Level II HCPCS codes to separately identify hydrophilic coated urinary catheters has not been approved. Existing code A4351 ""Intermittent urinary catheter; straight tip, with or without coating (teflon, silicone, silicone elastomer, or hydrophilic, etc.), each"" or A4352 ""Intermittent urinary catheter; coude (curved) tip, with or without coating (teflon, silicone, silicone elastomeric, or hydrophilic, etc.), each"", depending on whether the catheter has a straight or curved tip, adequately describe the products that are subject of this request."	"This request to establish two new Level II HCPCS codes to separately identify hydrophilic coated urinary catheters has not been approved. Existing code A4351 ""Intermittent urinary catheter; straight tip, with or without coating (teflon, silicone, silicone elastomer, or hydrophilic, etc.), each"" or A4352 ""Intermittent urinary catheter; coude (curved) tip, with or without coating (teflon, silicone, silicone elastomeric, or hydrophilic, etc.), each"", depending on whether the catheter has a straight or curved tip, adequately describe the products that are subject of this request."
+		"catheter; Coudé tip, without coating (Teflon, silicone, silicone elastomer, etc.), each."""		
+17.104	Drug & Biol	"Request to establish a new level II HCPCS code to identify a human fibroblast-derived temporary wound cover, Trade Name: TransCyte.
+
+Applicant's suggested language: Qxxxx,"" TransCyte, any type, per square centimeter""."	"Establish QXXXX, ""TransCyte, per square centimeter"". "	"Establish Q4182, ""TransCyte, per square centimeter"""
+17.105	O & P	"Request to revise existing Level II HCPCS codes L8618 and L8628 to include auditory osseointegrated implants (AOI) devices. Trade name: Cochlear Baha Coil Cables and Cochlear Baha Remote Control 2.
+
+1. Revise existing Level II HCPCS code L8618, which currently reads, ""Transmitter cable for use with cochlear implant device, replacement"", to instead read, ""Transmitter cable for use with cochlear implant device and auditory osseointegrated devices (AOI), replacement (each).""
+
+2. Revise existing Level II HCPCS code L8628, which currently reads, ""Cochlear implant, external controller component, replacement"", to instead read, ""Cochlear implant and auditory osseointegrated devices (AOI), external controller component, replacement""."	"1) Revise existing L8618, which currently reads, ""Transmitter cable for use with cochlear implant device, replacement"", to instead read, ""Transmitter cable for use with cochlear implant device or auditory osseointegrated device, replacement"". 
+
+2) A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to revise existing code L8628 ""Cochlear implant, external controller component, replacement"" to include the use with auditory osseointegrated devices (AOI). For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"1) Revise existing L8618, which currently reads, ""Transmitter cable for use with cochlear implant device, replacement"", to instead read, ""Transmitter cable for use with cochlear implant device or auditory osseointegrated device, replacement"". 
+
+2) A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to revise existing code L8628 ""Cochlear implant, external controller component, replacement"" to include use with the auditory osseointegrated devices (AOI). For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."
+17.106	O & P	"Request to revise existing Level II HCPCS code L8624 to include use with auditory osseointegrated (AOI) devices, Trade Name: CP910 and CP920 Rechargeable batteries; standard and compact.
+
+Applicant's suggest language:
+
+1) Revise existing Level II HCPCS code L8624, which currently reads, ""Lithium ion battery for use with cochlear implant device speech processor, ear level, replacement, each"", to instead read, ""Lithium ion battery for use with cochlear implant and auditory osseointegrated device speech processor, ear level, replacement, each"".
+
+2) Request to establish a new Level II HCPCS code to identify a Lithium Ion battery charger, Trade Name: Cochlear Nucleus CP800 Series Battery Charger.
+
+Applicant's suggested language:
+
+LXXXX:"" Battery charger for Lithium rechargeable battery for cochlear implant speech processor and AOI"".
+"	"1) Revise existing code L8624, which currently reads, ""Lithium ion battery for use with cochlear implant device speech processor, ear level, replacement, each"", to instead read, ""Lithium ion battery for use with cochlear implant or auditory osseointegrated device speech processor, ear level, replacement, each"". 
+
+2) Establish LXXXX, ""External recharging system for battery for use with cochlear implant or auditory osseointegrated device, replacement only, each"". 
+
+"	"1) Revise existing code L8624, which currently reads, ""Lithium ion battery for use with cochlear implant device speech processor, ear level, replacement, each"", to instead read, ""Lithium ion battery for use with cochlear implant or auditory osseointegrated device speech processor, ear level, replacement, each""
+
+2) Establish L8625, ""External recharging system for battery for use with cochlear implant or auditory osseointegrated device, replacement only, each""
+
+ "
+17.107	O & P	"Request to establish a new Level II HCPCS code to identify a replacement actuator (transducer) for use with the Baha 5 SuperPower Sound Processor system auditory osseointegrated (AOI) device. Trade Name: Baha 5 SuperPower Actuator unit
+
+Applicant's suggested language: LXXXX ""auditory osseointegrated device (AOI) actuator, replacement (each)"". "	"1) Revise existing code L8691, which currently reads, ""Auditory osseointegrated device, external sound processor, replacement"", to instead read, ""Auditory osseointegrated device, external sound processor, excludes transducer/actuator, replacement only, each"".
+
+2) Establish LXXXX, ""Auditory osseointegrated device, transducer/actuator, replacement only, each""."	"1) Revise existing code L8691, which currently reads, ""Auditory osseointegrated device, external sound processor, replacement"", to instead read, ""Auditory osseointegrated device, external sound processor, excludes transducer/actuator, replacement only, each"".
+
+2) Establish L8694, ""Auditory osseointegrated device, transducer/actuator, replacement only, each""."
+17.108	O & P	"Request to establish a new Level II HCPCS code to identify a movable Hypobaric Membrane suspension system for transtibial and transfemoral amputees. Trade Name: Ossurr Movable Hypobaric Membrane.
+
+Applicant's suggested language: LXXXX, ""Addition to lower extremity, below knee/above knee movable hypobaric membrane suspension mechanism with proximal and distal adjustability, excludes socket insert."""	"Establish LXXXX ""Gasket or seal, for use with prosthetic socket insert, any type, each""."	"Establish L7700, ""Gasket or seal, for use with prosthetic socket insert, any type, each""."
+17.109	DME	"Request to establish two new Level II HCPCS codes to identify: 1) the Kangaroo ePump Enteral Feeding Pump and Enteral Feeding sets; and 2) the Kangaroo Joey Enteral Feed and Flush Pump and Enteral Feeding sets.
+
+Applicant's suggested language:
+
+BXXXX: ""Enteral nutrition infusion pump - nutrition, hydration, and flushing"".
+
+BXXXX: ""Enteral feeding supply kit; pump fed, per day, includes but not limited to feeding/flushing, hydration, administration tubing, dressing, tape"".
+
+ "	"1) The Kangaroo Joey Enteral Feed and Flush Pump and the Kangaroo ePump, if used in the home, are adequately described by the existing code B9002 ""Enteral nutrition infusion pump, any type"", which is available for assignment by insurers if they deem appropriate.
+
+2) The supply kit for the Kangaroo Joey Enteral Feed and Flush Pump is adequately described by the existing code B4035 ""Enteral feeding supply kit; pump fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"". The code B4035 is available for assignment by insurers if they deem appropriate. B4035 includes any supplies necessary for flushing if it is done.
+
+3) A national program operating need was not identified by Medicare, Medicaid, or the Private Insurance sector to establish a new HCPCS code to identify the Kangaroo ePump Enteral Feeding Pump, because it is institutional equipment, as reported in the application. As such, it is not eligible for inclusion in the HCPCS Level II code set."	"1) The Kangaroo Joey Enteral Feed and Flush Pump and the Kangaroo ePump Enteral Feeding Pump, if used in the home, are adequately described by the existing code B9002 ""Enteral nutrition infusion pump, any type"". The code B9002 is available for assignment by insurers if they deem appropriate.
+
+2) The supply kit for the Kangaroo Joey Enteral Feed and Flush Pump is adequately described by the existing code B4035 ""Enteral feeding supply kit; pump fed, per day, includes but not limited to feeding/flushing syringe, administration set tubing, dressings, tape"". The code B4035 is available for assignment by insurers if they deem appropriate. B4035 includes any supplies necessary for flushing if it is done."
+17.110	O & P	"Request to establish a new Level II HCPCS code to identify a robotic manipulator arm which attaches to a wheelchair or tabletop, and is for use by persons with limited upper extremity mobility who also use a power wheelchair: Trade name: JACO.
+
+Applicant does not suggest coding language.
+
+ 
+
+ "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the JACO robotic arm. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"A national program operating need has not been identified by Medicare, Medicare, or Private Insurers. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed."
+17.111	S & O	"Request to establish a new Level II HCPCS code to identify a powered arm support. Trade Name: GoWing.
+
+ "	"This request to establish a new Level II HCPCS code to separately identify the Go Wing powered arm support has not been approved. Existing code E2626 ""Wheelchair accessory, shoulder elbow, mobile arm support attached to wheelchair, balanced, adjustable"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the Go Wing powered arm support has not been approved. Existing code E2626 ""Wheelchair accessory, shoulder elbow, mobile arm support attached to wheelchair, balanced, adjustable"" adequately describes this product and is available for assignment by insurers if they deem appropriate."
+17.112	S & O	"Request to assign existing Level II HCPCS code B4150 to a nutritional shake for medical malnutrition, Trade Name: ENU Nutritional Shake."	"Existing code B4150 ""Enteral formula, nutritionally complete with intact nutrients, includes proteins, fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes the ENU Nutritional Shake. Code B4150 is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used.
+
+"	"Existing code B4150 ""Enteral formula, nutritionally complete with intact nutrients, includes proteins, fats, carbohydrates, vitamins and minerals, may include fiber, administered through an enteral feeding tube, 100 calories = 1 unit"" adequately describes the ENU Nutritional Shake. Code B4150 is available for assignment by insurers if they deem appropriate. When the product is administered orally, the HCPCS modifier BO ""Orally administered nutrition, not by feeding tube"" should also be used.
+
+The HCPCS Level II codes describe categories of like items. The code set is not intended to be an exhaustive listing of all products on the market. While CMS believes that existing code B4150 describes this product, as a general rule CMS does not classify individual items into code categories on behalf of insurers. Individual insurers have the necessary flexibility to classify specific products into HCPCS Level II code categories and establish their own coding instructions in accordance with their policies and program operating needs. Questions regarding classification of products into HCPCS Level II code categories should be submitted to the insurer in whose jurisdiction a claim would be filed."
+17.113	O & P	"Request to establish a new Level II HCPCS code to identify a wearable, adjustable pelvic compression device used in the treatment of menstrual pain symptoms, Trade Name: Ziivaa.
+
+Applicant's suggested language:
+
+hip orthosis, prefabricated, plastic, abduction control of hip joints, flexible, prefabricated, padded, trochanteric pad, ultra-light material pelvic band, lock pelvic control, hip joint, band and belt, micro adjustment, macro adjustment.
+ "	"This request to establish a new Level II HCPCS code to separately identify the Ziivaa Adjustable Compression device has not been approved. Existing code A4467 ""Belt, strap, sleeve, garment, or covering, any type"" adequately describes the Ziivaa pelvic compression device, and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the Ziivaa Adjustable Compression device has not been approved. Existing code A4467 ""Belt, strap, sleeve, garment, or covering, any type"" adequately describes the product and is available for assignment by insurers if they deem appropriate.
+
+ "
+17.114	O & P	"Request to establish 2 new Level II HCPCS codes, one each, to identify the head mounted telemetry and video data collection system, and the Video Processing Unit (VPU), for use with an implanted Epiretinal Prothesis System, Trade Name: Argus II Retinal System.
+
+Applicant's suggested language:
+
+LXXXX Head mounted telemetry and video data collection system;
+
+LXXXX Video processing unit (VPU) for use with an implanted retinal prosthesis"	"This request to establish two unique Level II HCPCS codes to identify external, patient-worn replacement components for the Argus II Retinal System has not been approved.
+
+Existing code C1841 ""Retinal prosthesis, includes all internal and external components"" identifies the entire prosthesis, including all internal and external components.
+
+Existing code V2799 ""Vision item or service, miscellaneous"" is available for assignment by insurers to identify the replacement head mounted telemetry system and the replacement VPU."	"This request to establish 2 new Level II HCPCS codes to separately identify the head-mounted telemetry and video data collection system, and the video processing unit (VPU) for use with an implanted retinal prosthesis has not been approved. Reported sales volume for each of these components is insufficient to support a request for a revision to the national code set. In accordance with HCPCS coding criteria as published on CMS’ HCPCS website, there must be sufficient claims activity or volume, as evidenced by 3 months of marketing activity, so that adding a new code enhances the efficiency of the system and justifies the administrative burden of adding the code.
+Existing code C1841 ""Retinal prosthesis, includes all internal and external components"" identifies the entire prosthesis, including all internal and external components, and can be used to report Hospital Outpatient PPS claims to Medicare.
+Existing code V2799 ""Vision item or service, miscellaneous"" is available for assignment by insurers to identify the replacement head mounted telemetry system and the replacement VPU, if they deem appropriate.
+CMS is reviewing the DMEPOS Jurisdiction List for 2018, pertaining to jurisdiction for code V2799."
+17.115	S & O	"Request to establish a new Level II HCPCS code to identify test strips for Artificial Pancreas Device System Integrated Blood Glucose Meter, Trade Name: CONTOUR NEXT test strips.
+
+Applicant's suggested language: ""Blood glucose meter strips, PMA approved, for blood glucose meters wirelessly integrated with Artificial Pancreas Device Systems (APDS)""."	"This request to establish a new Level II HCPCS code to separately identify Contour NEXT test strips has not been approved. Existing code A4253 ""Blood glucose test or reagent strips for home blood glucose monitor, per 50 strips"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify Contour NEXT test strips has not been approved. Existing code A4253 ""Blood glucose test or reagent strips for home blood glucose monitor, per 50 strips"" adequately describes this product and is available for assignment by insurers if they deem appropriate."
+17.116	S & O	"Request to establish a new Level II HCPCS code to identify an artificial pancreas device system integrated blood glucose meter. Trade Name: CONTOUR NEXT LINK 2.4 Blood Glucose Monitoring System.
+
+Applicant's suggested language: ""Blood glucose meter, PMA-approved and wirelessly integrated with Artificial Pancreas Device Systems (APDS)""."	"This request to establish a new Level II HCPCS code to separately identify the Contour NEXT Link 2.4 blood glucose meter has not been approved. Existing code E0607 ""Home blood glucose monitor"" adequately describes this product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the Contour NEXT Link 2.4 blood glucose meter has not been approved. Existing code E0607 ""Home blood glucose monitor"" adequately describes this product and is available for assignment by insurers if they deem appropriate."
+17.117	O & P	"Request to:
+
+(1) establish a new Level II HCPCS code to identify a Prosthetic Arm Cover, Trade Name: Freedom Arm Cover;
+
+(2) establish a new Level II HCPCS code to identify an Ankle Foot Orthosis, Trade Name: James' Ankle Foot Orthotic (JAFO);
+
+(3) assign existing code L2820 ""Addition to the lower extremity orthosis, soft interface for molded plastic, below knee section""  to the JAFO pad (as a soft interface); and
+
+(4) assign existing codes L5704 ""Custom shaped protective cover, below knee"" and L5705 ""Custom shaped protective cover, above knee"" to the JAFO.
+
+No coding language was suggested by the applicant.
+"	"This request to establish four new Level II HCPCS codes to identify the James' Ankle Foot Orthotic (JAFO) and one new code to identify the Freedom Arm Cover has not been approved. Existing code A4467 ""Belt, strap, sleeve, garment, or covering, any type"" adequately describes all items included in this application and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to identify the James' Ankle Foot Orthotic (JAFO) and one new code to identify the Freedom Arm Cover has not been approved. Existing code A4467 ""Belt, strap, sleeve, garment, or covering, any type"" adequately describes the JAFO and the Freedom Arm Cover.  These  codes are available for assignment by insurers if they deem appropriate."
+17.118	DME	"Request to establish a new HCPCS Level II code to identify a foot box that is ""prefabricated, full, with or without divider with fixed attaching hardware"". Trade Name: Sunrise Medical's Jay Full Foot Box with or without divider.
+
+Applicant's suggested language: EXXXX - ""Wheelchair positioning accessory, foot box, prefabricated, full, with or without divider with fixed attaching hardware""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the full foot box. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"Establish E0954, ""Wheelchair accessory, foot box, any type, includes attachment and mounting hardware, each foot""."
+17.119	DME	"Request to establish a new HCPCS Level II code to identify single (individual) foot box technology. Trade Name: Sunrise Medical's Jay Single Foot Box.
+
+Applicant's suggested language: EXXXX - ""Wheelchair positioning accessory, foot box, prefabricated, single, with fixed attaching hardware, each"".
+
+ "	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the single foot box. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor.
+"	"Establish E0954, ""Wheelchair accessory, foot box, any type, includes attachment and mounting hardware, each foot""."
+17.120	DME	"Request to establish a new HCPCS Level II code to identify custom-fabricated foot box technology. Trade Name: Jay Your Way custom foot box technology.
+
+Applicant's suggested language: EXXXX - ""Wheelchair positioning accessory, foot box, custom fabricated with fixed attaching hardware""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify a custom foot box. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"Establish E0954, ""Wheelchair accessory, foot box, any type, includes attachment and mounting hardware, each foot""."
+17.121	DME	"Request to revise existing Level II HCPCS code A9277, adding the language ""1 unit = 1 day"", and to assign the revised code to identify a transmitter for use with Dexcom G5 Mobile Continuous Glucose Monitoring System and G4 PLATINUM Continuous Monitoring System (both adult and pediatric models).
+
+Applicant's suggested language: Revise A9277, which currently reads, ""Transmitter; external, for use with interstitial continuous glucose monitoring system"", to instead read, ""Transmitter; external, for use with interstitial continuous glucose monitoring system, 1 unit = 1 day""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to revise the descriptor of existing code A9277. For therapeutic CGMs, refer to new code K0553."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to revise the descriptor of existing code A9277. For therapeutic CGMs, newly code K0553 ""Supply allowance for therapeutic continuous glucose monitor (CGM), includes all supplies and accessories, 1 month supply = 1 Unit Of Service"", effective 07/01/2017, is available for assignment for insurers if they deem appropriate."
+17.122	DME	"Request to establish a new Level II HCPCS code to identify retrofit rear wheel suspension kits for tilt-in-space wheelchairs. Trade Name: QuadshoX Wheelchair Suspension Kit.
+
+Applicant's suggested language: ""retrofit suspension kits, wheelchairs""."	"This request to establish a new Level II HCPCS code to separately identify the QuadshoX Wheelchair Suspension Kit has not been approved. Existing code E1015 ""Shock absorber for manual wheelchair, each"" adequately describes the function of this product and is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the QuadshoX Wheelchair Suspension Kit has not been approved. Existing code E1015 ""Shock absorber for manual wheelchair, each"" adequately describes the function of this product and is available for assignment by insurers if they deem appropriate."
+17.123	DME	"Request to establish a new HCPCS Level II code to identify a foot box that is ""prefabricated, full, with or without divider with fixed attaching hardware"". Trade Name: Adaptive Engineering Lab Foot Box.
+
+Applicant's suggested language: ""Wheelchair positioning accessory, foot box, prefabricated, full, with or without divider with fixed attaching hardware""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the full foot box that is the subject of this request. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"Establish E0954, ""Wheelchair accessory, foot box, any type, includes attachment and mounting hardware, each foot""."
+17.124	DME	"Request to establish a new HCPCS Level II code to identify a foot box that is ""prefabricated, single, with fixed attaching hardware"". Trade Name: Adaptive Engineering Lab Foot Box.
+
+Applicant's suggested language: ""Wheelchair positioning accessory, foot box, prefabricated, single, with fixed attaching hardware, each""."	"A national program operating need was not identified by Medicare, Medicaid, or the private insurance sector to establish a new Level II HCPCS code to identify the single foot box that is the subject of this request. For coding guidance, contact the insurer in whose jurisdiction a claim would be filed. For Medicaid, contact the Medicaid Agency in the state in which a claim would be filed. For private insurance, contact the individual private insurance entity. For Medicare, contact the Medicare contractor."	"Establish E0954, ""Wheelchair accessory, foot box, any type, includes attachment and mounting hardware, each foot""."
+17.125	DME	"Request to establish a new Level II HCPCS code to identify a hand-held intrapulmonary acoustical airway clearance device. Trade Name: Vibralung Acoustical Percussor.
+
+Applicant’s suggested language: ""Intrapulmonary Acoustical Airway Clearance""."	"This request to establish a new Level II HCPCS code to separately identify a hand-held Vibralung Acoustical Percussor has not been approved. Existing code E0480 ""Percussor, electric or pneumatic, home model"" adequately describes this product, and it is available for assignment by insurers if they deem appropriate."	"This request to establish a new Level II HCPCS code to separately identify the Vibralung Acoustical Percussor has not been approved. Existing code E0480 ""Percussor, electric or pneumatic, home model"" adequately describes this product, and it is available for assignment by insurers if they deem appropriate."
+				

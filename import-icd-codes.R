@@ -376,10 +376,16 @@ df <- df %>% select(year, type, icd, code, desc)
 # Replace Unicode characters with ASCII
 df <- df %>% 
   mutate(desc=replace(desc,
+    (year < 2010 & type == 'dx' & code == '413'),
+    "Friedlander's bacillus infection in conditions classified elsewhere and of unspecified site")) %>% 
+  mutate(desc=replace(desc,
     (year >= 2010 & type == 'dx' & code == '0413'),
     "Friedlander's bacillus infection in conditions classified elsewhere and of unspecified site")) %>% 
   mutate(desc=replace(desc,
     (year >= 2010 & type == 'dx' & code == '04671'),  
+    "Germstmann-Straussler-Scheinker syndrome")) %>%
+  mutate(desc=replace(desc,
+    (year >= 2010 & type == 'dx' & code == '4671'),  
     "Germstmann-Straussler-Scheinker syndrome")) %>%
   mutate(desc=replace(desc,
     (year >= 2010 & type == 'dx' & code == '38600'),  
@@ -400,6 +406,9 @@ df <- df %>%
     (year >= 2010 & type == 'dx' & code == '0413'),  
     "Friedlander's bacillus infection in conditions classified elsewhere and of unspecified site")) %>%
   mutate(desc=replace(desc,
+    (year >= 2010 & type == 'dx' & code == '413'),  
+    "Friedlander's bacillus infection in conditions classified elsewhere and of unspecified site")) %>%
+  mutate(desc=replace(desc,
     (year >= 2010 & type == 'dx' & code == '04671'),  
     "Germstmann-Straussler-Scheinker syndrome")) %>%
   mutate(desc=replace(desc,
@@ -408,16 +417,16 @@ df <- df %>%
 
 
 df$desc <- gsub("'", "", df$desc)
-q <- DBI::dbGetQuery(con, "SELECT dx1, dx1_desc from nrd where dx1 = '00322' and nrd_year = 2014")
-dim(q)
-head(q)
-df.no.2015 <- df %>% filter(year < 2015)
-df.bak <- df
 
-df <- df.no.2015 %>% filter(type != 'pr')
+df <- df %>% 
+  filter(year >= 2009) %>%
+  arrange(year)
+
+
 # Last left off at 140276 for full df
-
-for (i in 1:dim(df)[1]) {
+cursor.txt <- readLines('last-position.txt')
+cursor <- as.numeric(gsub(".*= ", "", cursor.txt))
+for (i in cursor:dim(df)[1]) {
   writeLines(paste0("Last left off at i = ", i), "last-position.txt") 
   print(paste0("processing ", i, " of ", dim(df)[1], " (", (i/dim(df)[1]), ")"))
   print(df[i,])
@@ -504,4 +513,3 @@ for (i in 1:dim(df)[1]) {
     }
   }
 }
-
