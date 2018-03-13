@@ -241,3 +241,5 @@ data/cc*
 
 *.pdf
 data/ICD*
+
+.RDataTmp

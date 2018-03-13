@@ -32,15 +32,17 @@ nrd.visitlink <- cdiff.nrd %>% filter(dx1 == '00845') %>% pull(nrd_visitlink) %>
 overall.start <- Sys.time()
 df <- data_frame()
   
-prev <- 1
-chunk <- trunc(length(nrd.visitlink) / (round(log(length(nrd.visitlink),  base=2))))
+chunk <- round(length(nrd.visitlink) / (round(log(length(nrd.visitlink),  base=2))))
+
 iter <- round(length(nrd.visitlink) / chunk)
-count <- 0
+
+i <- 0
 #for (i in 1:length(nrd.visitlink)) {
-for (i in 0:iter) {
-  count <- count + 1
+for (count in 1:(iter + 1)) {
+  
   prev <- i + 1
-  i <- i + chunk 
+  i <- count * chunk 
+  
   if (i > length(nrd.visitlink)) {
     i <- length(nrd.visitlink)
   }
