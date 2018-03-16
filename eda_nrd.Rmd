@@ -23,6 +23,7 @@ library('dbplyr')
 library('DBI')
 library('ggplot2')
 library('scales')
+library('tidyverse')
 ```
 
 
@@ -97,4 +98,5 @@ q <- DBI::dbGetQuery(con, "SELECT *
                                                            i10_dx29 = 'A047'  OR
                                                            i10_dx30 = 'A047')")
 write.csv(q, 'data/cdiff-nrd.csv', row.names = FALSE)
+
 ```

@@ -38,7 +38,7 @@ cdiff <- read.csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/
 # At a glance
 
  * Currently inserting ICD-9-CM and ICD-10-CM descriptions into NRD database for easy translation of codes
- * Rank Week 5's analysis comparing males and females
+ * Ran Week 5's analysis comparing males and females
  * Females seem to be at nearly 30\% higher risk for C. *diff*
  * Males appear to contract it between 3-4 years earlier 
 

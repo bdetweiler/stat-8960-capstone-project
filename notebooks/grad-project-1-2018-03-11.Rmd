@@ -1,0 +1,155 @@
+---
+title: 'Grad Project: Week 9'
+author: "Brian Detweiler"
+date: "March 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+#con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+```
+
+```{r, echo=FALSE, cache=TRUE}
+#cdiff <- read.csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff-nrd.csv', stringsAsFactors = FALSE)
+```
+
+```{r, echo=FALSE, cache=TRUE}
+#rowcount <- count(cdiff)[[1]]
+#patients <- length(unique(cdiff$nrd_visitlink))
+```
+
+# At a glance
+
+ * Had to kill the previous update query
+ * Ran update on subset of CDI cases
+ * Querying for all patients who ever had CDI
+
+# Stress testing 
+
+It would seem that in addition to a statistical analysis project, I am also running a pretty thorough
+stress test on my workstation. This data set is intense. The update script I was running last week 
+kept crashing. I set up a cron job to restart the script at the last known position if it was down but
+when I checked on it the next morning, it was not even close to completing. It actually
+would have taken at least 8 more days of continuously running to complete, and I just don't have that
+kind of time.
+
+So to speed things along, I decided to perform the update only on the subset of C. *diff* cases. This
+is all we're really interested in anyway, but it is a little unsatisfying to not have a complete database
+of descriptions to accompany the ICD-9-CM and ICD-10-CM codes, but it is not necessary.
+
+Next, because this is the Nationwide Readmissions Database, we are interested in readmissions. What we 
+currently have is every listing of C. *diff* in the database, but not every listing for those patients.
+
+C. *diff* is interesting because it is most frequently acquired while in the hospital for a different
+primary disease. Patient readmissions are tracked via the **`nrd_visitlink`** column - a non-unique
+key that can be thought of as an individual patient entered each time they visit within a given calendar
+year. So the only way to ensure we have every "visit" for every patient who was ever listed as having 
+C. *diff* is to get the distinct list of `nrd_visitlink` IDs, and query for all records containing 
+those `nrd_visitlink`s. 
+
+This list is still very long, at 245984 distinct patients. This is good for our sample size, but bad for
+our hardware. The query is simple, but the processing time required is not.
+
+```
+SELECT * 
+  FROM nrd
+ WHERE nrd_visitlink IN ('xv4eejr', 'xjp1wvg', 'xzi005i', ...)
+```
+
+As a personal preference, I don't like processes that I haven't seen move in over an hour. Executing this query
+was taking way too long, so I decided to break the `IN` clause up by chunks of $log_2(245984) \approx 13666$ IDs
+over 19 iterations. After each query, I am binding the results to a `tibble` and once the full operation completes,
+it will be written to CSV. Each iteration takes about 15 minutes, so it is not fast, but at least it moves and
+I am able to monitor its progress. 
+
+As I mentioned before, these `select *` operations are very computationally expensive on a column store database,
+but I'd rather run this expensive query once than realize I forgot a column and have to rerun a more specific one
+again.
+
+```
+Tasks: 273 total,   3 running, 269 sleeping,   0 stopped,   1 zombie
+%Cpu(s): 99.8 us,  0.2 sy,  0.0 ni,  0.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem : 64020472 total, 26498132 free, 14600184 used, 22922156 buff/cache
+KiB Swap: 65118204 total, 65118204 free,        0 used. 48726984 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                                                                                                  
+11858 bdetwei+  20   0 56.007g 0.018t 7.571g S 790.0 30.8 309:08.91 rsession
+```
+Here's the results of `top` while the `select *` query was running.
+
+![CPU load is nearly pegged on all 8 cores.](/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/notebooks/images/cpu.png)
+
+
+# Finding the FMT codes
+
+As I mentioned in [Week 2](http://bdetweiler.github.io/projects/grad-project/grad-project-1-2018-01-21.html),
+FMTs are lossy-encoded into the NRD, by way of the `PRCCSn` columns. They take Current Procedure Terminology
+(CPT) codes and Healthcare Procedure Coding System (HCPCS, pronounced "hick-picks") codes and encode them into
+broader categories. 
+
+CPT codes are also known as HCPCS Level I (for Medicare purposes). This is just a technicality. What we need
+to be aware of is the CPT codes are numeric, while the HCPCS codes are more specific and alpha-numeric starting
+with a letter. CPT codes are copyrighted by the AMA, and I have not been able to find a comprehensive list of
+codes anywhere. 
+
+The two codes of interest are CPT code
+**[44705](http://www.gastro.org/practice-management/coding/fmt-coding-guidance)** - 
+*"Preparation of fecal microbiota for instillation, including assessment of donor specimen"* 
+and HCPCS code **[G0455](http://hcpcscodes.org/G0455)** - 
+*"Preparation with instillation of fecal microbiota by any method, including assessment of donor specimen"*.
+
+These are then encoded to CCS code 
+**95** - *"Other non-OR lower GI therapeutic procedures"*.
+Other various codes, such as 
+**0288T** - *"Anoscopy w/rf delivery"* 
+and **45190** - *"Under Destruction Procedures on the Rectum"* 
+are also categorized under CCS code **95**, so we will need to proceed with caution in assuming an FMT.
+
+There's a good explanation of HCPCS codes [here](https://www.medicalbillingandcoding.org/hcpcs-codes/). 
+
+# Tracking readmissions
+
+The next step is to track patient readmissions. I haven't decided how to handle this yet. My initial thought
+is to take a sort of object-oriented approach and build a list of patient records that each contain a
+data frame of all of that patient's admissions. 
+
+Then, to perform analysis, we would need to summarize each record with the data points of interst. Mostly, we're
+going to be interested in boolean-type variables. Was the patient readmitted within 90 days of receiving a CDI
+diagnosis? Within 30 days? Was the patient adminstered an FMT? Were they readmitted within 30 or 90 days 
+after that? 
+
+# Statistical analyses
+
+Once we have that information we should be able to perform a logistic regression on whether FMTs make patients
+more or less likely to be readmitted. It may also be interesting to run a naive Bayes model and compare the accuracy
+to the logistic regression.
+
+
+# Next Steps
+
+ * Finish querying for C. *diff* cases
+ * Build patient record structures
+ * Model as linear logistic regression
+ * Model as naive Bayes
