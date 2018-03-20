@@ -61,7 +61,7 @@ sample.cdiff <- svydesign(ids = ~cluster,
 
 # Rules rules rules
 
-Establishing rules for building patient profiles has thusfar been the most challenging aspect of this project.
+Establishing rules for building patient profiles has thus far been the most challenging aspect of this project.
 Admittedly, this was partly due to a misunderstanding of how readmissions are counted, per the NRD.
 It turns out, AHRQ provide an 
 [example](https://www.hcup-us.ahrq.gov/db/nation/nrd/NRD_Introduction_2013.jsp) 
@@ -69,7 +69,7 @@ of how analysis should be conducted on the NRD.
 
 The gist of it is, admissions are broken into **index admissions** and **readmission**. An Index Admission is determined
 by some criteria and is regarded as the first admission we want to track. A readmission is *relative to* the index admission,
-and is determined by seperate criteria.
+and is determined by separate criteria.
 
 Based on the AHRQ paper, and some criteria we are particularly interested in, we have established the following rules 
 to determine an index admission:
@@ -105,7 +105,7 @@ that the system is still under development. Because of this, we won't be able to
 (\*) NOTE: AHRQ used *discharges* rather than admissions, which I am slightly unclear on. 
 If discharge is counted as (**nrd_timetoevent** + **los**), to me, it seems that does not really measure
 a *readmission*, and as such, I am only counting **nrd_timetoevent** that falls within the $d$-day window. 
-Although this may just be a technicality of terminiology, as each row in the dataset is called a *discharge*. 
+Although this may just be a technicality of terminology, as each row in the dataset is called a *discharge*. 
 
 ## Readmission rates
 
@@ -177,7 +177,7 @@ in which medical professionals seemed unsure of how to code FMTs.
 
 This is the most worrying aspect of the entire project to me. If the data is unreliable, the analysis will be poor.
 We may be able to mitigate this with some detective work. For example, if these procedures are often reported as a
-colonoscopy, we may be able to make some inferrences. However, this will require some expert advice.
+colonoscopy, we may be able to make some inferences. However, this will require some expert advice.
 
 ## Big data! More slowness
 
