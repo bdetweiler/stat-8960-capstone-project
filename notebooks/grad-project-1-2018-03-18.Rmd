@@ -1,0 +1,250 @@
+---
+title: 'Grad Project: Week 10'
+author: "Brian Detweiler"
+date: "March 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library('knitr')
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+library('survey')
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+#con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+```
+
+```{r, echo=FALSE, cache=TRUE}
+cdiff <- read.csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/cdiff-readmissions-90-day-window.csv', stringsAsFactors = FALSE)
+cdiff <- cdiff %>% filter(stratum != 756)
+cdiff <- cdiff %>% filter(stratum != 740)
+cdiff <- cdiff %>% filter(stratum != 754)
+
+sample.cdiff <- svydesign(ids = ~cluster, 
+                          data = cdiff, 
+                          weights = ~weight, 
+                          strata=~stratum)
+```
+
+# At a glance
+ 
+ * Established rules and logic for determining $d$-day readmissions ($d$ = 7, 14, 30, 60, 90)
+ * Built preliminary readmission dataset (will need revision)
+ * Identified several complexities that will need to be navigated
+ * Began modeling - very simple logistic regression
+ * Scheduled final presentation
+  * When: Friday, May 4th, 1:00-2:00 PM
+  * Where: University of Nebraska, Omaha - Durham Science Center, room 208, 
+ * Started building presentation for the [Spring MAA NESeSD Section Meeting](http://sections.maa.org/nesesd/)
+  * Will be partially reusable for final graduate presentation
+  * When: Friday, April 20th, Time TBD
+  * Where: University of Nebraska, Omaha - Durham Science Center, room TBD
+
+# Rules rules rules
+
+Establishing rules for building patient profiles has thusfar been the most challenging aspect of this project.
+Admittedly, this was partly due to a misunderstanding of how readmissions are counted, per the NRD.
+It turns out, AHRQ provide an 
+[example](https://www.hcup-us.ahrq.gov/db/nation/nrd/NRD_Introduction_2013.jsp) 
+of how analysis should be conducted on the NRD.
+
+The gist of it is, admissions are broken into **index admissions** and **readmission**. An Index Admission is determined
+by some criteria and is regarded as the first admission we want to track. A readmission is *relative to* the index admission,
+and is determined by seperate criteria.
+
+Based on the AHRQ paper, and some criteria we are particularly interested in, we have established the following rules 
+to determine an index admission:
+
+We will create five separate datasets based off of the readmission windows we are interested in.
+
+We will consider $d$ day admissions, where $d = \{7, 14, 30, 60, 90\}$.
+
+Because the NRD is based on calendar year, and each sample applies only to its respective calendar year,
+we must leave $d$ days at the end of the year for possible readmissions. For this reason, we must omit the last
+$12 - ceil(d/30)$ days for years 2010-2013, and $10 - ceil(d/30)$ for 2015 from consideration of index admissions.
+
+Why are we starting from month 10 on 2015 rather than 12? Because in 2015, they switched from ICD-9-CM codes to
+ICD-10-CM codes in October. That would have been ok, except they did not include any CCS codes, 
+[citing](https://www.hcup-us.ahrq.gov/db/nation/nrd/Introduction_NRD_2010-2015.jsp) 
+that the system is still under development. Because of this, we won't be able to find FMTs.
+
+
+## Index event rules
+
+    For years 2010-2014: (1 <= dmonth <= 12 - ceil(d/30))
+    For 2015: (1 <= dmonth <= 10 - ceil(d/30))
+    died != 0
+    los >= 0
+    age > 0
+
+## Readmission event rules
+
+    The first admission(*) for a patient was within d days of an index event
+    Subsequent admissions(*) within $d$ days of the index event count as readmission 
+    Discharge may be to the same or a different hospital (HOSP_NRD) and may result in a death
+
+(\*) NOTE: AHRQ used *discharges* rather than admissions, which I am slightly unclear on. 
+If discharge is counted as (**nrd_timetoevent** + **los**), to me, it seems that does not really measure
+a *readmission*, and as such, I am only counting **nrd_timetoevent** that falls within the $d$-day window. 
+Although this may just be a technicality of terminiology, as each row in the dataset is called a *discharge*. 
+
+## Readmission rates
+
+Percentage of index admissions that had at least one readmission within $d$ days. 
+    
+    END_MONTH = 12 for 2010-2014, 10 for 2015
+    N = total number of index events that had at least one subsequent hospital admission within d days
+    D = total number of index events between 1 (January) and (END_MONTH - ceil(d/30))
+    Rate = (N / D) * 100
+
+## State diagram
+
+Using these rules, I've created a state diagram for building a patient readmission data frame. Keep in mind, the majority
+of cases will either be a single index event, or an index event and a single readmission. The state diagram logic is to 
+capture the edge cases.
+
+![Readmission Rules](/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/C. diff Readmission State Diagram.png)
+
+
+
+# Complications
+
+The NRD contains a list of patients and all of their admissions for the given calendar year. It stores each
+admission in a separate row. Therefore, performing a quick regressions won't work. 
+
+Most data analysis algorithms rely on the paradigm of *data frames*, in which a single observation resides on
+a single row. In the NRD, a readmission consists of an index event and one or more readmissions, which will
+all reside on their own rows. Thus, we need to take these multi-row patient events and collapse them down
+into a single row that answers the questions we are asking.
+
+To do this, the approach we choose to take is to build a data frame consisting of the index event and
+the readmissions, and use those to build a **PatientRecord** object. We end up with a list of PatientRecords
+at the end and we simply convert each to a data frame and bind all of them together to get our final usable data frame.
+
+The code for this is fairly complex (and a little ugly). It is available on my 
+[GitHub](https://github.com/bdetweiler/stat-8960-capstone-project/)
+for those who are curious.
+
+## Complexities 
+
+Complicating things further, up to this point, I had all but ignored the complex survey design of the NRD. 
+Actually, that's sugar coating it. I didn't even know what complex survey design was.
+
+In fact, the analyses in prior notebooks, 
+[Week 5](http://bdetweiler.github.io/projects/grad-project/grad-project-1-2018-02-11.html)
+and
+[Week 8](http://bdetweiler.github.io/projects/grad-project/grad-project-1-2018-03-04.html)
+are likely biased due to treating it as an simple random sample.
+While those analyses were mostly exploratory, in order to publish any of it, stratification, clustering, and weighting
+will need to be taken into account.
+
+My ignorance has since been remedied. I picked up a copy of 
+[Applied Survey Data Analysis, 2nd Edition](http://www.isr.umich.edu/src/smp/asda/), Heeringa, et. al, and am 
+slowly getting up to speed. Thankfully, \textsf{R} has the `survey` package which can be used for performing 
+descriptive statistics and generalized linear models on complex survey data. 
+
+## Coding worries
+
+FMTs are a relatively new procedure, and there are complexities around the coding of the procedure, as well as finding
+it in the NRD. For starters, the government banned most doctors from performing FMTs briefly in 2013 before reversing
+the decision in June of 2013. This leaves us with a gap in 2013, all of 2014, and months 1 - 9 of 2015. Not much 
+to base a longitudinal study on. 
+
+Furthermore, doing a few Google searches for "fecal microbiota" codes result in some rather worrying 
+[forum](https://www.supercoder.com/my-ask-an-expert/topic/new-cpt-code-44705) 
+[discussion](https://engage.ahima.org/communities/community-home/digestviewer/viewthread?GroupId=19&MID=939)
+[posts](https://www.aapc.com/memberarea/forums/88867-fecal-transplant-eliminate-confusion.html)
+in which medical professionals seemed unsure of how to code FMTs. 
+
+This is the most worrying aspect of the entire project to me. If the data is unreliable, the analysis will be poor.
+We may be able to mitigate this with some detective work. For example, if these procedures are often reported as a
+colonoscopy, we may be able to make some inferrences. However, this will require some expert advice.
+
+## Big data! More slowness
+
+Once again, I am running into slow processing issues with this huge dataset. It looks like processing the 
+**PatientRecord** dataset will take about 3 days for each window. I can do this once, but not more. Therefore, 
+I've decided that it is will be most important to get my model right. We can model on a small subset of 
+data, and once the model is right, then we can pull in all of it and rerun the model. 
+
+# A formative model
+
+Seeing as how I'm already about three weeks behind where I wanted to be at this point, I think it's time
+to start with at least a very basic model.
+
+Keeping in mind that this is entirely formative and will look nothing like the final product, I present here,
+a logistic regression model of readmissions by age, on a small 1000 sample subset of the NRD.
+
+```{r, echo=FALSE, cache=TRUE}
+m <- svyglm(readmitted~age.end,
+            design=as.svrepdesign(sample.cdiff), 
+            family=quasibinomial, 
+            return.replicates=TRUE)
+summary(m)
+```
+
+We see that `age.end` has a statistically significant effect on readmission rates (I know, big revelation here). 
+Mostly what this is demonstrating is the use of the `survey::svyglm()` function to produce a logistic regression 
+model while taking stratification, clustering, and weighting into account.
+
+Predicting readmission probabilities for ages 20, 30, 40, ..., 90 gives us:
+
+```{r, echo=FALSE, cache=TRUE}
+fit <- predict(m, return.replicates=TRUE, type="response")
+
+new.survey <- sample_n(cdiff, 8)
+pred.ages <- c(20, 30, 40, 50, 60, 70, 80, 90) 
+new.survey$age.start <- pred.ages
+new.survey$age.end <- pred.ages
+new.survey <- new.survey %>% select(age.end, stratum, cluster, weight)
+row.names(new.survey) <- pred.ages
+
+pred <- predict(m, new.survey, return.replicates=FALSE, type="response")
+
+pred.df <- as.data.frame(pred[1:8])
+pred.df$age <- as.numeric(rownames(pred.df))
+colnames(pred.df) <- c("Prob", "Age")
+kable(pred.df %>% select(Age, Prob), format = "markdown", row.names = FALSE)
+```
+
+```{r, echo=FALSE, cache=TRUE}
+cdiff %>% 
+  ggplot(aes(age.end, readmitted)) +
+    geom_bin2d(bins = 30) +
+    geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+    geom_point(data = pred.df, aes(x=Age, y=Prob)) +
+    labs(title="Logistic Regression of Readmission by Age", x="Age at last admission", y="Readmitted (1 = Yes, 0 = No)")
+
+```
+
+Finally, plotting the results we can see that this is not a great linear regression model. There are far more non-readmissions
+than readmissions, and so it would be difficult to pick a threshold to assign an age group to "readmission". This is likely
+better suited for a simple linear regression model, but again, this is just for demonstration purposes and to get a foothold.
+
+
+# Next Steps
+
+The next big step is to develop and refine a useful model. Once this is at a point where it has been established and
+verified, the dataset will need to be fully generated on the entire dataset. I estimate this to take about a week, 
+so everything must be right before running these multi-day jobs.
+
+I will also begin putting together my presentations and final paper, as I expect these to take a significant amount of time. 
