@@ -1,0 +1,38 @@
+---
+title: "eda.Rmd"
+author: "Brian Detweiler"
+date: "December 25, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.height = 4, fig.width = 4, fig.align = 'center')
+```
+
+## R Markdown
+
+```{r, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('tidyverse')
+```
+
+
+```{r, warning=FALSE}
+
+cdiff <- read_csv('data/cdiff-nrd.csv')
+
+cdiff %>%
+  melt(id.vars=c('key_nrd', 'nrd_year', 'nrd_visitlink'))
+
+
+```

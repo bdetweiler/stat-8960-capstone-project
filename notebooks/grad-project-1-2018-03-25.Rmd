@@ -1,0 +1,254 @@
+---
+title: 'Grad Project: Week 11'
+author: "Brian Detweiler"
+date: "March 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library('knitr')
+library("devtools")
+library('MonetDB.R')
+#install.packages('MonetDBLite')
+library('MonetDBLite')
+library('dplyr')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+library('survey')
+library('tidyverse')
+library('MASS')
+
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+#con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+```
+
+# At a glance
+
+ * FMTs cannot be determined in either **PRn** or **CCSn** variables
+ * Switching strategies and attempting to find something else interesting about C. *diff* readmissions
+ * Initial results indicate age and having a renal failure comorbidity are strong predictors of readmission
+
+# No luck with finding FMTs
+
+As I mentioned [last week](http://bdetweiler.github.io/projects/grad-project/grad-project-1-2018-03-18.html), 
+finding FMTs was turning out to be rather tricky. This week I have determined that it is going to be pretty much 
+impossible with any accuracy. Many of the forum posts asking how an FMT should be coded prior to the semi-standardized
+codes of CPT **44705** and HCPCS **G0455** developed in 2013. The answers included 
+
+ * **44799** - *Unlisted procedure, small intestine*, 
+ * **43752** - *Naso-or oro-gastric tube placement, requiring physician???s skill and fluoroscopic guidance (includes fluoroscopy, image documentation and report)*
+ * **44360** - *Small intestinal endoscopy, enteroscopy beyond second portion of duodenum, not including ileum; diagnostic, including collection of specimen(s) by brushing or washing, when performed (separate procedure)*
+ * **45330** - *Sigmoidoscopy, flexible; diagnostic, including collection of specimen(s) by brushing or washing, when performed (separate procedure)*
+ * **45378** - *Colonoscopy, flexible; diagnostic, including collection of specimen(s) by brushing or washing, when performed (separate procedure)*
+ * **45399** - *Unlisted procedure, colon*
+
+And sometimes a combination was used.
+
+To make matters worse, these CPT/HCPCS codes are not directly included in the NRD, but rather they are grouped into bigger
+umbrella buckets using a proprietary 
+[Clinical Classiciation Software](https://www.hcup-us.ahrq.gov/db/vars/prccsn/nisnote.jsp)
+which groups the procedures by a more general category. This makes it impossible to definitely confirm that
+a particular therapeutic procedure was used if it was coded in CPT/HCPCS. 
+
+Sources:
+[1](https://www.aapc.com/memberarea/forums/63061-fecal-transplants.html)
+[2](https://static1.squarespace.com/static/50e0c29ae4b0a05702af7e6a/t/578e3711579fb3d7cbe44eaa/1468938001601/Billing+Guide.pdf)
+[3](https://providers.bcidaho.com/medical-management/medical-policies/med/mp_20192.page)
+[4](https://www.cgsmedicare.com/partb/pubs/news/2015/0215/cope28449.html)
+
+# Contingency plan
+
+At this point, determining readmission rates after FMT procedures is not possible with the data we have.
+
+We still have two very good datasets in the NIS and the NRD. The challenge is finding something novel in them 
+that is non-trivial and hasn't been extensively researched.
+
+Having already developed the logic for determining C. *diff* readmissions, I decided to take a peek at 
+the comorbidity variables. Looking at a small
+sample from 2010, Age and having a Renal Failure comorbidity were both highly significant predictors. 
+
+
+```{r, echo=FALSE, cache=TRUE, include=FALSE}
+readm.90 <- read_csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff-readmissions-90-day-window.csv')
+readm.90 <- filter(readm.90, stratum != "756")
+
+cdiff.design <- svydesign(ids = ~cluster, 
+                          data = readm.90, 
+                          weights = ~weight, 
+                          strata = ~stratum)
+
+m <- svyglm(readmitted~age.start +
+                       #female +
+                       #aweekend +
+                       #pay1 +
+                       #cm_aids +
+                       #cm_alcohol +
+                       #cm_anemdef +
+                       #cm_arth +
+                       #cm_bldloss +
+                       #cm_chf +
+                       #cm_chrnlung +
+                       #cm_coag +
+                       #cm_depress +
+                       #cm_dm +
+                       #cm_dmcx +
+                       #cm_drug +
+                       #cm_htn_c +
+                       #cm_hypothy +
+                       #cm_liver +
+                       #cm_lymph +
+                       #cm_lytes +
+                       #cm_mets +
+                       #cm_neuro +
+                       #cm_obese +
+                       #cm_para +
+                       #cm_perivasc +
+                       #cm_psych +
+                       #cm_pulmcirc +
+                       cm_renlfail, 
+                       #(age.start * cm_renlfail),
+                        #age.0.5 +
+                        #age.5.10 +
+                        #age.10.15  +
+                        #age.15.20  +
+                        #age.20.25  +
+                        #age.25.30  +
+                        #age.30.35  +
+                        #age.35.40  +
+                        #age.40.45  +
+                        #age.45.50  +
+                        #age.50.55  +
+                        #age.55.60  +
+                        #age.60.65  +
+                        #age.65.70  +
+                        #age.70.75  +
+                        #age.75.80  +
+                        #age.80.85  +
+                        #age.85.90,  
+                        #age.90 
+                       #cm_tumor +
+                       #cm_ulcer +
+                       #cm_valve +
+                       #cm_wghtloss,
+            design=as.svrepdesign(cdiff.design), 
+            family=quasibinomial, 
+            return.replicates=TRUE)
+
+#readm.90$age.0.5 <- as.integer(readm.90$age.start > 0 & readm.90$age.start <= 5)
+#readm.90$age.5.10 <- as.integer(readm.90$age.start > 5 & readm.90$age.start <= 10)
+#readm.90$age.10.15 <- as.integer(readm.90$age.start > 10 & readm.90$age.start <= 15)
+#readm.90$age.15.20 <- as.integer(readm.90$age.start > 15 & readm.90$age.start <= 20)
+#readm.90$age.20.25 <- as.integer(readm.90$age.start > 20 & readm.90$age.start <= 25)
+#readm.90$age.25.30 <- as.integer(readm.90$age.start > 25 & readm.90$age.start <= 30)
+#readm.90$age.30.35 <- as.integer(readm.90$age.start > 30 & readm.90$age.start <= 35)
+#readm.90$age.35.40 <- as.integer(readm.90$age.start > 35 & readm.90$age.start <= 40)
+#readm.90$age.40.45 <- as.integer(readm.90$age.start > 40 & readm.90$age.start <= 45)
+#readm.90$age.45.50 <- as.integer(readm.90$age.start > 45 & readm.90$age.start <= 50)
+#readm.90$age.50.55 <- as.integer(readm.90$age.start > 50 & readm.90$age.start <= 55)
+#readm.90$age.55.60 <- as.integer(readm.90$age.start > 55 & readm.90$age.start <= 60)
+#readm.90$age.60.65 <- as.integer(readm.90$age.start > 60 & readm.90$age.start <= 65)
+#readm.90$age.65.70 <- as.integer(readm.90$age.start > 65 & readm.90$age.start <= 70)
+#readm.90$age.70.75 <- as.integer(readm.90$age.start > 70 & readm.90$age.start <= 75)
+#readm.90$age.75.80 <- as.integer(readm.90$age.start > 75 & readm.90$age.start <= 80)
+#readm.90$age.80.85 <- as.integer(readm.90$age.start > 80 & readm.90$age.start <= 85)
+#readm.90$age.85.90 <- as.integer(readm.90$age.start > 85 & readm.90$age.start <= 90)
+#readm.90$age.90 <- as.integer(readm.90$age.start > 90)
+
+# dplyr::select(readm.90, starts_with("age")) %>% colSums()
+
+readm.90 %>% 
+  ggplot(aes(age.start + cm_renlfail, readmitted)) +
+    geom_bin2d(bins = 30) +
+    geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+    #geom_point(data = pred.df, aes(x=Age, y=Prob)) +
+    labs(title="Logistic Regression of Readmission by Age", x="Age at last admission", y="Readmitted (1 = Yes, 0 = No)")
+
+```
+
+```{r, echo=FALSE, cache=TRUE}
+summary(m)
+
+exp(cbind(coef(m), confint(m)))  
+```
+
+If we are interested in the probability of being readmitted given the age of the patient and 
+whether or not they have a renal failure comorbidity, that is Pr(readmitted | age.start, cm_renlfail),
+we can set up the following linear logistic regression, letting $X_1$ be the patient's age, and $X_2$ is the binary
+variable, whether a renal failure comorbidity was present:
+
+
+\begin{equation}
+\begin{split}
+  p(X) &= p(Y = 1 | X) \\
+       &= \beta_0 + \beta_1 X_1 + \beta_2 X_2\\
+\end{split}
+\end{equation}
+
+Because we need our output to be between 0 and 1, we use the logistic function:
+
+\begin{equation}
+\begin{split}
+  p(X) &= \frac{e^{\beta_0 + \beta_1 X_1 + \beta_2 X_2}}{1 + e^{\beta_0 + \beta_1 X_1 + \beta_2 X_2}}\\
+  \frac{p(X)}{1 - p(X)} &= e^{\beta_0 + \beta_1 X_1 + \beta_2 X_2}\\
+\end{split}
+\end{equation}
+
+The betas are given to us in the above table, so we can substitute those in:
+
+\begin{equation}
+\begin{split}
+  p(X) &= \frac{p(X)}{1 - p(X)} &= e^{-2.047623 + 0.01227 X_1 + 0.438832 X_2}\\
+\end{split}
+\end{equation}
+
+Plotting this function, we see the odds ratio rise with age. Patients with renal failure 
+are always at a much higher risk of being readmitted.
+
+```{r, echo=FALSE, cache=TRUE}
+
+log.odds <- function(age, cm_renlfail) {
+  return(exp(coef(m)[[1]] + (coef(m)[[2]] * age)  + (coef(m)[[3]] * cm_renlfail)))
+}
+
+ages <- rep(seq(1:90), 2)
+cm_renlfail <- c(rep(0, 90), rep(1, 90))
+logreg <- as.data.frame(cbind(ages, cm_renlfail, odds=log.odds(ages, cm_renlfail)))
+
+logreg$cm_renlfail <- factor(logreg$cm_renlfail)
+
+logreg %>%
+  ggplot(aes(ages, odds, group=cm_renlfail, col=cm_renlfail)) +
+    geom_line() +
+    geom_hline(yintercept = 0.5, col="red") +
+    labs(title="Odds ratio of 90 day readmission given age and renal failure comorbidity", 
+         y="Odds Ratio", 
+         x="Age", 
+         col="Renal")
+
+```
+
+Here, we can see the odds of being readmitted for patients over 75 with a renal failure comorbidity is greater than 50%.
+
+# Next Steps
+
+This was just run on a small sample from 2010. I am going to run the full dataset build and try running the same model on it
+and compare year over year.
+
+ * Build new objects and create new final dataset
+ * Rerun analysis on each year and compare
+ * Meet with advisors to discuss options going for proceeding.
+

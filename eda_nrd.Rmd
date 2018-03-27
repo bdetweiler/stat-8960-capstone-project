@@ -14,89 +14,75 @@ knitr::opts_chunk$set(echo = TRUE, fig.height = 4, fig.width = 4, fig.align = 'c
 ```{r, cache=TRUE}
 # setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
 
-library("devtools")
+library('devtools')
 library('MonetDB.R')
 #install.packages('MonetDBLite')
 library('MonetDBLite')
 library('dplyr')
 library('dbplyr')
+library('reshape2')
 library('DBI')
 library('ggplot2')
 library('scales')
 library('tidyverse')
+library('survey')
 ```
 
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, cache=TRUE}
 # MonetDB connection to a permanent file
 # Call the below line if you get an error about connecting
 # MonetDBLite::monetdblite_shutdown()
-con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+readm.90 <- read_csv('data/cdiff-readmissions-90-day-window.csv')
+readm.90 <- filter(readm.90, stratum != '756')
+head(readm.90)
+cdiff.design <- svydesign(ids = ~cluster, 
+                          data = readm.90, 
+                          weights = ~weight, 
+                          strata = ~stratum)
 
-q <- DBI::dbGetQuery(con, "SELECT *
-                             FROM nrd
-                            WHERE nrd_visitlink in (SELECT nrd_visitlink
-                                                      FROM nrd 
-                                                     WHERE dx1      = '00845' OR 
-                                                           dx2      = '00845' OR
-                                                           dx3      = '00845' OR
-                                                           dx4      = '00845' OR
-                                                           dx5      = '00845' OR
-                                                           dx6      = '00845' OR
-                                                           dx7      = '00845' OR
-                                                           dx8      = '00845' OR
-                                                           dx9      = '00845' OR
-                                                           dx10     = '00845' OR
-                                                           dx11     = '00845' OR
-                                                           dx12     = '00845' OR
-                                                           dx13     = '00845' OR
-                                                           dx14     = '00845' OR
-                                                           dx15     = '00845' OR
-                                                           dx16     = '00845' OR
-                                                           dx17     = '00845' OR
-                                                           dx18     = '00845' OR
-                                                           dx19     = '00845' OR
-                                                           dx20     = '00845' OR
-                                                           dx21     = '00845' OR
-                                                           dx22     = '00845' OR
-                                                           dx23     = '00845' OR
-                                                           dx24     = '00845' OR
-                                                           dx25     = '00845' OR
-                                                           dx26     = '00845' OR
-                                                           dx27     = '00845' OR
-                                                           dx28     = '00845' OR
-                                                           dx29     = '00845' OR
-                                                           dx30     = '00845' OR
-                                                           i10_dx1  = 'A047'  OR
-                                                           i10_dx2  = 'A047'  OR
-                                                           i10_dx3  = 'A047'  OR
-                                                           i10_dx4  = 'A047'  OR
-                                                           i10_dx5  = 'A047'  OR
-                                                           i10_dx6  = 'A047'  OR
-                                                           i10_dx7  = 'A047'  OR
-                                                           i10_dx8  = 'A047'  OR
-                                                           i10_dx9  = 'A047'  OR
-                                                           i10_dx10 = 'A047'  OR
-                                                           i10_dx11 = 'A047'  OR
-                                                           i10_dx12 = 'A047'  OR
-                                                           i10_dx13 = 'A047'  OR
-                                                           i10_dx14 = 'A047'  OR
-                                                           i10_dx15 = 'A047'  OR
-                                                           i10_dx16 = 'A047'  OR
-                                                           i10_dx17 = 'A047'  OR
-                                                           i10_dx18 = 'A047'  OR
-                                                           i10_dx19 = 'A047'  OR
-                                                           i10_dx20 = 'A047'  OR
-                                                           i10_dx21 = 'A047'  OR
-                                                           i10_dx22 = 'A047'  OR
-                                                           i10_dx23 = 'A047'  OR
-                                                           i10_dx24 = 'A047'  OR
-                                                           i10_dx25 = 'A047'  OR
-                                                           i10_dx26 = 'A047'  OR
-                                                           i10_dx27 = 'A047'  OR
-                                                           i10_dx28 = 'A047'  OR
-                                                           i10_dx29 = 'A047'  OR
-                                                           i10_dx30 = 'A047')")
-write.csv(q, 'data/cdiff-nrd.csv', row.names = FALSE)
+m <- svyglm(readmitted~age.start +
+                       #female +
+                       #aweekend +
+                       #pay1 +
+                       #cm_aids +
+                       #cm_alcohol +
+                       #cm_anemdef +
+                       #cm_arth +
+                       #cm_bldloss +
+                       #cm_chf +
+                       #cm_chrnlung +
+                       #cm_coag +
+                       #cm_depress +
+                       #cm_dm +
+                       #cm_dmcx +
+                       #cm_drug +
+                       #cm_htn_c +
+                       #cm_hypothy +
+                       #cm_liver +
+                       #cm_lymph +
+                       #cm_lytes +
+                       #cm_mets +
+                       #cm_neuro +
+                       #cm_obese +
+                       #cm_para +
+                       #cm_perivasc +
+                       #cm_psych +
+                       #cm_pulmcirc +
+                       cm_renlfail,
+                       #cm_tumor +
+                       #cm_ulcer +
+                       #cm_valve +
+                       #cm_wghtloss,
+            design=as.svrepdesign(cdiff.design), 
+            family=quasibinomial, 
+            return.replicates=TRUE)
+summary(m)
 
+#cdiff %>% 
+  #ggplot(aes(age.end, readmitted)) +
+    #geom_bin2d(bins = 30) +
+    #geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+    #geom_point(data = pred.df, aes(x=Age, y=Prob)) +
+    #labs(title="Logistic Regression of Readmission by Age", x="Age at last admission", y="Readmitted (1 = Yes, 0 = No)")
 ```
