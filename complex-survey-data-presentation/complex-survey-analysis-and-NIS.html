@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Brian Detweiler" />
+  <meta name="dcterms.date" content="2018-04-20" />
+  <title>Complex Survey Analysis and the NIS</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="libs/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+
+<link rel="stylesheet" href="libs/reveal.js-3.3.0.1/css/theme/moon.css" id="theme">
+
+<style type="text/css">
+.reveal section img {
+  background: rgba(255, 255, 255, 0.85);
+}
+</style>
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Complex Survey Analysis and the NIS</h1>
+    <h2 class="author">Brian Detweiler</h2>
+    <h3 class="date">April 20, 2018</h3>
+</section>
+
+<section id="about-me" class="slide level2">
+<h1>About Me</h1>
+<ul>
+<li>University of Nebraska, Omaha
+<ul>
+<li>B.S. Computer Science and Mathematics (2009)</li>
+<li>M.S. Mathematics, Data Science (May, 2018)</li>
+</ul></li>
+<li>Software Engineer (2004-present)</li>
+<li>Flight Operations, U.S. Army National Guard (2000-2009)
+<div align="center" style="padding-top: 20px;">
+<div style="width:200px; height:200px; display: inline-block;">
+<img src="arnglogo.png" alt="Army National Guard" />
+</div>
+<div style="width:200px; height:200px; display: inline-block;">
+<img src="auroracooplogo.png" alt="Aurora Cooperative" />
+</div>
+<div style="width:200px; height:200px; display: inline-block;">
+<img src="tdameritradelogo.png" alt="Army National Guard" />
+</div>
+<div style="width:200px; height:200px; display: inline-block;">
+<img src="uplogo.png" alt="Army National Guard" />
+</div>
+</div></li>
+</ul>
+</section>
+<section id="sampling-design" class="slide level2">
+<h1>Sampling Design</h1>
+<ul>
+<li>Sampling plan</li>
+<li>Method for drawing inferences</li>
+<li>Cell A: Vast majority of surveys</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 32%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sampling Plan</th>
+<th>Design-based inference</th>
+<th>Model-based inference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><p>Probability sample</p></td>
+<td><p>A</p></td>
+<td><p>C</p></td>
+</tr>
+<tr class="even">
+<td><p>Model-dependent sample</p></td>
+<td><p>B</p></td>
+<td><p>D</p></td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>When we talk about survey sample design, we’re talking about two components: A sampling plan, and a method for drawing inferences.</p>
+</aside>
+</section>
+<section id="sampling-plan" class="slide level2">
+<h1>Sampling Plan</h1>
+<ul>
+<li>Population frame</li>
+<li>Sampling frame</li>
+<li>Target population</li>
+<li>Probability sampling plan</li>
+<li>Model-dependent sampling plan
+<ul>
+<li>Maximize precision (minimize variance) of estimation for statistics of interest</li>
+<li>eg. Deaths (<span class="math inline">\(y\)</span>) due to the flu (<span class="math inline">\(x\)</span>). Assume: <span class="math inline">\(y = \beta x_i + \epsilon_i, \epsilon_i \sim N(0, \sigma^2 x_i)\)</span></li>
+</ul></li>
+</ul>
+<aside class="notes">
+<p>A population frame is the list of <span class="math inline">\(N\)</span> units making up the finite population  A sampling frame is the list of all elements from which we can draw a sample. Maybe that is registered voters, maybe that’s a list of all students in a university. But it has to be enumerable, we can’t just include “all people in America”. That could be the target population. The target population is finite and theoretically enumerable, but in most cases, it would be impractical if not logistically impossible to exhaustively survey. So that’s why we turn to complex survey design.</p>
+<p>A probability sampling plan assigns non-zero probabilities of selection to each member of the sampling frame. Sample choices are then randomized.</p>
+<p>Model-dependent sampling plans, on the other hand, assume the statistics of interest follow a known probability distribution. They then seek to draw samples that maximize the precision (or minimize the variance) of estimation for the statistics of interest.</p>
+<p>These are not common in survey practice. Surveys are generally intended to be multi-purpose, and if the wrong model is used, it can lead to biased estimates.</p>
+</aside>
+</section>
+<section id="target-population" class="slide level2">
+<h1>Target population</h1>
+<ul>
+<li>Finite</li>
+<li>Snapshot in time</li>
+<li>Students, registered voters, hospital patients, etc</li>
+<li>Rarely practical
+<ul>
+<li>Limited time, funding, and resources</li>
+</ul></li>
+<li>Goal: Estimate population parameters with minimal sampling effort</li>
+</ul>
+</section>
+<section id="survey-population" class="slide level2">
+<h1>Survey Population</h1>
+<ul>
+<li>Population we can actually sample under the survey design</li>
+</ul>
+</section>
+<section id="simple-random-sample-srs" class="slide level2">
+<h1>Simple Random Sample (SRS)</h1>
+<ul>
+<li>Sample with or without replacement (Urn model)</li>
+<li>With replacement - makes use of i.i.d. assumption</li>
+<li>Without replacement - not i.i.d. but still exchangeable</li>
+<li>Requires access to the whole population (complete sampling frame)</li>
+</ul>
+</section>
+<section id="complex-sampling" class="slide level2">
+<h1>Complex Sampling</h1>
+<ul>
+<li>Probability sampling</li>
+</ul>
+</section>
+<section id="stratification" class="slide level2">
+<h1>Stratification</h1>
+</section>
+<section id="clustering" class="slide level2">
+<h1>Clustering</h1>
+</section>
+<section id="weighting" class="slide level2">
+<h1>Weighting</h1>
+</section>
+<section id="h-cup-nationwide-inpatient-sample" class="slide level2">
+<h1>H-CUP Nationwide Inpatient Sample</h1>
+<ul>
+<li>Healthcare Cost and Utilization Project</li>
+<li>Must be purchased</li>
+</ul>
+</section>
+<section id="nis-sampling-design" class="slide level2">
+<h1>NIS Sampling Design</h1>
+<ul>
+<li>Sampling frame - hospitals</li>
+<li>Sampling plan</li>
+<li>Method for drawing inferences</li>
+<li>Cell A: Vast majority of surveys</li>
+</ul>
+<aside class="notes">
+<p>In the NIS, each element of the population is associated with a hospital. A sample of the hospitals is drawn, and then a sample within each selected hospital is drawn.</p>
+</aside>
+</section>
+<section id="nis-complex-survey-design---stratification" class="slide level2">
+<h1>NIS Complex Survey Design - Stratification</h1>
+</section>
+<section id="nis-complex-survey-design---clustering" class="slide level2">
+<h1>NIS Complex Survey Design - Clustering</h1>
+<ul>
+<li>Clustered on hispitals</li>
+</ul>
+</section>
+<section id="nis-complex-survey-design---weighting" class="slide level2">
+<h1>NIS Complex Survey Design - Weighting</h1>
+<ul>
+<li>Discharge weight (DISCWT) is used to produce national estimates</li>
+</ul>
+</section>
+<section id="sources-and-further-reading" class="slide level2">
+<h1>Sources and Further Reading</h1>
+<ul>
+<li>Heeringa, S., West, B. T., Berglund, P. A., Applied Survey Data Analysis, 2nd Ed., <em>CRC Press</em>, 2017</li>
+<li>Chambers, R. L., Which Sample Survey Strategy? A Review of Three Different Approaches, <em>University of Wollongong Research Online</em>, 2011</li>
+<li>Kalton, G., Introduction to Survey Sampling, <em>SAGE Publications</em>, 1983</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="libs/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="libs/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Vertical centering of slides
+        center: false,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'libs/reveal.js-3.3.0.1/plugin/notes/notes.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+
+  </body>
+</html>

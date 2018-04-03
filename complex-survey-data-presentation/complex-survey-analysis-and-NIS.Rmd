@@ -1,0 +1,150 @@
+---
+title: "Complex Survey Analysis and the NIS"
+author: Brian Detweiler
+date: April 20, 2018
+output: 
+  revealjs::revealjs_presentation:
+    theme: moon
+    highlight: pygments
+    self_contained: false
+    mathjax: default
+    lib_dir: libs
+    reveal_plugins: ["notes"]
+    reveal_options:
+      slideNumber: true
+---
+
+## About Me
+ - University of Nebraska, Omaha
+     - B.S. Computer Science and Mathematics (2009)
+     - M.S. Mathematics, Data Science (May, 2018)
+ - Software Engineer (2004-present)
+ - Flight Operations, U.S. Army National Guard (2000-2009)
+<div align="center" style="padding-top: 20px;">
+  <div style="width:200px; height:200px; display: inline-block;">
+  ![Army National Guard](arnglogo.png)
+  </div>
+  <div style="width:200px; height:200px; display: inline-block;">
+  ![Aurora Cooperative](auroracooplogo.png)
+  </div>
+  <div style="width:200px; height:200px; display: inline-block;">
+  ![Army National Guard](tdameritradelogo.png)
+  </div>
+  <div style="width:200px; height:200px; display: inline-block;">
+  ![Army National Guard](uplogo.png)
+  </div>
+</div>
+
+
+## Sampling Design
+- Sampling plan
+- Method for drawing inferences
+- Cell A: Vast majority of surveys
+
++--------------------------+------------------------+-----------------------+
+| Sampling Plan            | Design-based inference | Model-based inference |
++==========================+========================+=======================+
+| Probability sample       | A                      | C                     |
++--------------------------+------------------------+-----------------------+
+| Model-dependent sample   | B                      | D                     |
++--------------------------+------------------------+-----------------------+
+
+<div class="notes">
+  When we talk about survey sample design or sampling strategy, 
+  we're talking about two components: 
+  A sampling plan, and a method for drawing inferences. 
+  
+  We essentially have two schools of thought on each, which, when combined,
+  gives us this 2x2 matrix of choices. I'm going to talk about each of these,
+  but by and large, cell A, Probability sampling with a Design-based inferrence
+  is what you will most commonly find in the wild.
+  
+  Cells A and D are natural pairings, but it is not uncommon to find the 
+  hybrid approaches of B and C in survey research.
+</div>
+
+## Sampling Plan
+- Population frame
+- Sampling frame
+- Target population
+- Probability sampling plan
+- Model-dependent sampling plan
+    - Maximize precision (minimize variance) of estimation for statistics of interest
+    - eg. Deaths ($y$) due to the flu ($x$). Assume:
+$y = \beta x_i + \epsilon_i, \epsilon_i \sim N(0, \sigma^2 x_i)$
+
+<div class="notes">
+  A population frame is the list of $N$ units making up the finite population \cite{Chambers}
+  A sampling frame is the list of all elements from which we can draw a sample. 
+  Maybe that is registered voters, maybe that's a list of all students in a university.
+  
+  But it has to be enumerable, we can't just include "all people in America". That could be
+  the target population. The target population is finite and theoretically enumerable, but
+  in most cases, it would be impractical if not logistically impossible to exhaustively survey.
+  So that's why we turn to complex survey design.
+  
+  A probability sampling plan assigns non-zero probabilities of selection
+  to each member of the sampling frame. Sample choices are then randomized.
+  
+  Model-dependent sampling plans, on the other hand, assume the statistics of interest
+  follow a known probability distribution. They then seek to draw samples that maximize
+  the precision (or minimize the variance) of estimation for the statistics of interest.
+  
+  These are not common in survey practice. Surveys are generally intended to be multi-purpose,
+  and if the wrong model is used, it can lead to biased estimates. 
+</div>
+
+## Target population 
+- Finite
+- Snapshot in time
+- Students, registered voters, hospital patients, etc
+- Rarely practical
+    - Limited time, funding, and resources
+- Goal: Estimate population parameters with minimal sampling effort
+
+## Survey Population
+- Population we can actually sample under the survey design
+
+## Simple Random Sample (SRS)
+- Sample with or without replacement (Urn model)
+- With replacement - makes use of i.i.d. assumption
+- Without replacement - not i.i.d. but still exchangeable
+- Requires access to the whole population (complete sampling frame)
+
+## Complex Sampling
+- Probability sampling
+
+## Stratification
+
+## Clustering
+
+## Weighting
+
+## H-CUP Nationwide Inpatient Sample
+- Healthcare Cost and Utilization Project
+- Must be purchased
+
+## NIS Sampling Design
+- Sampling frame - hospitals
+- Sampling plan
+- Method for drawing inferences
+- Cell A: Vast majority of surveys
+
+<div class="notes">
+  In the NIS, each element of the population is associated with a hospital. A
+  sample of the hospitals is drawn, and then a sample within each selected hospital 
+  is drawn.
+</div>
+
+## NIS Complex Survey Design - Stratification
+
+## NIS Complex Survey Design - Clustering
+- Clustered on hispitals
+
+## NIS Complex Survey Design - Weighting
+- Discharge weight (DISCWT) is used to produce national estimates
+
+## Sources and Further Reading
+- Heeringa, S., West, B. T., Berglund, P. A., Applied Survey Data Analysis, 2nd Ed., *CRC Press*, 2017
+- Chambers, R. L., Which Sample Survey Strategy? A Review of Three Different Approaches, *University of Wollongong Research Online*, 2011
+- Kalton, G., Introduction to Survey Sampling, *SAGE Publications*, 1983

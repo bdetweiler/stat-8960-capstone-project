@@ -124,6 +124,7 @@ PatientProfile <- setRefClass("PatientProfile",
                                 prccs8 = "character",
                                 prccs9 = "character",
                                 prccs10 = "character",
+                                prccs11 = "character",
                                 prccs12 = "character",
                                 prccs13 = "character",
                                 prccs14 = "character",
@@ -246,10 +247,11 @@ PatientProfile <- setRefClass("PatientProfile",
                                   prccs8 <<- as.character(idx$prccs8)
                                   prccs9 <<- as.character(idx$prccs9)
                                   prccs10 <<- as.character(idx$prccs10)
-                                  prccs12 <<- as.character(idx$prccs11)
-                                  prccs13 <<- as.character(idx$prccs12)
-                                  prccs14 <<- as.character(idx$prccs13)
-                                  prccs15 <<- as.character(idx$prccs14)
+                                  prccs11 <<- as.character(idx$prccs11)
+                                  prccs12 <<- as.character(idx$prccs12)
+                                  prccs13 <<- as.character(idx$prccs13)
+                                  prccs14 <<- as.character(idx$prccs14)
+                                  prccs15 <<- as.character(idx$prccs15)
                                    
                                   stratum <<- idx$nrd_stratum
                                   cluster <<- idx$hosp_nrd
@@ -431,19 +433,18 @@ calculate.readmission.window <- function(index.admission.df, readmission.df) {
 
 #readm %>% filter(nrd_visitlink == "xkosnho")
 #readm <- back
-dim(readm)
+# dim(readm)
 # REMOVME: For testing only
 
-readm <- head(readm, 20000)
+# readm <- head(readm, 20000)
 
-dim(readm)
+# dim(readm)
 # REMOVME: For testing only
-back <- readm
-readm <- back
 dim(readm)
 
-# d-days
-readmission.windows <- c(90, 60, 30, 14, 7)
+# d-days 
+#readmission.windows <- c(90, 60, 30, 14, 7)
+readmission.windows <- c(60, 30, 14, 7)
 #readmission.windows <- c(90)
 
 # Loop over all the readmission windows
@@ -501,7 +502,7 @@ for (d in readmission.windows) {
           #print("We don't have an index event yet. Find one...")
           
           index.event.df <- row %>% 
-            select(matches("key_nrd|nrd_daystoevent|^los$|^dx[0-9]+$")) %>%
+            dplyr::select(matches("key_nrd|nrd_daystoevent|^los$|^dx[0-9]+$")) %>%
             melt(id.vars=c("key_nrd", "nrd_daystoevent", "los")) %>%
             filter(value == "00845") 
         
@@ -517,7 +518,7 @@ for (d in readmission.windows) {
           #print("Find a readmission event...")
           # We have an index event, let's find readmissions
           readmission.event.df <- row %>% 
-            select(matches("key_nrd|nrd_daystoevent|^los$|^dx[0-9]+$")) %>%
+            dplyr::select(matches("key_nrd|nrd_daystoevent|^los$|^dx[0-9]+$")) %>%
             melt(id.vars=c("key_nrd", "nrd_daystoevent", "los")) %>%
             filter(value == "00845")
 

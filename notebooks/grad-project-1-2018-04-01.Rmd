@@ -1,0 +1,633 @@
+---
+title: 'Grad Project: Week 12'
+author: "Brian Detweiler"
+date: "April 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library('knitr')
+library("devtools")
+library('MonetDB.R')
+library('MonetDBLite')
+library('MASS')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+library('survey')
+library('tidyverse')
+library('boot')
+library('broom')
+library('beepr')
+library('Deducer')
+library('pROC')
+library('dplyr')
+
+set.seed(098114100)
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+hosp <- DBI::dbGetQuery(con, "SELECT * FROM nrd_hospital")
+
+hosp$hosp_bedsize <- as.integer(hosp$hosp_bedsize)
+
+hosp$h_contrl <- as.integer(hosp$h_contrl)
+hosp$hosp_urcat4 <- as.integer(hosp$hosp_urcat4)
+hosp$n_disc_u <- as.integer(hosp$n_disc_u)
+hosp$n_hosp_u <- as.integer(hosp$n_hosp_u)
+hosp$s_disc_u <- as.integer(hosp$s_disc_u)
+hosp$s_hosp_u <- as.integer(hosp$s_hosp_u)
+hosp$total_disc <- as.integer(hosp$total_disc)
+
+hosp <- hosp %>%
+  # Hospital control isn't quantifiable, it's categorical
+  mutate(hosp_hcontrl_govt=as.integer(h_contrl == 1)) %>%
+  mutate(hosp_hcontrl_priv_np=as.integer(h_contrl == 2)) %>%
+  mutate(hosp_hcontrl_priv=as.integer(h_contrl == 3)) %>%
+  # Swap the values of urban/rural categorization so that larger numbers == larger areas
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==4, 0)) %>%
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==3, 4)) %>%
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==1, 3)) %>%
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==4, 1)) %>%
+  # Teaching isn't quantifiable, it's categorical
+  mutate(hosp_ur_teach_metro=as.integer(hosp_ur_teach == 0)) %>%
+  mutate(hosp_ur_teach_metro_teaching=as.integer(hosp_ur_teach == 1)) %>%
+  mutate(hosp_ur_teach_non_metro=as.integer(hosp_ur_teach == 2)) 
+
+
+ sample0 <- function(x, ...) x[sample.int(length(x), ...)]
+ my.cost <- function(y, yhat) {
+   return(mean((y - yhat) ^ 2))
+ }
+ cv.glm1 <- function(data, glmfit, cost, K=n, threshold) {
+
+    # cross-validation estimate of error for glm prediction with K groups.
+    # cost is a function of two arguments: the observed values and the
+    # the predicted values.
+  
+    call <- match.call()
+    if (!exists(".Random.seed", envir=.GlobalEnv, inherits = FALSE)) {
+      runif(1)
+    }
+    seed <- get(".Random.seed", envir=.GlobalEnv, inherits = FALSE)
+    n <- nrow(data)
+    if ((K > n) || (K <= 1)) {
+        stop("'K' outside allowable range")
+    }
+    K.o <- K
+    K <- round(K)
+    kvals <- unique(round(n / (1L:floor(n/2))))
+    
+    temp <- abs(kvals - K)
+  
+    if (!any(temp == 0)) {
+        K <- kvals[temp == min(temp)][1L]
+    }
+   
+    if (K != K.o) {
+      warning(gettextf("'K' has been set to %f", K), domain = NA)
+    }
+    
+    f <- ceiling(n / K)
+    s <- sample0(rep(1L:K, f), n)
+
+    n.s <- table(s)
+
+#    glm.f <- formula(glmfit)
+    glm.y <- glmfit$y
+    
+    cost.0 <- cost(glm.y, fitted(glmfit))
+    
+    ms <- max(s)
+    
+    CV <- 0
+    Call <- glmfit$call
+    
+    i <- 1
+    for(i in seq_len(ms)) {
+        j.out <- seq_len(n)[(s == i)]
+        j.in <- seq_len(n)[(s != i)]
+        ## we want data from here but formula from the parent.
+        Call$data <- data[j.in, , drop=FALSE]
+        d.glm <- eval.parent(Call)
+        d.glm
+        p.alpha <- n.s[i]/n
+
+        p.i <- as.vector(unlist(predict(d.glm, data[j.out, , drop=FALSE], type = "response"))) >= threshold
+        cost.i <- cost(glm.y[j.out], p.i)
+        cost.i
+        CV <- CV + p.alpha * cost.i
+        p <- as.vector(unlist(predict(d.glm, data, type = "response"))) >= threshold
+        cost.0 <- cost.0 - p.alpha * cost(glm.y, p)
+    }
+    list(call = call, K = K,
+         delta = as.numeric(c(CV, CV + cost.0)),  # drop any names
+         seed = seed)
+}
+
+
+```
+
+# At a glance
+
+ * No longer looking for FMTs
+ * Evaluating other variables of interest and looking for strong predictors, notably renal failure comorbidities
+ * Began model fitting and evaluation
+
+# Contingency plan
+
+Having been unable to find FMTs in the NRD dataset, we need to take a different route.
+If we can't look at FMTs for effect on readmissions, what *can* we look at?
+
+We have a rich dataset of C. *diff* index admissions within the NRD dataset, and whether they were readmitted within
+$d$ days. The index admission comes with a primary diagnosis and and up to 29 secondary diagnoses. 
+However, they do not come with  a *present on admission* indicator, so we cannot tell directly what ICD-9-CM codes were added on 
+admission and what codes were acquired during their hospital stay. The NRD does however, provide us
+with a list of 29 comorbidity indicators:
+
+|     | Column             | Description                                                                           |
+|-----|--------------------|---------------------------------------------------------------------------------------|
+| 1   | CM_AIDS            | Acquired immune deficiency syndrome                                                   |
+| 2   | CM_ALCOHOL         | Alcohol abuse                                                                         |
+| 3   | CM_ANEMDEF         | Deficiency anemias                                                                    |
+| 4   | CM_ARTH            | Rheumatoid arthritis/collagen vascular diseases                                       | 
+| 5   | CM_BLDLOSS         | Chronic blood loss anemia                                                             |
+| 6   | CM_CHF             | Congestive heart failure                                                              |
+| 7   | CM_CHRNLUNG        | Chronic pulmonary disease                                                             |
+| 8   | CM_COAG            | Coagulopath                                                                           |
+| 9   | CM_DEPRESS         | Depression                                                                            |
+| 10  | CM_DM              | Diabetes, uncomplicated                                                               |
+| 11  | CM_DMCX            | Diabetes with chronic complications                                                   |
+| 12  | CM_DRUG            | Drug abuse                                                                            |
+| 13  | CM_HTN_C           | Hypertension, uncomplicated and complicated                                           |
+| 14  | CM_HYPOTHY         | Hypothyroidism                                                                        |
+| 15  | CM_LIVER           | Liver disease                                                                         |
+| 16  | CM_LYMPH           | Lymphoma                                                                              |
+| 17  | CM_LYTES           | Fluid and electrolyte disorders                                                       |
+| 18  | CM_METS            | Metastatic cancer                                                                     |
+| 19  | CM_NEURO           | Other neurological disorders                                                          |
+| 20  | CM_OBESE           | Obesity                                                                               |
+| 21  | CM_PARA            | Paralysis                                                                             |
+| 22  | CM_PERIVASC        | Peripheral vascular disorders                                                         |
+| 23  | CM_PSYCH           | Psychoses                                                                             |
+| 24  | CM_PULMCIRC        | Pulmonary circulation disorders                                                       |
+| 25  | CM_RENLFAIL        | Renal failure                                                                         |
+| 26  | CM_TUMOR           | Solid tumor without metastasis                                                        |
+| 27  | CM_ULCER           | Peptic ulcer disease excluding bleeding                                               |
+| 28  | CM_VALVE           | Valvular disease                                                                      |
+| 29  | CM_WGHTLOSS        | Weight loss                                                                           |
+
+We can examine which among these indicators, as well as other factors, have a higher effect on readmissions.
+
+```{r, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
+readm.90 <- read_csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff-readmissions-90-day-window.csv')
+
+readm.90 <- merge(readm.90, hosp, by.x=c("cluster", "nrd_year"), by.y=c("hosp_nrd", "nrd_year"))
+
+readm.90 <- readm.90 %>%
+  # Hospital control isn't quantifiable, it's categorical
+  mutate(pay_NA=as.integer(pay1 < 0)) %>%
+  mutate(pay_other=as.integer(pay1 == 6)) %>%
+  mutate(pay_nc=as.integer(pay1 == 5)) %>%
+  mutate(pay_self=as.integer(pay1 == 4)) %>%
+  mutate(pay_priv_ins=as.integer(pay1 == 3)) %>%
+  mutate(pay_medicaid=as.integer(pay1 == 2)) %>%
+  mutate(pay_medicare=as.integer(pay1 == 1))
+
+```
+
+## Checking for independence
+
+Most of the variables are categorical. Before we build a model, we need to assess independent variables for multicollinearity.
+We can use $\chi$-square tests for independence coupled with Cramer's Contingency Coefficient, also known as Cramer's phi ($\phi_c$) or
+[Cramer's V](https://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V).
+
+```{r, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
+columns.to.test <- c("female", 
+                     "aweekend", 
+                     "cm_aids", 
+                     "cm_alcohol", 
+                     "cm_anemdef", 
+                     "cm_art", 
+                     "cm_bldloss", 
+                     "cm_chf", 
+                     "cm_chrnlung", 
+                     "cm_coag", 
+                     "cm_depress", 
+                     "cm_dm", 
+                     "cm_dmcx", 
+                     "cm_drug", 
+                     "cm_htn_c", 
+                     "cm_hypothy", 
+                     "cm_liver", 
+                     "cm_lymph", 
+                     "cm_lytes", 
+                     "cm_mets", 
+                     "cm_neur", 
+                     "cm_obese", 
+                     "cm_para", 
+                     "cm_perivasc", 
+                     "cm_psych", 
+                     "cm_pulmcirc", 
+                     "cm_renlfail", 
+                     "cm_tumor", 
+                     "cm_ulcer", 
+                     "cm_valve", 
+                     "cm_wghtloss", 
+                     "hosp_bedsize", 
+                     "hosp_hcontrl_govt", 
+                     "hosp_hcontrl_priv_np", 
+                     "hosp_ur_teach_metro", 
+                     "hosp_ur_teach_metro_teaching", 
+                     "pay_other", 
+                     "pay_nc", 
+                     "pay_self", 
+                     "pay_priv_ins", 
+                     "pay_medicaid", 
+                     "pay_medicare") 
+
+correlated <- data.frame(col1=c(NA), col2=c(NA), pval=c(NA), v=c(NA))
+count <- 1
+
+for (i in 1:(length(columns.to.test) - 1)) {
+  for (j in (i + 1):length(columns.to.test)) {
+    
+    count <- count + 1
+    
+    readmitted.1 <- readm.90 %>% 
+      dplyr::filter(readmitted == 1) %>% 
+      dplyr::select(dplyr::matches(columns.to.test[i])) %>%
+      sum() %>%
+      as.numeric()
+
+    readmitted.0 <- abs(readmitted.1 - 
+                          (readm.90 %>% 
+                             dplyr::filter(readmitted == 1) %>% 
+                             dplyr::summarise(n()))) %>%
+      as.numeric()
+    
+    non.readmitted.1 <- readm.90 %>% 
+      dplyr::filter(readmitted == 0) %>% 
+      dplyr::select(dplyr::matches(columns.to.test[j])) %>%
+      sum() %>%
+      as.numeric()
+    
+    non.readmitted.0 <- abs(readmitted.1 - 
+                              (readm.90 %>% 
+                                dplyr::filter(readmitted == 0) %>% 
+                                dplyr::summarise(n()))) %>%
+      as.numeric()
+      
+    
+    tbl <- matrix(data=c(readmitted.0, readmitted.1, non.readmitted.0, non.readmitted.1), nrow=2, ncol=2, byrow=T)
+    
+    dimnames(tbl) <- list(Readmission=c('Readm', 'Non-Readm'), Variable=c(columns.to.test[i], columns.to.test[j]))
+
+    chi2 <- chisq.test(tbl, correct=F)
+     
+    # Cramer's V
+    v <- sqrt(chi2$statistic / sum(tbl))
+    
+    correlated <- bind_rows(correlated, data.frame(col1=columns.to.test[i], col2=columns.to.test[j], pval=chi2$p.value, v=v[[1]]))
+  }
+}
+
+correlated$pval <- as.numeric(correlated$pval)
+correlated$v <- as.numeric(correlated$v)
+
+final.correlated <- correlated %>% 
+  dplyr::arrange(desc(v)) %>%
+  dplyr::filter(v > 0.7) %>%
+  dplyr::filter(!is.na(v)) %>%
+  dplyr::select(-pval)
+  
+```
+
+Selecting only those with a v of 0.70 or greater, we find
+
+```{r, echo=FALSE, cache=TRUE}
+kable(final.correlated, format = "markdown", col.names = c("Column A", "Column B", "Cramer's V"))
+```
+
+
+Pay type seems to correlate strongly with the hospital urban/rural and teaching indicators. We are interested in the hospital
+types more than the pay types, so we'll remove the pay types from the model. 
+
+That leaves us with a few comorbidities and the female indicator being correlated.
+
+```{r, echo=FALSE, cache=TRUE}
+final.correlated.reduced <- final.correlated %>% 
+  filter(!grepl("pay", col1, fixed = TRUE)) %>%
+  filter(!grepl("pay", col2, fixed = TRUE)) 
+kable(final.correlated.reduced, format = "markdown", col.names = c("Column A", "Column B", "Cramer's V"))
+
+aids <- (readm.90 %>% filter(cm_aids == 1)) %>% nrow() / nrow(readm.90) * 100
+htn <- (readm.90 %>% filter(cm_htn_c == 1)) %>% nrow() / nrow(readm.90) * 100
+lytes <- (readm.90 %>% filter(cm_lytes == 1)) %>% nrow() / nrow(readm.90) * 100
+lymph <- (readm.90 %>% filter(cm_lymph == 1)) %>% nrow() / nrow(readm.90) * 100
+ulcer <- (readm.90 %>% filter(cm_ulcer == 1)) %>% nrow() / nrow(readm.90) * 100
+renal <- (readm.90 %>% filter(cm_renlfail == 1)) %>% nrow() / nrow(readm.90) * 100
+
+```
+
+If we dig into this a bit, we find that **cm_aids** accounts for `r aids`% of the dataset, 
+**cm_lymph** accounts for `r lymph`%, and **ulcer** accounts for `r ulcer`%, so any correlation
+should be minimally impactful, and we will probably end up removing them from the model altogether, 
+along with the pay types.
+
+Now, we'll run the full with all variables of interest for each year and print out the fitting times
+below.
+
+```{r, echo=FALSE, cache=TRUE}
+
+models.by.year <- list()
+
+years <- c(2010, 2011, 2012, 2013, 2014)
+y <- 2010
+sw.total <- Sys.time()
+for (y in years) {
+
+  readm.by.year <- readm.90 %>% 
+    filter(nrd_year == y)
+  
+  print(paste0("Year: ", y))
+  
+  cdiff.design <- svydesign(ids = ~cluster, 
+                            data = readm.by.year, 
+                            weights = ~weight, 
+                            strata = ~stratum)
+  sw.start <- Sys.time()
+  m <- svyglm(readmitted~age.start +
+                         hosp_hcontrl_govt +
+                         hosp_hcontrl_priv_np +
+                         hosp_urcat4 +
+                         hosp_ur_teach_metro +
+                         hosp_ur_teach_metro_teaching +
+                         hosp_bedsize +
+                         female +
+                         cm_aids +
+                         cm_alcohol +
+                         cm_anemdef +
+                         cm_arth +
+                         cm_bldloss +
+                         cm_chf +
+                         cm_chrnlung +
+                         cm_coag +
+                         cm_depress +
+                         cm_dm +
+                         cm_dmcx +
+                         cm_drug +
+                         cm_htn_c +
+                         cm_hypothy +
+                         cm_liver +
+                         cm_lymph +
+                         cm_lytes +
+                         cm_mets +
+                         cm_neuro +
+                         cm_obese +
+                         cm_para +
+                         cm_perivasc +
+                         cm_psych +
+                         cm_pulmcirc +
+                         cm_renlfail +
+                         cm_tumor +
+                         cm_ulcer +
+                         cm_valve +
+                         cm_wghtloss,
+              design=as.svrepdesign(cdiff.design), 
+              family=quasibinomial, 
+              return.replicates=TRUE)
+  sw.end <- Sys.time()
+  print(sw.end - sw.start)
+  beep(3) 
+  summary(m)
+  models.by.year[[y]] <- m
+}
+print(Sys.time() - sw.total)
+# Expect 20 minutes
+```
+
+```{r, echo=FALSE, cache=TRUE}
+coef.2010 <- tidy(summary(models.by.year[[2010]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2011 <- tidy(summary(models.by.year[[2011]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2012 <- tidy(summary(models.by.year[[2012]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2013 <- tidy(summary(models.by.year[[2013]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2014 <- tidy(summary(models.by.year[[2014]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2010$year <- 2010
+coef.2011$year <- 2011
+coef.2012$year <- 2012
+coef.2013$year <- 2013
+coef.2014$year <- 2014
+
+coefs <- bind_rows(coef.2010, coef.2011, coef.2012, coef.2013, coef.2014)
+
+coef.names <- coefs %>% 
+  dplyr::select(.rownames) %>% 
+  unique() %>% 
+  pull(.rownames)
+
+#length(coef.names)
+name <- coef.names[27]
+```
+
+Now, we'll plot each coefficient by year, showing it's effect with confidence interval and labeled with $p$-values, showing
+whether they were significant (<0.05) or not. 
+
+```{r coefficients, echo=FALSE, cache=TRUE, fig.height=5, fig.width=6, fig.align="center"}
+for (name in coef.names) {
+  coefs <- mutate(coefs, Pr...t..=round(Pr...t.., 6))
+  this.coef <- coefs %>% filter(.rownames == name)
+  this.coef <- this.coef %>% 
+    mutate(significant=ifelse(Pr...t.. < 0.05, 1, 0))
+
+  p <- this.coef %>%
+    ggplot(aes(year, Estimate, label = Pr...t..)) +
+      geom_bar(stat="identity") +
+      geom_errorbar(aes(ymin = (Estimate - Std..Error), ymax = (Estimate + Std..Error)), width = 0.2) +
+      geom_label(aes(fill=factor(round(significant, 6))), colour="white", vjust=1.4, fontface = "bold") +
+      labs(title=paste0("Coefficient estimate for ", name), x="Year", y="Coef. est.", fill="Significant")
+  
+  print(p)
+
+}
+
+#(readm.90 %>% filter(cm_renlfail == 1) %>% dplyr::select(readmitted) %>% sum()) / readm.90 %>% filter(cm_renlfail == 1) %>% nrow()
+```
+
+
+At this point, we must do some model selection. We will strive for parsimony while still trying to explain as much
+of the variance as possible. To do this, we will remove the least significant variable and refit the model. We do this
+iteratively (step-wise) until there are only significant coefficients left.
+
+This will be the goal for next week.
+
+```{r, echo=FALSE, cache=TRUE}
+#count.df <- data.frame(year.2010.count=c(NA), 
+                       #year.2011.count=c(NA),
+                       #year.2012.count=c(NA),
+                       #year.2013.count=c(NA),
+                       #year.2014.count=c(NA))
+#train.count.by.year <- c()
+#test.count.by.year <- c()
+#
+#years <- c(2010, 2011, 2012, 2013, 2014)
+#y <- 2010
+#for (y in years) {
+
+  #readm.by.year <- readm.90 %>% 
+    #filter(nrd_year == y)
+  #
+  #print(paste0("Year: ", y))
+  #
+  #cdiff.design <- svydesign(ids = ~cluster, 
+                            #data = readm.90, 
+                            #weights = ~weight, 
+                            #strata = ~stratum)
+  #sw.start <- Sys.time()
+  #m <- svyglm(readmitted~age.start +
+                         #hosp_hcontrl_govt +
+                         #hosp_hcontrl_priv_np +
+                         #hosp_urcat4 +
+                         #hosp_ur_teach_metro +
+                         #hosp_ur_teach_metro_teaching +
+                         #hosp_bedsize +
+                         #female +
+                         #cm_aids +
+                         #cm_alcohol +
+                         #cm_anemdef +
+                         #cm_arth +
+                         #cm_bldloss +
+                         #cm_chf +
+                         #cm_chrnlung +
+                         #cm_coag +
+                         #cm_depress +
+                         #cm_dm +
+                         #cm_dmcx +
+                         #cm_drug +
+                         #cm_htn_c +
+                         #cm_hypothy +
+                         #cm_liver +
+                         #cm_lymph +
+                         #cm_lytes +
+                         #cm_mets +
+                         #cm_neuro +
+                         #cm_obese +
+                         #cm_para +
+                         #cm_perivasc +
+                         #cm_psych +
+                         #cm_pulmcirc +
+                         #cm_renlfail +
+                         #cm_tumor +
+                         #cm_ulcer +
+                         #cm_valve +
+                         #cm_wghtloss,
+              #design=as.svrepdesign(cdiff.design), 
+              #family=quasibinomial, 
+              #return.replicates=TRUE)
+  #sw.end <- Sys.time()
+  #print(sw.end - sw.start)
+  #beep(3) 
+  #summary(m)
+#(readm.90 %>% filter(cm_renlfail == 1) %>% dplyr::select(readmitted) %>% sum()) / readm.90 %>% filter(cm_renlfail == 1) %>% nrow()
+  ##readm.90$age.0.5 <- as.integer(readm.90$age.start > 0 & readm.90$age.start <= 5)
+  ##readm.90$age.5.10 <- as.integer(readm.90$age.start > 5 & readm.90$age.start <= 10)
+  ##readm.90$age.10.15 <- as.integer(readm.90$age.start > 10 & readm.90$age.start <= 15)
+  ##readm.90$age.15.20 <- as.integer(readm.90$age.start > 15 & readm.90$age.start <= 20)
+  ##readm.90$age.20.25 <- as.integer(readm.90$age.start > 20 & readm.90$age.start <= 25)
+  ##readm.90$age.25.30 <- as.integer(readm.90$age.start > 25 & readm.90$age.start <= 30)
+  ##readm.90$age.30.35 <- as.integer(readm.90$age.start > 30 & readm.90$age.start <= 35)
+  ##readm.90$age.35.40 <- as.integer(readm.90$age.start > 35 & readm.90$age.start <= 40)
+  ##readm.90$age.40.45 <- as.integer(readm.90$age.start > 40 & readm.90$age.start <= 45)
+  ##readm.90$age.45.50 <- as.integer(readm.90$age.start > 45 & readm.90$age.start <= 50)
+  ##readm.90$age.50.55 <- as.integer(readm.90$age.start > 50 & readm.90$age.start <= 55)
+  ##readm.90$age.55.60 <- as.integer(readm.90$age.start > 55 & readm.90$age.start <= 60)
+  ##readm.90$age.60.65 <- as.integer(readm.90$age.start > 60 & readm.90$age.start <= 65)
+  ##readm.90$age.65.70 <- as.integer(readm.90$age.start > 65 & readm.90$age.start <= 70)
+  ##readm.90$age.70.75 <- as.integer(readm.90$age.start > 70 & readm.90$age.start <= 75)
+  ##readm.90$age.75.80 <- as.integer(readm.90$age.start > 75 & readm.90$age.start <= 80)
+  ##readm.90$age.80.85 <- as.integer(readm.90$age.start > 80 & readm.90$age.start <= 85)
+  ##readm.90$age.85.90 <- as.integer(readm.90$age.start > 85 & readm.90$age.start <= 90)
+  ##readm.90$age.90 <- as.integer(readm.90$age.start > 90)
+  #
+  ## dplyr::select(readm.90, starts_with("age")) %>% colSums()
+#
+  #unique(readm.by.year$readmitted)
+  #unique(readm.by.year$age.start)
+  #unique(readm.by.year$cm_renlfail)
+  #
+  ## K-fold Cross-Validation
+  ## cv.error <- cv.glm(readm.by.year, m, K=10)
+  #
+  ##cv.error <- cv.glm1(readm.by.year, m, my.cost, K=3, threshold=0.05)
+  ##cv.error.1 <- cv.glm1(readm.by.year, m, my.cost, K=3, threshold=0.5)
+  ##cv.error.2 <- cv.glm1(readm.by.year, m, my.cost, K=3, threshold=0.75)
+#
+  ##cv.error$delta
+  ##cv.error.1$delta
+  ##cv.error.2$delta
+  ##library('beepr')
+  ##beep(3)
+#
+  #
+  #readm.90 %>% 
+    #ggplot(aes(age.start + cm_renlfail, readmitted)) +
+      #geom_bin2d(bins = 30) +
+      #geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+      ##geom_point(data = pred.df, aes(x=Age, y=Prob)) +
+      #labs(title="Logistic Regression of Readmission by Age", x="Age at last admission", y="Readmitted (1 = Yes, 0 = No)")
+  #
+  #log.odds <- function(age, cm_renlfail) {
+    #return(exp(coef(m)[[1]] + (coef(m)[[2]] * age)  + (coef(m)[[3]] * cm_renlfail)))
+  #}
+  #
+  #ages <- rep(seq(1:90), 2)
+  #cm_renlfail <- c(rep(0, 90), rep(1, 90))
+  #logreg <- as.data.frame(cbind(ages, cm_renlfail, odds=log.odds(ages, cm_renlfail)))
+  #
+  #logreg$cm_renlfail <- factor(logreg$cm_renlfail)
+  
+  ##logreg %>%
+    #ggplot(aes(ages, odds, group=cm_renlfail, col=cm_renlfail)) +
+      #geom_line() +
+      #geom_hline(yintercept = 0.5, col="red") +
+      ##labs(title=paste0("Odds ratio of 90 day readmission given age and renal failure comorbidity, ", y), 
+           #y="Odds Ratio", 
+           #x="Age", 
+           #col="Renal")
+#}
+
+#count.df <- rbind(count.df, count.by.year)
+#count.df <- count.df[-1,]
+```
+
+
+# Next steps
+
+Model selection, analysis, and interpretation.

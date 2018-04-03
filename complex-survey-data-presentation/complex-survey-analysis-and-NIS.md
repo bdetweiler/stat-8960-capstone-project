@@ -1,4 +1,4 @@
-Complex Survey Analysis and the H-CUP NIS
+Complex Survey Analysis and the H-CUP NISC
 ========================================================
 author: Brian Detweiler
 date: April 20, 2018
@@ -11,11 +11,20 @@ About Me
 - Graduate Student, Data Science - University of Nebraska, Omaha
 - Software Developer, 15 years
 - Flight Operations, U.S. Army National Guard, 9 years
-
-![Army National Guard](complex-survey-data-presentation/images/arnglogo.png)
-![Aurora Cooperative](complex-survey-data-presentation/images/auroracooplogo.png)
-![Army National Guard](complex-survey-data-presentation/images/tdameritradelogo.png)
-![Army National Guard](complex-survey-data-presentation/images/uplogo.png)
+<div align="center" style="padding-top: 50px;">
+<div style="width:300px; height:200px; display: inline-block;">
+![Army National Guard](arnglogo.png)
+</div>
+<div style="width:300px; height:200px; display: inline-block;">
+![Aurora Cooperative](auroracooplogo.png)
+</div>
+<div style="width:300px; height:200px; display: inline-block;">
+![Army National Guard](tdameritradelogo.png)
+</div>
+<div style="width:300px; height:200px; display: inline-block;">
+![Army National Guard](uplogo.png)
+</div>
+</div>
 
 Survey Design
 ========================================================
