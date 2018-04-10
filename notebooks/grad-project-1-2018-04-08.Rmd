@@ -1,0 +1,655 @@
+---
+title: 'Grad Project: Week 13'
+author: "Brian Detweiler"
+date: "April 8, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+# setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project')
+
+library('knitr')
+library("devtools")
+library('MonetDB.R')
+library('MonetDBLite')
+library('MASS')
+library('leaps')
+library('glmnet')
+library('dbplyr')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('zoo')
+library('TSA')
+library('forecast')
+library('reshape2')
+library('modeest')
+library('survey')
+library('tidyverse')
+library('boot')
+library('broom')
+library('beepr')
+library('Deducer')
+library('pROC')
+library('lasso2')
+library('dplyr')
+library('e1071')
+
+set.seed(098114100)
+
+knitr::opts_chunk$set(echo=TRUE, fig.height=5, fig.width=5, fig.align='center', scipen=1, digits=2)
+options(max.print=1000000, tibble.print_max = Inf)
+#MonetDBLite::monetdblite_shutdown()
+con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/nrd_db")
+hosp <- DBI::dbGetQuery(con, "SELECT * FROM nrd_hospital")
+
+hosp$hosp_bedsize <- as.integer(hosp$hosp_bedsize)
+
+hosp$h_contrl <- as.integer(hosp$h_contrl)
+hosp$hosp_urcat4 <- as.integer(hosp$hosp_urcat4)
+hosp$n_disc_u <- as.integer(hosp$n_disc_u)
+hosp$n_hosp_u <- as.integer(hosp$n_hosp_u)
+hosp$s_disc_u <- as.integer(hosp$s_disc_u)
+hosp$s_hosp_u <- as.integer(hosp$s_hosp_u)
+hosp$total_disc <- as.integer(hosp$total_disc)
+
+hosp <- hosp %>%
+  # Hospital control isn't quantifiable, it's categorical
+  mutate(hosp_hcontrl_govt=as.integer(h_contrl == 1)) %>%
+  mutate(hosp_hcontrl_priv_np=as.integer(h_contrl == 2)) %>%
+  mutate(hosp_hcontrl_priv=as.integer(h_contrl == 3)) %>%
+  # Swap the values of urban/rural categorization so that larger numbers == larger areas
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==4, 0)) %>%
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==3, 4)) %>%
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==1, 3)) %>%
+  mutate(hosp_urcat4=replace(hosp_urcat4, hosp_urcat4==4, 1)) %>%
+  # Teaching isn't quantifiable, it's categorical
+  mutate(hosp_ur_teach_metro=as.integer(hosp_ur_teach == 0)) %>%
+  mutate(hosp_ur_teach_metro_teaching=as.integer(hosp_ur_teach == 1)) %>%
+  mutate(hosp_ur_teach_non_metro=as.integer(hosp_ur_teach == 2)) 
+
+```
+
+# At a glance
+
+ * Performed model selection using a survey-weighted logistic regression
+ * Narrowed focus to types of renal failure and effects on C. *diff* readmissions
+ * End-stage renal failure is a strong predictor for C. *diff* readmissions
+ * Began writing paper
+
+# Contingency plan
+
+Last week, I had built a model including all comorbidities with the intention of using stepwise regression techniques
+to trim down the unnecessary coefficients.
+
+Having done some more research on the topic, it appears that stepwise regression is generally frowned upon in
+the statistics community. See [Stopping stepwise: Why stepwise and similar selection methods are bad, and what
+you should use](https://www.lexjansen.com/pnwsug/2008/DavidCassell-StoppingStepwise.pdf)
+
+One of the suggestions mentioned by Cassell is to have a fuller model, leaving in statistically insignificant variables.
+While this seems to contradict the idea of model parsimony, I can also see why blindly throwing different variables against
+the wall and seeing what sticks would probably be a bad idea, particularly in medicine.
+
+However, renal failure as a significant comorbidity did catch my eye, and indeed, there is research on the effects of 
+renal failure and C. *diff*. After talking with Dr. Vivekanandan, she suggested I break out the renal failures by type.
+
+In the ICD-9-CM codings, we have the following:
+
+| Code  | Description                                                                                                          |
+|-------|----------------------------------------------------------------------------------------------------------------------|
+| 584   | Acute kidney failure                                                                                                 | 
+| 584.5 | Acute kidney failure with lesion of tubular necrosis convert                                                         | 
+| 584.6 | Acute kidney failure with lesion of renal cortical necrosis convert                                                  | 
+| 584.7 | Acute kidney failure with lesion of renal medullary [papillary] necrosis                                             | 
+| 584.8 | Acute kidney failure with lesion of with other specified pathological lesion in kidney                               | 
+| 584.9 | Acute kidney failure, unspecified                                                                                    | 
+| 585   | Chronic kidney disease (ckd)                                                                                         | 
+| 585.1 | Chronic kidney disease, Stage I                                                                                      | 
+| 585.2 | Chronic kidney disease, Stage II (mild)                                                                              | 
+| 585.3 | Chronic kidney disease, Stage III (moderate)                                                                         | 
+| 585.4 | Chronic kidney disease, Stage IV (severe)                                                                            | 
+| 585.5 | Chronic kidney disease, Stage V (mild)                                                                               | 
+| 585.6 | End stage renal disease                                                                                              | 
+| 585.9 | Chronic kidney disease, unspecified                                                                                  | 
+| 586   | Renal failure, unspecified                                                                                           | 
+
+I grouped all **Acute kidney failure** items into a single category. Important to note, **585.9** is when a patient goes on dialysis. 
+
+
+
+```{r, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
+
+clear.cache <- "CLEAR"
+
+readm.90 <- read_csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff-readmissions-90-day-window.csv')
+
+readm.90 <- merge(readm.90, hosp, by.x=c("cluster", "nrd_year"), by.y=c("hosp_nrd", "nrd_year"))
+
+readm.90 <- readm.90 %>%
+  # Hospital control isn't quantifiable, it's categorical
+  mutate(pay_NA=as.integer(pay1 < 0)) %>%
+  mutate(pay_other=as.integer(pay1 == 6)) %>%
+  mutate(pay_nc=as.integer(pay1 == 5)) %>%
+  mutate(pay_self=as.integer(pay1 == 4)) %>%
+  mutate(pay_priv_ins=as.integer(pay1 == 3)) %>%
+  mutate(pay_medicaid=as.integer(pay1 == 2)) %>%
+  mutate(pay_medicare=as.integer(pay1 == 1)) %>%
+  mutate(acute_kidney_failure=as.integer((dx1 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx2 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx3 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx4 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx5 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx6 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx7 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx8 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx9 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx10 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx11 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx12 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx13 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx14 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx15 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx16 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx17 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx18 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx19 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx20 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx21 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx22 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx23 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx24 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx25 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx26 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx27 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx28 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx29 %in% c("584", "5845", "5846", "5847", "5848", "5849")) |
+                                         (dx30 %in% c("584", "5845", "5846", "5847", "5848", "5849"))))
+
+readm.90 <- readm.90 %>%
+    mutate(chronic_kidney_disease1=as.integer((dx1 %in% c("5851")) |
+                                              (dx2 %in% c("5851")) |
+                                              (dx3 %in% c("5851")) |
+                                              (dx4 %in% c("5851")) |
+                                              (dx5 %in% c("5851")) |
+                                              (dx6 %in% c("5851")) |
+                                              (dx7 %in% c("5851")) |
+                                              (dx8 %in% c("5851")) |
+                                              (dx9 %in% c("5851")) |
+                                              (dx10 %in% c("5851")) |
+                                              (dx11 %in% c("5851")) |
+                                              (dx12 %in% c("5851")) |
+                                              (dx13 %in% c("5851")) |
+                                              (dx14 %in% c("5851")) |
+                                              (dx15 %in% c("5851")) |
+                                              (dx16 %in% c("5851")) |
+                                              (dx17 %in% c("5851")) |
+                                              (dx18 %in% c("5851")) |
+                                              (dx19 %in% c("5851")) |
+                                              (dx20 %in% c("5851")) |
+                                              (dx21 %in% c("5851")) |
+                                              (dx22 %in% c("5851")) |
+                                              (dx23 %in% c("5851")) |
+                                              (dx24 %in% c("5851")) |
+                                              (dx25 %in% c("5851")) |
+                                              (dx26 %in% c("5851")) |
+                                              (dx27 %in% c("5851")) |
+                                              (dx28 %in% c("5851")) |
+                                              (dx29 %in% c("5851")) |
+                                              (dx30 %in% c("5851"))))
+
+readm.90 <- readm.90 %>%
+  mutate(chronic_kidney_disease2=as.integer((dx1 %in% c("5852")) |
+                                            (dx2 %in% c("5852")) |
+                                            (dx3 %in% c("5852")) |
+                                            (dx4 %in% c("5852")) |
+                                            (dx5 %in% c("5852")) |
+                                            (dx6 %in% c("5852")) |
+                                            (dx7 %in% c("5852")) |
+                                            (dx8 %in% c("5852")) |
+                                            (dx9 %in% c("5852")) |
+                                            (dx10 %in% c("5852")) |
+                                            (dx11 %in% c("5852")) |
+                                            (dx12 %in% c("5852")) |
+                                            (dx13 %in% c("5852")) |
+                                            (dx14 %in% c("5852")) |
+                                            (dx15 %in% c("5852")) |
+                                            (dx16 %in% c("5852")) |
+                                            (dx17 %in% c("5852")) |
+                                            (dx18 %in% c("5852")) |
+                                            (dx19 %in% c("5852")) |
+                                            (dx20 %in% c("5852")) |
+                                            (dx21 %in% c("5852")) |
+                                            (dx22 %in% c("5852")) |
+                                            (dx23 %in% c("5852")) |
+                                            (dx24 %in% c("5852")) |
+                                            (dx25 %in% c("5852")) |
+                                            (dx26 %in% c("5852")) |
+                                            (dx27 %in% c("5852")) |
+                                            (dx28 %in% c("5852")) |
+                                            (dx29 %in% c("5852")) |
+                                            (dx30 %in% c("5852"))))
+  
+readm.90 <- readm.90 %>%
+  mutate(chronic_kidney_disease3=as.integer((dx1 %in% c("5853")) |
+                                            (dx2 %in% c("5853")) |
+                                            (dx3 %in% c("5853")) |
+                                            (dx4 %in% c("5853")) |
+                                            (dx5 %in% c("5853")) |
+                                            (dx6 %in% c("5853")) |
+                                            (dx7 %in% c("5853")) |
+                                            (dx8 %in% c("5853")) |
+                                            (dx9 %in% c("5853")) |
+                                            (dx10 %in% c("5853")) |
+                                            (dx11 %in% c("5853")) |
+                                            (dx12 %in% c("5853")) |
+                                            (dx13 %in% c("5853")) |
+                                            (dx14 %in% c("5853")) |
+                                            (dx15 %in% c("5853")) |
+                                            (dx16 %in% c("5853")) |
+                                            (dx17 %in% c("5853")) |
+                                            (dx18 %in% c("5853")) |
+                                            (dx19 %in% c("5853")) |
+                                            (dx20 %in% c("5853")) |
+                                            (dx21 %in% c("5853")) |
+                                            (dx22 %in% c("5853")) |
+                                            (dx23 %in% c("5853")) |
+                                            (dx24 %in% c("5853")) |
+                                            (dx25 %in% c("5853")) |
+                                            (dx26 %in% c("5853")) |
+                                            (dx27 %in% c("5853")) |
+                                            (dx28 %in% c("5853")) |
+                                            (dx29 %in% c("5853")) |
+                                            (dx30 %in% c("5853"))))
+  
+readm.90 <- readm.90 %>%
+  mutate(chronic_kidney_disease4=as.integer((dx1 %in% c("5854")) |
+                                            (dx2 %in% c("5854")) |
+                                            (dx3 %in% c("5854")) |
+                                            (dx4 %in% c("5854")) |
+                                            (dx5 %in% c("5854")) |
+                                            (dx6 %in% c("5854")) |
+                                            (dx7 %in% c("5854")) |
+                                            (dx8 %in% c("5854")) |
+                                            (dx9 %in% c("5854")) |
+                                            (dx10 %in% c("5854")) |
+                                            (dx11 %in% c("5854")) |
+                                            (dx12 %in% c("5854")) |
+                                            (dx13 %in% c("5854")) |
+                                            (dx14 %in% c("5854")) |
+                                            (dx15 %in% c("5854")) |
+                                            (dx16 %in% c("5854")) |
+                                            (dx17 %in% c("5854")) |
+                                            (dx18 %in% c("5854")) |
+                                            (dx19 %in% c("5854")) |
+                                            (dx20 %in% c("5854")) |
+                                            (dx21 %in% c("5854")) |
+                                            (dx22 %in% c("5854")) |
+                                            (dx23 %in% c("5854")) |
+                                            (dx24 %in% c("5854")) |
+                                            (dx25 %in% c("5854")) |
+                                            (dx26 %in% c("5854")) |
+                                            (dx27 %in% c("5854")) |
+                                            (dx28 %in% c("5854")) |
+                                            (dx29 %in% c("5854")) |
+                                            (dx30 %in% c("5854"))))
+  
+readm.90 <- readm.90 %>%
+  mutate(chronic_kidney_disease5=as.integer((dx1 %in% c("5855")) |
+                                            (dx2 %in% c("5855")) |
+                                            (dx3 %in% c("5855")) |
+                                            (dx4 %in% c("5855")) |
+                                            (dx5 %in% c("5855")) |
+                                            (dx6 %in% c("5855")) |
+                                            (dx7 %in% c("5855")) |
+                                            (dx8 %in% c("5855")) |
+                                            (dx9 %in% c("5855")) |
+                                            (dx10 %in% c("5855")) |
+                                            (dx11 %in% c("5855")) |
+                                            (dx12 %in% c("5855")) |
+                                            (dx13 %in% c("5855")) |
+                                            (dx14 %in% c("5855")) |
+                                            (dx15 %in% c("5855")) |
+                                            (dx16 %in% c("5855")) |
+                                            (dx17 %in% c("5855")) |
+                                            (dx18 %in% c("5855")) |
+                                            (dx19 %in% c("5855")) |
+                                            (dx20 %in% c("5855")) |
+                                            (dx21 %in% c("5855")) |
+                                            (dx22 %in% c("5855")) |
+                                            (dx23 %in% c("5855")) |
+                                            (dx24 %in% c("5855")) |
+                                            (dx25 %in% c("5855")) |
+                                            (dx26 %in% c("5855")) |
+                                            (dx27 %in% c("5855")) |
+                                            (dx28 %in% c("5855")) |
+                                            (dx29 %in% c("5855")) |
+                                            (dx30 %in% c("5855"))))
+  
+readm.90 <- readm.90 %>%
+  mutate(chronic_kidney_disease6=as.integer((dx1 %in% c("5856")) |
+                                            (dx2 %in% c("5856")) |
+                                            (dx3 %in% c("5856")) |
+                                            (dx4 %in% c("5856")) |
+                                            (dx5 %in% c("5856")) |
+                                            (dx6 %in% c("5856")) |
+                                            (dx7 %in% c("5856")) |
+                                            (dx8 %in% c("5856")) |
+                                            (dx9 %in% c("5856")) |
+                                            (dx10 %in% c("5856")) |
+                                            (dx11 %in% c("5856")) |
+                                            (dx12 %in% c("5856")) |
+                                            (dx13 %in% c("5856")) |
+                                            (dx14 %in% c("5856")) |
+                                            (dx15 %in% c("5856")) |
+                                            (dx16 %in% c("5856")) |
+                                            (dx17 %in% c("5856")) |
+                                            (dx18 %in% c("5856")) |
+                                            (dx19 %in% c("5856")) |
+                                            (dx20 %in% c("5856")) |
+                                            (dx21 %in% c("5856")) |
+                                            (dx22 %in% c("5856")) |
+                                            (dx23 %in% c("5856")) |
+                                            (dx24 %in% c("5856")) |
+                                            (dx25 %in% c("5856")) |
+                                            (dx26 %in% c("5856")) |
+                                            (dx27 %in% c("5856")) |
+                                            (dx28 %in% c("5856")) |
+                                            (dx29 %in% c("5856")) |
+                                            (dx30 %in% c("5856"))))
+  
+readm.90 <- readm.90 %>%
+  mutate(chronic_kidney_disease_unk=as.integer((dx1 %in% c("5859")) |
+                                               (dx2 %in% c("5859")) |
+                                               (dx3 %in% c("5859")) |
+                                               (dx4 %in% c("5859")) |
+                                               (dx5 %in% c("5859")) |
+                                               (dx6 %in% c("5859")) |
+                                               (dx7 %in% c("5859")) |
+                                               (dx8 %in% c("5859")) |
+                                               (dx9 %in% c("5859")) |
+                                               (dx10 %in% c("5859")) |
+                                               (dx11 %in% c("5859")) |
+                                               (dx12 %in% c("5859")) |
+                                               (dx13 %in% c("5859")) |
+                                               (dx14 %in% c("5859")) |
+                                               (dx15 %in% c("5859")) |
+                                               (dx16 %in% c("5859")) |
+                                               (dx17 %in% c("5859")) |
+                                               (dx18 %in% c("5859")) |
+                                               (dx19 %in% c("5859")) |
+                                               (dx20 %in% c("5859")) |
+                                               (dx21 %in% c("5859")) |
+                                               (dx22 %in% c("5859")) |
+                                               (dx23 %in% c("5859")) |
+                                               (dx24 %in% c("5859")) |
+                                               (dx25 %in% c("5859")) |
+                                               (dx26 %in% c("5859")) |
+                                               (dx27 %in% c("5859")) |
+                                               (dx28 %in% c("5859")) |
+                                               (dx29 %in% c("5859")) |
+                                               (dx30 %in% c("5859"))))
+  
+readm.90 <- readm.90 %>%
+  mutate(renal_failure_unspecified=as.integer((dx1 %in% c("586")) |
+                                              (dx2 %in% c("586")) |
+                                              (dx3 %in% c("586")) |
+                                              (dx4 %in% c("586")) |
+                                              (dx5 %in% c("586")) |
+                                              (dx6 %in% c("586")) |
+                                              (dx7 %in% c("586")) |
+                                              (dx8 %in% c("586")) |
+                                              (dx9 %in% c("586")) |
+                                              (dx10 %in% c("586")) |
+                                              (dx11 %in% c("586")) |
+                                              (dx12 %in% c("586")) |
+                                              (dx13 %in% c("586")) |
+                                              (dx14 %in% c("586")) |
+                                              (dx15 %in% c("586")) |
+                                              (dx16 %in% c("586")) |
+                                              (dx17 %in% c("586")) |
+                                              (dx18 %in% c("586")) |
+                                              (dx19 %in% c("586")) |
+                                              (dx20 %in% c("586")) |
+                                              (dx21 %in% c("586")) |
+                                              (dx22 %in% c("586")) |
+                                              (dx23 %in% c("586")) |
+                                              (dx24 %in% c("586")) |
+                                              (dx25 %in% c("586")) |
+                                              (dx26 %in% c("586")) |
+                                              (dx27 %in% c("586")) |
+                                              (dx28 %in% c("586")) |
+                                              (dx29 %in% c("586")) |
+                                              (dx30 %in% c("586"))))
+
+
+readm.90 <- readm.90 %>%
+  mutate(year_2010=as.integer(nrd_year == 2010)) %>%
+  mutate(year_2011=as.integer(nrd_year == 2011)) %>%
+  mutate(year_2012=as.integer(nrd_year == 2012)) %>%
+  mutate(year_2013=as.integer(nrd_year == 2013)) %>%
+  mutate(year_2014=as.integer(nrd_year == 2014))
+
+```
+
+Printed below are the fitting times.
+
+```{r surveydesign, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
+
+models <- list()
+
+years <- c(2010, 2011, 2012, 2013, 2014)
+year <- 2010
+for (y in years) {
+  readm.by.year <- readm.90 %>% 
+    filter(nrd_year == y) %>%
+    select(readmitted,
+           died,
+           cluster, 
+           weight,
+           stratum,
+           age.start,
+           hosp_hcontrl_govt,
+           hosp_hcontrl_priv_np,
+           hosp_urcat4,
+           hosp_ur_teach_metro ,
+           hosp_ur_teach_metro_teaching ,
+           hosp_bedsize,
+           female,
+           year_2011,
+           year_2012,
+           year_2013,
+           year_2014,
+           acute_kidney_failure,
+           chronic_kidney_disease2,
+           chronic_kidney_disease3,
+           chronic_kidney_disease4,
+           chronic_kidney_disease5,
+           chronic_kidney_disease6,
+           chronic_kidney_disease_unk,
+           renal_failure_unspecified)
+   
+  dim(readm.by.year) 
+
+  cdiff.design <- svydesign(ids = ~cluster, 
+                            data = readm.by.year, 
+                            weights = ~weight, 
+                            strata = ~stratum)
+  
+  sw.start <- Sys.time()
+  m <- svyglm(readmitted~age.start +
+                         hosp_hcontrl_govt +
+                         hosp_hcontrl_priv_np +
+                         hosp_urcat4 +
+                         hosp_ur_teach_metro +
+                         hosp_ur_teach_metro_teaching +
+                         hosp_bedsize +
+                         female +
+                         acute_kidney_failure +
+                         chronic_kidney_disease2 +
+                         chronic_kidney_disease3 +
+                         chronic_kidney_disease4 +
+                         chronic_kidney_disease5 +
+                         chronic_kidney_disease6 +
+                         chronic_kidney_disease_unk +
+                         renal_failure_unspecified,
+              design=as.svrepdesign(cdiff.design), 
+              family=quasibinomial, 
+              multicore=TRUE,
+              return.replicates=TRUE)
+  sw.end <- Sys.time()
+  print(sw.end - sw.start)
+  beep(3) 
+  summary(m)
+  models[[y]] <- m
+}  
+```
+
+```{r, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
+
+clear.cache <- "CLEAR!"
+
+coef.2010 <- tidy(summary(models[[2010]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2011 <- tidy(summary(models[[2011]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2012 <- tidy(summary(models[[2012]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2013 <- tidy(summary(models[[2013]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2014 <- tidy(summary(models[[2014]])$coefficients) %>% 
+  filter(.rownames != "(Intercept)") %>%
+  arrange(desc(Pr...t..))
+
+coef.2010$year <- 2010
+coef.2011$year <- 2011
+coef.2012$year <- 2012
+coef.2013$year <- 2013
+coef.2014$year <- 2014
+
+coefs <- bind_rows(coef.2010, coef.2011, coef.2012, coef.2013, coef.2014)
+
+coef.names <- c('age.start',
+                'hosp_hcontrl_govt',
+                'hosp_hcontrl_priv_np',
+                'hosp_urcat4',
+                'hosp_ur_teach_metro',
+                'hosp_ur_teach_metro_teaching',
+                'hosp_bedsize',
+                'female',
+                'acute_kidney_failure',
+                'chronic_kidney_disease2',
+                'chronic_kidney_disease3',
+                'chronic_kidney_disease4',
+                'chronic_kidney_disease5',
+                'chronic_kidney_disease6',
+                'chronic_kidney_disease_unk',
+                'renal_failure_unspecified')
+
+```
+
+Now, we'll plot each coefficient by year, showing it's effect with confidence interval and labeled with $p$-values, showing
+whether they were significant (<0.05) or not. 
+
+```{r coefficients, echo=FALSE, cache=TRUE, fig.height=5, fig.width=6, fig.align="center"}
+
+for (name in coef.names) {
+  coefs <- mutate(coefs, Pr...t..=round(Pr...t.., 6))
+  this.coef <- coefs %>% filter(.rownames == name)
+  this.coef <- this.coef %>% 
+    mutate(significant=ifelse(Pr...t.. < 0.05, 1, 0))
+
+  p <- this.coef %>%
+    ggplot(aes(year, Estimate, label = Pr...t..)) +
+      geom_bar(stat="identity") +
+      geom_errorbar(aes(ymin = (Estimate - Std..Error), ymax = (Estimate + Std..Error)), width = 0.2) +
+      geom_label(aes(fill=factor(round(significant, 6))), colour="white", vjust=1.4, fontface = "bold") +
+      labs(title=paste0("Coefficient estimate for ", name), x="Year", y="Coef. est.", fill="Significant")
+  
+  print(p)
+}
+
+#(readm.90 %>% filter(cm_renlfail == 1) %>% dplyr::select(readmitted) %>% sum()) / readm.90 %>% filter(cm_renlfail == 1) %>% nrow()
+```
+
+
+Most interesting here is the consistency and large statistically significant influence end stage renal failure (dialysis) has
+on 90-day readmissions.
+
+The influence of age as a predictor seems to be declining almost linearly over the years. I believe this to be due to
+the distribution becoming less skewed and more platykurtic over time. This can be seen in the chart below. 
+
+```{r data, include=FALSE, warning=FALSE, cache=TRUE}
+# MonetDB connection to a permanent file
+# Call the below line if you get an error about connecting
+# MonetDBLite::monetdblite_shutdown()
+# con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
+
+cdiff <- read.csv('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/cdiff.csv')
+```
+
+
+```{r age, echo=FALSE, warning=FALSE, cache=TRUE}
+ages <- cdiff %>% filter(!is.na(age)) %>% select(age)
+mode <- mlv(ages$age, method = "mfv")
+q25 <- quantile(ages$age, 0.25)
+q75 <- quantile(ages$age, 0.75)
+xbar <- mean(ages$age)
+med <- median(ages$age)
+
+cdiff.by.age.and.year <- cdiff %>% 
+  filter(!is.na(age)) %>% 
+  select(age, nis_year)
+
+years <- cdiff.by.age.and.year %>% 
+  select(nis_year) %>% 
+  unique() %>% 
+  pull(nis_year)
+
+y <- years[1]
+skew <- list()
+kurt <- list()
+for (y in years) {
+  cdiff.by.age <- cdiff.by.age.and.year %>% 
+    filter(nis_year == y) %>% 
+    pull(age)
+  
+  skew[[y]] <- skewness(cdiff.by.age)  
+  kurt[[y]] <- kurtosis(cdiff.by.age) 
+}
+
+data.frame(year=years, skewness=unlist(skew), kurtosis=unlist(kurt)) %>%
+  ggplot(aes(x=year, y=skewness)) +
+    geom_line(stat="identity", col="red") +
+    geom_line(aes(x=year, y=kurtosis), col="blue") +
+    labs(title="Skewness and Kurtosis of C. diff patient age distributions over time", x="Year", y="Skewness (red), Kurtosis (blue)")
+
+
+```
+
+Here we see that the C. *diff* age distribution is becoming less left-skewed and more platykurtic over the years, 
+meaning younger people are contracting C. *diff* more often over time. This would explain the decline
+in the age coefficient as a predictor over time.
+
+Now, why did I model each separately by year? Two reasons; in the NRD, each year is considered a separate sample. And two, 
+when I tried running a regression on all data, it ate up all of my resources and locked up my machine. I may try this
+again, using the years as regression variables, but I'll need to find a way to get it to actually complete. However,
+I feel I am still justified in running separate models for each year, provided I keep the models constant and explicitly mention this.
+
+Finally, this was only for 90 day readmissions because the other datasets were still being built, but I now have 60 and 30 day
+readmission datasets and will be running the same models on those for my paper.
+
+# Next steps
+
+I believe I have everything I need to begin my paper, and with less than a month to go,
+this will be my last update as the rest of my time will be spent compiling my paper and presentation. 
+I will reach out seeking questions or opinions as needed. 

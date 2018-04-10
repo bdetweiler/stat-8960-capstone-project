@@ -444,7 +444,7 @@ dim(readm)
 
 # d-days 
 #readmission.windows <- c(90, 60, 30, 14, 7)
-readmission.windows <- c(60, 30, 14, 7)
+readmission.windows <- c(14, 7)
 #readmission.windows <- c(90)
 
 # Loop over all the readmission windows

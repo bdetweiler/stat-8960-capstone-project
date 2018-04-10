@@ -15,8 +15,7 @@
 %and uncomment the next line)
 %\include{mymacros}
 
-\title{Clostridium Difficile\\[1ex]     %your thesis title,
-       (Working Title)}   %note \\[1ex] is a line break in the title
+\title{A Longitudinal Study of the Effect of Renal Failure on Readmissions of Patients with Clostridium Difficile}   %note \\[1ex] is a line break in the title
 
 \author{Brian Detweiler}
 \college{College of Arts and Sciences}  %your college
@@ -81,9 +80,9 @@
 \addcontentsline{toc}{chapter}{Bibliography}
 %uncomment next line to change bibliography name to references
 %\renewcommand{\bibname}{References}
-\bibliography{thesis}        %use a bibtex bibliography file refs.bib
+\bibliography{refs}        %use a bibtex bibliography file refs.bib
 % \bibliographystyle{plain}  %use the plain bibliography style
-\bibliographystyle{unsrt}
+\bibliographystyle{apalike}
 
 %Sets the bibliography style to UNSRT and imports the 
 %bibliography file "samples.bib".

@@ -1,5 +1,5 @@
 ---
-title: "Complex Survey Analysis and the NIS"
+title: "Complex Survey Design and the NIS"
 author: Brian Detweiler
 date: April 20, 2018
 output: 
@@ -14,7 +14,12 @@ output:
       slideNumber: true
 ---
 
-## About Me
+```{r, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
+library('ggplot2')
+library('dplyr')
+```
+
+## About me
  - University of Nebraska, Omaha
      - B.S. Computer Science and Mathematics (2009)
      - M.S. Mathematics, Data Science (May, 2018)
@@ -36,7 +41,37 @@ output:
 </div>
 
 
-## Sampling Design
+## A fun experiment
+- Step 1: Pick a random percentage. eg. 54%, 28%, 77%, etc.
+- Step 2: Type that number into google followed by "of Americans"
+- Step 3: Follow rabit hole for hours
+
+## 
+  ![](gifimg.gif)
+
+
+## Simple random sample
+- Pólya urn model
+- With (SRSWR) or Without Replacement (SRSWOR)
+    - With replacement - makes use of i.i.d. assumption
+    - Without replacement - not i.i.d. but still exchangeable
+- Requires access to the entire population
+
+  <div style="width:200px; height:200px; display: inline-block;">
+  ![Polya Urn Model](urn.png)
+  </div>
+  
+<div class="notes">
+So how do we come to these conclusions? Well, we could do a Simple Random Sample.
+
+Polya Urn Models. This is what you learn in Prob Stat I and II. It can either be with
+or without replacement. With replacement maintains i.i.d. assumptions so all of our 
+nice statistical techniques can be used. If we do it without replacement, we lose 
+our i.i.d. assumption, but we still have exchangeability, so 
+</div>
+
+
+## Sampling design
 - Sampling plan
 - Method for drawing inferences
 - Cell A: Vast majority of surveys
@@ -63,18 +98,20 @@ output:
   hybrid approaches of B and C in survey research.
 </div>
 
-## Sampling Plan
+## Sampling plan
 - Population frame
+    - Target population
 - Sampling frame
-- Target population
-- Probability sampling plan
-- Model-dependent sampling plan
-    - Maximize precision (minimize variance) of estimation for statistics of interest
-    - eg. Deaths ($y$) due to the flu ($x$). Assume:
-$y = \beta x_i + \epsilon_i, \epsilon_i \sim N(0, \sigma^2 x_i)$
 
 <div class="notes">
   A population frame is the list of $N$ units making up the finite population \cite{Chambers}
+  It is theoretically possible to enumerate the entire population, but rarely practical due to
+  limited time, funding, and resources.
+ 
+  Our goal is to estimate the population parameters with minimal sampling effort. 
+  
+  To do this we need a Sampling Frame. 
+  
   A sampling frame is the list of all elements from which we can draw a sample. 
   Maybe that is registered voters, maybe that's a list of all students in a university.
   
@@ -94,22 +131,31 @@ $y = \beta x_i + \epsilon_i, \epsilon_i \sim N(0, \sigma^2 x_i)$
   and if the wrong model is used, it can lead to biased estimates. 
 </div>
 
-## Target population 
-- Finite
-- Snapshot in time
-- Students, registered voters, hospital patients, etc
-- Rarely practical
-    - Limited time, funding, and resources
-- Goal: Estimate population parameters with minimal sampling effort
+## Design effects
 
-## Survey Population
+```{r, echo=FALSE, cache=TRUE, fig.height=5, fig.width=6}
+std.err.p <- c(0.030, 0.020, 0.015, 0.010, 0.008, 0.007, 0.0065, 0.0064, 0.00635, 0.00635, 0.0063)
+sample.size <- c(100, seq(250, 2500, by=250))
+data.frame(std.err.p, sample.size) %>%
+  ggplot(aes(sample.size, std.err.p)) +
+    geom_smooth(method="loess", se=FALSE) +
+    labs(title="Tug-of-war between Stratification and Clustering/Weighting", x="Sample size", y="Standard error of P") +
+    annotate("text", x = 600, y = 0.022, label = sprintf('\u21E7'), size=48) +
+    annotate("text", x = 600, y = 0.022, label = "Cluster sampling", size=4, angle=90)  +
+    annotate("text", x = 1000, y = 0.020, label = sprintf('\u21E7'), size=48) +
+    annotate("text", x = 1000, y = 0.020, label = "Weighting", size=4, angle=90) +
+    annotate("text", x = 250, y = 0.015, label = sprintf('\u21E9'), size=48) +
+    annotate("text", x = 250, y = 0.015, label = "Stratification", size=4, angle=90) +
+    annotate("text", x = 1500, y = 0.025, label = "Loss (L_cluster, L_weighting)", size=4) +
+    annotate("text", x = 250, y = 0.009, label = "Gain (G_strat)", size=4) 
+```
+
+<div class="notes">
+  
+</div>
+
+## Survey population
 - Population we can actually sample under the survey design
-
-## Simple Random Sample (SRS)
-- Sample with or without replacement (Urn model)
-- With replacement - makes use of i.i.d. assumption
-- Without replacement - not i.i.d. but still exchangeable
-- Requires access to the whole population (complete sampling frame)
 
 ## Complex Sampling
 - Probability sampling
@@ -144,7 +190,13 @@ $y = \beta x_i + \epsilon_i, \epsilon_i \sim N(0, \sigma^2 x_i)$
 ## NIS Complex Survey Design - Weighting
 - Discharge weight (DISCWT) is used to produce national estimates
 
+## NIS Dimensions
+- Big data?
+- Definitely **large** data
+
+
 ## Sources and Further Reading
 - Heeringa, S., West, B. T., Berglund, P. A., Applied Survey Data Analysis, 2nd Ed., *CRC Press*, 2017
 - Chambers, R. L., Which Sample Survey Strategy? A Review of Three Different Approaches, *University of Wollongong Research Online*, 2011
 - Kalton, G., Introduction to Survey Sampling, *SAGE Publications*, 1983
+- Little, R. http://hummedia.manchester.ac.uk/institutes/cmist/BADEN/Workshop-2015/2015-11-BADEN_Workshop_Presentation_Little.pdf
