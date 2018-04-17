@@ -16,7 +16,11 @@ output:
 
 ```{r, echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
 library('ggplot2')
-library('dplyr')
+library('tidyverse')
+library('knitr')
+options(survey.adjust.domain.lonely=TRUE)
+options(survey.lonely.psu="remove")
+knitr::opts_chunk$set(cache = TRUE, warning = FALSE,  message = FALSE, cache.lazy = FALSE)
 ```
 
 ## About me
@@ -42,9 +46,9 @@ library('dplyr')
 
 
 ## A fun experiment
-- Step 1: Pick a random percentage. eg. 54%, 28%, 77%, etc.
-- Step 2: Type that number into google followed by "of Americans"
-- Step 3: Follow rabit hole for hours
+- Step 1: Pick a random percentage. e.g. 54%, 28%, 77%, etc.
+- Step 2: Type that number into Google followed by "of Americans"
+- Step 3: Follow rabbit hole for hours
 
 ## 
   ![](gifimg.gif)
@@ -67,58 +71,44 @@ So how do we come to these conclusions? Well, we could do a Simple Random Sample
 Polya Urn Models. This is what you learn in Prob Stat I and II. It can either be with
 or without replacement. With replacement maintains i.i.d. assumptions so all of our 
 nice statistical techniques can be used. If we do it without replacement, we lose 
-our i.i.d. assumption, but we still have exchangeability, so 
+our i.i.d. assumption, but we still have exchangeability, so, for instance, Bayesian
+models only rely on exchangeability, rather than i.i.d.
 </div>
 
 
 ## Sampling design
-- Sampling plan
-- Method for drawing inferences
-- Cell A: Vast majority of surveys
 
-+--------------------------+------------------------+-----------------------+
-| Sampling Plan            | Design-based inference | Model-based inference |
-+==========================+========================+=======================+
-| Probability sample       | A                      | C                     |
-+--------------------------+------------------------+-----------------------+
-| Model-dependent sample   | B                      | D                     |
-+--------------------------+------------------------+-----------------------+
++--------------------------+----------------------------+-----------------------+
+| Sampling Plan            | **Design-based inference** | Model-based inference |
++==========================+============================+=======================+
+| **Probability sample**   | **A**                      | C                     |
++--------------------------+----------------------------+-----------------------+
+| Model-dependent sample   | B                          | D                     |
++--------------------------+----------------------------+-----------------------+
+| Quota sampling           | E                          | F                     |
++--------------------------+----------------------------+-----------------------+
+| Convenience sampling     | G                          | H                     |
++--------------------------+----------------------------+-----------------------+
+| Snowball sampling        | I                          | J                     |
++--------------------------+----------------------------+-----------------------+
+| Peer nomination          | K                          | L                     |
++--------------------------+----------------------------+-----------------------+
 
 <div class="notes">
   When we talk about survey sample design or sampling strategy, 
   we're talking about two components: 
-  A sampling plan, and a method for drawing inferences. 
-  
-  We essentially have two schools of thought on each, which, when combined,
-  gives us this 2x2 matrix of choices. I'm going to talk about each of these,
-  but by and large, cell A, Probability sampling with a Design-based inferrence
-  is what you will most commonly find in the wild.
+  A sampling plan, and a method for drawing inferences from that sample. 
+ 
+  There are essentially two main sampling plan approaches: Probability sampling
+  plans and non-probability sampling plans. 
   
   Cells A and D are natural pairings, but it is not uncommon to find the 
-  hybrid approaches of B and C in survey research.
-</div>
-
-## Sampling plan
-- Population frame
-    - Target population
-- Sampling frame
-
-<div class="notes">
-  A population frame is the list of $N$ units making up the finite population \cite{Chambers}
-  It is theoretically possible to enumerate the entire population, but rarely practical due to
-  limited time, funding, and resources.
- 
-  Our goal is to estimate the population parameters with minimal sampling effort. 
+  hybrid approaches of B and C in survey research. We're seeing more and more
+  model-based inference - which you can think of as primarily Bayesian models - 
+  with Nate Silver and FiveThirtyEight, or Nate Cohn and the NYT. It is becoming
+  more and more common to run model-based inference on probability samples.
   
-  To do this we need a Sampling Frame. 
-  
-  A sampling frame is the list of all elements from which we can draw a sample. 
-  Maybe that is registered voters, maybe that's a list of all students in a university.
-  
-  But it has to be enumerable, we can't just include "all people in America". That could be
-  the target population. The target population is finite and theoretically enumerable, but
-  in most cases, it would be impractical if not logistically impossible to exhaustively survey.
-  So that's why we turn to complex survey design.
+  However, most research is still done with design-based inference. 
   
   A probability sampling plan assigns non-zero probabilities of selection
   to each member of the sampling frame. Sample choices are then randomized.
@@ -129,7 +119,14 @@ our i.i.d. assumption, but we still have exchangeability, so
   
   These are not common in survey practice. Surveys are generally intended to be multi-purpose,
   and if the wrong model is used, it can lead to biased estimates. 
+  
+  Design-based inference is non-parametric, in that it only relies on the probability
+  of each observation's inclusion. 
+  
+  Model-based inference is based on a probability distribution for the random variable
+  of interest.
 </div>
+
 
 ## Design effects
 
@@ -151,30 +148,91 @@ data.frame(std.err.p, sample.size) %>%
 ```
 
 <div class="notes">
-  
+  Complex survey designs make use of stratification, clustering, and/or weighting. 
 </div>
 
-## Survey population
-- Population we can actually sample under the survey design
+## Design effects
 
-## Complex Sampling
-- Probability sampling
-
-## Stratification
+  - "deft"
+  - Similar to variance inflation factor (VIF)
+  - Effective sample size
+  
+  $$
+  D^2(\hat{\theta}) = \frac{SE(\hat{\theta})^2_{complex}}{SE(\hat{\theta})^2_{srs}} = \frac{var(\hat{\theta})_{complex}}{var(\hat{\theta})_{srs}}
+  $$
+  
+  $$
+  n_{eff} = \frac{n_{complex}}{d^2(\hat{\theta})}
+  $$
+  
 
 ## Clustering
+- Grouping people by geographic regions
+- SRS to choose a geographic region
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Cluster Sampling](ClusterSample.png)
+  </div>
+
+## Clustering
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Cluster Sampling](ClusterSample2.png)
+  </div>
+
+## Stratification
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Stratified Sampling](StratifiedSampling.png)
+  </div>
+  
+## Stratification
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Stratified Sampling](StratifiedSampling2.png)
+  </div>
+  
+<div class="notes">
+</div>
 
 ## Weighting
+- $N = 51$
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Stratified Sampling](SampleFrameWeighting1.png)
+  </div>
+  
+<div class="notes">
+</div>
+
+## Weighting
+- $N_{men} = 30$
+- $p_{men} = \frac{30}{51} = 0.588$
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Stratified Sampling](SamplingFrameWeighting2.png)
+  </div>
+  
+<div class="notes">
+</div>
+
+## Weighting
+- $N_{women} = 21$
+- $p_{women} = \frac{21}{51} = 0.412$
+  <div style="width:500px; height:500px; margin: auto; display: block;">
+  ![Stratified Sampling](SamplingFrameWeighting3.png)
+  </div>
+  
+## Weighting
+- $N_{women} = 21$
+- Women Odds Ratio: $\frac{p_{women}}{p_{men}} = \frac{0.588}{0.412} = 1.427$
+- Men Odds Ratio: $\frac{p_{men}}{p_{women}} = \frac{0.412}{0.588} = 0.701$
+  
+<div class="notes">
+</div>
+
 
 ## H-CUP Nationwide Inpatient Sample
 - Healthcare Cost and Utilization Project
 - Must be purchased
 
 ## NIS Sampling Design
-- Sampling frame - hospitals
-- Sampling plan
-- Method for drawing inferences
-- Cell A: Vast majority of surveys
+- 1988-2011: 100% sample of 20% of HCUP hospitals
+- 2012-present: 20% sample of 100% of HCUP hospitals
 
 <div class="notes">
   In the NIS, each element of the population is associated with a hospital. A
@@ -182,21 +240,100 @@ data.frame(std.err.p, sample.size) %>%
   is drawn.
 </div>
 
-## NIS Complex Survey Design - Stratification
 
-## NIS Complex Survey Design - Clustering
-- Clustered on hispitals
+## NIS Complex Survey Design
+- Clustered on hospital ID
+- Weights included in `discwt` field for national estimates
+- 1988-2011: Stratified by census region and bed size
+- 2012-present: Stratified by census division and bedside
+<div style="font-size: 50%">
+    - Region 1 (Northeast)
+        - Division 1 (New England)
+        -Division 2 (Mid Atlantic)
+    - Region 2 (Midwest)
+        - Division 3 (East North Central)
+        - **Division 4 (West North Central) (incl. Nebraska)**
+    - Region 3 (South)
+        - Division 5 (South Atlantic)
+        - Division 6 (East South Central)
+        - Division 7 (West South Central)
+    - Region 4 (West)
+        - Division 8 (Mountain)
+        - Division 9 (Pacific)
+</div>
 
-## NIS Complex Survey Design - Weighting
-- Discharge weight (DISCWT) is used to produce national estimates
-
-## NIS Dimensions
+## NIS dimensions
 - Big data?
 - Definitely **large** data
+- ~3GB per year (raw CSV)
+
+## Importance of survey design
+
+- Treating as SRS
+
+```{r readdata, message=FALSE, warning=FALSE, echo=FALSE, cache=TRUE}
+cdiff <- read_csv('../data/cdiff.csv')
+cdiff <- filter(cdiff, !is.na(los))
+cdiff <- filter(cdiff, !is.na(age))
+# Exclude patients who died
+cdiff <- filter(cdiff, died == 0)
+cdiff <- filter(cdiff, nis_year == 2011)
+srs.fit <- lm(los~age, data=cdiff)
+
+```
+
+```{r srs, echo=TRUE, cache=TRUE}
+
+summary(lm(los~age, data=cdiff))
+```
+
+## Importance of survey design
+
+- Accounting for survey design with R survey package
+```{r complex_fit, echo=FALSE, warning=FALSE, cache=TRUE}
+
+library('survey')
+cdiff <- filter(cdiff, nis_year == 2011)
+cdiff.design <- svydesign(ids = ~hospid, data = cdiff, weights = ~discwt,  strata = ~nis_stratum, nest=TRUE)
+complex.fit <- svyglm(los~age, design=cdiff.design)
+```
 
 
+```{r complex, echo=TRUE, warning=FALSE, cache=TRUE}
+library('survey')
+
+cdiff.design <- svydesign(ids = ~hospid, data = cdiff, weights = ~discwt,  strata = ~nis_stratum, nest=TRUE)
+summary(svyglm(los~age, design=cdiff.design))
+```
+
+##  SRS vs. complex design
+```{r srs_plot, echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE, fig.height=5, fig.width=5, fig.cap="SRS line in red, complex design in blue"}
+
+ggplot(cdiff, aes(age, los)) +
+  geom_smooth() +
+  geom_abline(slope = srs.fit$coefficients[[2]], intercept = srs.fit$coefficients[[1]], col="red") +
+  geom_abline(slope = complex.fit$coefficients[[2]], intercept = complex.fit$coefficients[[1]], col="blue") +
+  labs(title="Length of stay vs. Age for 2011 C. diff patients") 
+```
+
+## Research design checklist
+- Khera and Krumholz, 2017
+
+    ![NIS Checklist](checklista.png)
+    
+## Data interpretation checklist
+- Khera and Krumholz, 2017
+
+    ![NIS Checklist](checklistb.png)
+
+## Data analysis checklist
+- Khera and Krumholz, 2017
+
+    ![NIS Checklist](checklistc.png)
+    
+    
 ## Sources and Further Reading
-- Heeringa, S., West, B. T., Berglund, P. A., Applied Survey Data Analysis, 2nd Ed., *CRC Press*, 2017
-- Chambers, R. L., Which Sample Survey Strategy? A Review of Three Different Approaches, *University of Wollongong Research Online*, 2011
-- Kalton, G., Introduction to Survey Sampling, *SAGE Publications*, 1983
-- Little, R. http://hummedia.manchester.ac.uk/institutes/cmist/BADEN/Workshop-2015/2015-11-BADEN_Workshop_Presentation_Little.pdf
+- Heeringa, S., West, B. T., Berglund, P. A., Applied Survey Data Analysis, 2nd Ed., *CRC Press* (2017)
+- Kalton, G., Introduction to Survey Sampling, *SAGE Publications* (1983)
+- Khera R. and Krumholz H., *With Great Power Comes Great Responsibility: Big Data Research From the National Inpatient Sample*, Circulation: Cardiovascular Quality and Outcomes (2017)
+- Lumley, T. *R Package 'survey'*, (2018)

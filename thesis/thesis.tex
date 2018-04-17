@@ -60,12 +60,31 @@
 \usepackage{lipsum}
 \usepackage{array}
 \usepackage{float}
+\usepackage[%
+  backend=bibtex      % biber or bibtex
+ ,style=numeric-comp    % Alphabeticalsch
+ %,style=numeric-comp  % numerical-compressed
+ ,sorting=none        % no sorting
+ ,sortcites=true      % some other example options ...
+ ,block=none
+ ,indexing=false
+ ,citereset=none
+ ,isbn=true
+ ,url=true
+ ,doi=true            % prints doi
+ ,natbib=true         % if you need natbib functions
+]{biblatex}
+
+\addbibresource{refs.bib} %Imports bibliography file
+
+\newcommand{\cdiff}{C. \textit{diff}}
 
 %input macros (i.e. write your own macros file called mymacros.tex 
 %and uncomment the next line)
 %\include{mymacros}
 
-\title{A Longitudinal Study of the Effect of Renal Failure on Readmissions of Patients with Clostridium Difficile}   %note \\[1ex] is a line break in the title
+%note \\[1ex] is a line break in the title
+\title{A Longitudinal Study of the Effect of Renal Failure on Readmission Rates of Patients with \textit{Clostridium Difficile}}
 
 \author{Brian Detweiler}
 \college{College of Arts and Sciences}  %your college
@@ -100,20 +119,26 @@
 % include the abstract
 
 \begin{abstract}
-Clostridium Difficile Infection (C. \textit{diff} Infection, or simply CDI) 
+Clostridium Difficile Infection (C. \textit{diff}, or simply CDI) 
 is a highly contagious endospore forming bacterium that is transferred
 through physical contact with an infected surface. Symptoms range from diarrhea to
-life-threatening colitis. Elderly patients in hospitals and nursing homes receiving antimicrobial
-treatment are at the highest risk of infection, and roughly one in nine patients over 65 will
-die within 30 days of diagnosis. In this paper, we seek to model the risk of contracting CDI in both
-hospital and nursing home settings given patient-to-patient or patient-to-healthcare provider 
-contact. We then provide recommendations for minimizing the risk and controlling the spread of CDI.
+life-threatening colitis and is most commonly acquired in a hospital setting where
+antimicrobials have been administered. Increased mortality in
+CDI patients with renal failure comorbidities was shown in the literature as early as 1998 \cite{Cunney1998}.
+In this study, we use the \textit{Nationwide Readmissions Database} to assess the risk of 
+30, 60, and 90 day readmissions in patients with comorbid 
+CDI and renal failure conditions. We also discuss general CDI trends from 2001-2014, using the 
+\textit{Nationwide Inpatient Sample}. 
 \end{abstract}
 
 \begin{romanpages}          % start roman page numbering
 \tableofcontents            % generate and include a table of contents
 \listoffigures              % generate and include a list of figures
 \end{romanpages}            % end roman page numbering
+
+
+
+
 
 %now include the files of latex for each of the chapters etc
 
@@ -124,23 +149,102 @@ has been an increasing concern in hospitals and nursing homes, where it is most 
 \cite{Lamont2017}
 \cite{Lessa2015}
 
-\chapter{CDI and stuff}
+\section{Literature review}
 
 \lipsum
 
-\section{More stuff}
+\chapter{Methods}
+
+
+\section{Data source}
+
+The Agency for Healthcare Research and Quality (AHRQ), under the Department of Health and Human Services (DHHS), sponsors the
+Healthcare Cost and Utilization Project (HCUP), a collection of databases including the Nationwide Inpatient Sample (NIS) and
+the Nationwide Readmissions Database (NRD). \cite{HCUPOverview}
+
+\subsection{Nationwide Inpatient Sample}
+The NIS is an annual survey of inpatient discharges dating back to 1988. 
+
+\subsection{Nationwide Readmissions Database}
+
+\section{Study sample}
+
+
+
+\section{Statistical analysis}
+
+\chapter{Results}
+
+
+
+
+\section{Trends}
+
+\cdiff has been on the rise since the first reported major outbreak of ribotype 027 in 2004 \cite{Pepin2004}. 
+
+has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
+Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
+\cite{Masgala2014}
+
+
+In Figure \ref{age_dist_over_time}, we plot the
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/by_age-1} 
+
+}
+
+\caption[The blue lines on either side represent the interquartile range, while the red line in the middle ]{The blue lines on either side represent the interquartile range, while the red line in the middle }\label{fig:by_age}
+\end{figure}
+
+
+\end{knitrout}
+
+
+Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
+\cite{Krapohl2013} \cite{Masgala2014}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/age_dist_over_time-1} 
+
+}
+
+\caption[Age distribution by year from 2001 to 2014]{Age distribution by year from 2001 to 2014. The distribution is becoming less left-skewed and more platykurtic.}\label{fig:age_dist_over_time}
+\end{figure}
+
+
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Don't know how to automatically pick scale for object of type ts. Defaulting to continuous.}}\end{kframe}\begin{figure}
+
+{\centering \includegraphics[width=\maxwidth]{figure/age_groups_over_time-1} 
+
+}
+
+\caption[Age distribution by year from 2001 to 2014]{Age distribution by year from 2001 to 2014. }\label{fig:age_groups_over_time}
+\end{figure}
+
+
+\end{knitrout}
+
+\chapter{Discussion}
 
 \lipsum
 
-\chapter{Some more stuff}
-
-\lipsum
-
-\chapter{Even more stuff}
-
-\lipsum
-
-\chapter{The most stuff}
+\chapter{Conclusion and future work}
 
 \lipsum
 
@@ -154,13 +258,14 @@ has been an increasing concern in hospitals and nursing homes, where it is most 
 %@
 
 %next line adds the Bibliography to the contents page
-\addcontentsline{toc}{chapter}{Bibliography}
+%\addcontentsline{toc}{chapter}{Bibliography}
 %uncomment next line to change bibliography name to references
 %\renewcommand{\bibname}{References}
-\bibliography{refs}        %use a bibtex bibliography file refs.bib
+%\bibliography{refs}        %use a bibtex bibliography file refs.bib
 % \bibliographystyle{plain}  %use the plain bibliography style
-\bibliographystyle{apalike}
-
+% \bibliographystyle{apalike}
+\renewcommand{\bibname}{References}
+\printbibliography
 %Sets the bibliography style to UNSRT and imports the 
 %bibliography file "samples.bib".
 \end{document}

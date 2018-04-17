@@ -115,7 +115,7 @@ In the ICD-9-CM codings, we have the following:
 | 585.9 | Chronic kidney disease, unspecified                                                                                  | 
 | 586   | Renal failure, unspecified                                                                                           | 
 
-I grouped all **Acute kidney failure** items into a single category. Important to note, **585.9** is when a patient goes on dialysis. 
+I grouped all **Acute kidney failure** items into a single category. Important to note, **585.6** is when a patient goes on dialysis. 
 
 
 

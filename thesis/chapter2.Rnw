@@ -1,7 +1,19 @@
-\chapter{CDI and stuff}
+\chapter{Methods}
 
-\lipsum
 
-\section{More stuff}
+\section{Data source}
 
-\lipsum
+The Agency for Healthcare Research and Quality (AHRQ), under the Department of Health and Human Services (DHHS), sponsors the
+Healthcare Cost and Utilization Project (HCUP), a collection of databases including the Nationwide Inpatient Sample (NIS) and
+the Nationwide Readmissions Database (NRD). \cite{HCUPOverview}
+
+\subsection{Nationwide Inpatient Sample}
+The NIS is an annual survey of inpatient discharges dating back to 1988. 
+
+\subsection{Nationwide Readmissions Database}
+
+\section{Study sample}
+
+
+
+\section{Statistical analysis}

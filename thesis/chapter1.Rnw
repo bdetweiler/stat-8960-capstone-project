@@ -4,3 +4,7 @@ Clostridium Difficile Infection (often referred to as C. \textit{diff}, or CDI),
 has been an increasing concern in hospitals and nursing homes, where it is most frequently acquired.
 \cite{Lamont2017}
 \cite{Lessa2015}
+
+\section{Literature review}
+
+\lipsum

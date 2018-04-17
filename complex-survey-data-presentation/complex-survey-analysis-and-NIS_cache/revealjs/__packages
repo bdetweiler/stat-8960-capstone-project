@@ -1,3 +1,13 @@
 base
 ggplot2
 dplyr
+tidyverse
+tibble
+tidyr
+readr
+purrr
+Matrix
+survival
+survey
+knitr
+bindrcpp

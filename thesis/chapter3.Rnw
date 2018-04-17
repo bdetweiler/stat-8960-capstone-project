@@ -1,3 +1,176 @@
-\chapter{Some more stuff}
+\chapter{Results}
 
-\lipsum
+
+
+echo "`l NIS* | grep -i CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'` + `l  NRD201* | grep CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'`" | bc
+
+\section{Trends}
+
+\cdiff has been on the rise since the first reported major outbreak of ribotype 027  in 2004 \cite{Pepin2004}. 
+
+has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
+Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
+\cite{Masgala2014}
+
+
+In Figure \ref{age_dist_over_time}, we plot the
+
+
+<<descriptive_stats, warning=FALSE, echo=FALSE, cache=TRUE>>=
+
+proportions <- list() 
+for (y in seq(2001, 2014, by=1)) {
+  cdi.and.renal.reduced <- read_csv('../data/cdiff_and_renal_all_2001.csv')
+  cdiff.design <- svydesign(ids = ~hospid, 
+                            data = cdi.and.renal.reduced,
+                            weights = ~discwt, 
+                            strata = ~nis_stratum,
+                            nest=TRUE)
+  
+  proportions[[paste0(y, "_cdi")]] <- svyciprop(~I(cdi==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_aki")]] <- svyciprop(~I(aki==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd1")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd2")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd3")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd4")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd5")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd6")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_renal_failure")]] <- svyciprop(~I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_renal_failure")]] <- svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
+  svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
+  
+  rm(cdi.and.renal.reduced)
+  rm(cdiff.design)
+  gc()
+}
+
+
+@
+
+
+<<descriptive_stats, warning=FALSE, echo=FALSE, cache=TRUE>>=
+cdiff.ages <- filter(cdiff, !is.na(age))
+cdiff.design <- svydesign(ids = ~hospid, 
+                          data = cdiff.ages, 
+                          weights = ~discwt, 
+                          strata = ~nis_stratum,
+                          nest=TRUE)
+
+mode <- mlv(cdiff.ages$age, method = "mfv")
+mode <- mode$M
+qntl <- svyquantile(~age, cdiff.design, c(0.25, 0.5, 0.75))
+
+xbar.weighted <- svymean(x = ~age, design=cdiff.design, deff=TRUE)
+@
+
+<<by_age, warning=FALSE, echo=FALSE, cache=TRUE, fig.height=4, fig.width=4, fig.align='center', fig.cap="The blue lines on either side represent the interquartile range, while the red line in the middle ">>=
+p <- cdiff.ages %>% 
+  select(age, discwt) %>%
+  ggplot(aes(age, group=1, weight=discwt)) +
+    geom_histogram(stat="bin", bins=30) +
+    geom_vline(xintercept = qntl[[2]], col="red") +
+    geom_vline(xintercept = qntl[[1]], col="blue") +
+    geom_vline(xintercept = qntl[[3]], col="blue") +
+    labs(title="C. diff infections by age", y="Count", x="Age")
+print(p)
+@
+
+
+Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
+\cite{Krapohl2013} \cite{Masgala2014}
+
+
+
+<<age_dist_over_time, warning=FALSE, echo=FALSE, cache=TRUE, fig.height=4, fig.width=5, fig.align='center', fig.cap="Age distribution by year from 2001 to 2014. The distribution is becoming less left-skewed and more platykurtic.">>=
+cdiff.ages %>% 
+  select(age, nis_year, discwt) %>%
+  ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
+    geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
+    labs(title="C. diff distribution by age over time", x="Age", y="Year")
+@
+
+
+<<age_groups_over_time, warning=FALSE, echo=FALSE, cache=TRUE, fig.height=4, fig.width=5, fig.align='center', fig.cap="Age distribution by year from 2001 to 2014. ">>=
+ts.by.year <- list()
+
+from <- 1
+to <- 0
+for (i in 1:20) {
+  from <- to
+  to <- from + 5
+
+  age.window <- cdiff %>% 
+    filter(!is.na(age) & age >= from & age < to) %>% 
+    select(nis_year) %>%
+    group_by(nis_year) %>%
+    summarise(count=n())
+
+  
+  my.ts <- ts(age.window$count, start = 2001, end = 2014, frequency = 1)
+  
+  #if (i == 2001) {
+    ts.by.year[[paste0(from, "_", to)]] <- my.ts
+  #} else {
+    #ts(age.window$count, start = 2001, end = 2014, frequency = 1)
+  #}
+}
+
+plot.ts <- data.frame(year=2001:2014)
+plot.ts <- cbind(plot.ts, data.frame('0_5'=ts.by.year[['0_5']]))
+plot.ts <- cbind(plot.ts, data.frame('5_10'=ts.by.year[['5_10']]))
+plot.ts <- cbind(plot.ts, data.frame('10_15'=ts.by.year[['10_15']]))
+plot.ts <- cbind(plot.ts, data.frame('15_20'=ts.by.year[['15_20']]))
+plot.ts <- cbind(plot.ts, data.frame('20_25'=ts.by.year[['20_25']]))
+plot.ts <- cbind(plot.ts, data.frame('25_30'=ts.by.year[['25_30']]))
+plot.ts <- cbind(plot.ts, data.frame('30_35'=ts.by.year[['30_35']]))
+plot.ts <- cbind(plot.ts, data.frame('35_40'=ts.by.year[['35_40']]))
+plot.ts <- cbind(plot.ts, data.frame('40_45'=ts.by.year[['40_45']]))
+plot.ts <- cbind(plot.ts, data.frame('45_50'=ts.by.year[['45_50']]))
+plot.ts <- cbind(plot.ts, data.frame('50_55'=ts.by.year[['50_55']]))
+plot.ts <- cbind(plot.ts, data.frame('55_60'=ts.by.year[['55_60']]))
+plot.ts <- cbind(plot.ts, data.frame('60_65'=ts.by.year[['60_65']]))
+plot.ts <- cbind(plot.ts, data.frame('65_70'=ts.by.year[['65_70']]))
+plot.ts <- cbind(plot.ts, data.frame('70_75'=ts.by.year[['70_75']]))
+plot.ts <- cbind(plot.ts, data.frame('75_80'=ts.by.year[['75_80']]))
+plot.ts <- cbind(plot.ts, data.frame('80_85'=ts.by.year[['80_85']]))
+plot.ts <- cbind(plot.ts, data.frame('85_90'=ts.by.year[['85_90']]))
+plot.ts <- cbind(plot.ts, data.frame('90_95'=ts.by.year[['90_95']]))
+plot.ts <- cbind(plot.ts, data.frame('95_100'=ts.by.year[['95_100']]))
+
+plot.ts.m <- melt(plot.ts, id.vars=c('year'))
+
+labels <- gsub('_', '-', gsub('X', replacement = '', as.character(plot.ts.m$variable)))
+plot.ts.m$variable <- factor(labels, levels = unique(labels))
+
+cols <- c('0-5'   = "#e6e6ff",
+          '5-10'  = "#ccccff",
+          '10-15' = "#b3b3ff",
+          '15-20' = "#9999ff",
+          '20-25' = "#8080ff",
+          '25-30' = "#6666ff",
+          '30-35' = "#4d4dff",
+          '35-40' = "#3333ff",
+          '40-45' = "#1a1aff",
+          '45-50' = "#0000ff",
+          
+          # RED - increasing 
+          '50-55' = "#cc0000",
+          '55-60' = "#b30000",
+          '60-65' = "#990000",
+          '65-70' = "#800000",
+          '70-75' = "#660000",
+          
+          # GREEN - Somewhat decreasing
+          '75-80' = "#006600",
+          '80-85' = "#004d00",
+          '85-90' = "#008000",
+          '90-95' = "#003300",
+          
+          '95-100' = "#000000")
+plot.ts.m %>% 
+  ggplot(aes(x=year, y=value, colour=variable)) +
+    geom_line() +
+    scale_colour_manual(values = cols) +
+    labs(title="Time series of C. diff cases by 5-year age groups", x="Year", y="Count", colour="Ages")
+@
