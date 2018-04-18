@@ -90,7 +90,9 @@ library('survey')
 library('spatstat')
 library('magrittr')
 library('tidyverse')
+library('broom')
 library('dplyr')
+library('beepr')
 @
 
 <<read_cdiff, include=FALSE, warning=FALSE, cache=TRUE>>=
@@ -113,7 +115,7 @@ readm.90 <- read_csv('../data/cdiff-readmissions-90-day-window.csv')
 @
 
 
-<<read_readmissions_90_day, include=FALSE, warning=FALSE, cache=TRUE>>=
+<<read_db, include=FALSE, warning=FALSE, cache=TRUE>>=
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis')
 # MonetDB connection to a permanent file
 # Call the below line if you get an error about connecting

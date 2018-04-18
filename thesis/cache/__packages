@@ -28,3 +28,10 @@ survey
 spatstat.data
 rpart
 spatstat
+tidyverse
+tibble
+tidyr
+readr
+purrr
+broom
+beepr

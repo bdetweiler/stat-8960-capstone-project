@@ -1,26 +1,22 @@
 \chapter{Results}
 
-
-
-echo "`l NIS* | grep -i CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'` + `l  NRD201* | grep CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'`" | bc
-
 \section{Trends}
 
-\cdiff has been on the rise since the first reported major outbreak of ribotype 027  in 2004 \cite{Pepin2004}. 
-
-has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
-Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
-\cite{Masgala2014}
-
-
-In Figure \ref{age_dist_over_time}, we plot the
+\cdiff has been on the rise since the first reported major outbreak of ribotype 027, a hypervirulent strain, in 2004 \cite{Pepin2004}. 
 
 
 <<descriptive_stats, warning=FALSE, echo=FALSE, cache=TRUE>>=
 
+# echo "`l NIS* | grep -i CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'` + `l  NRD201* | grep CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'`" | bc
 proportions <- list() 
+cdi.and.renal.reduced <- list()
+y <- 2014
 for (y in seq(2001, 2014, by=1)) {
-  cdi.and.renal.reduced <- read_csv('../data/cdiff_and_renal_all_2001.csv')
+
+  print(y)
+  
+  #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
+  cdi.and.renal.reduced <- read_csv(paste0('../data/cdiff_and_renal_all_', y, '.csv'))
   cdiff.design <- svydesign(ids = ~hospid, 
                             data = cdi.and.renal.reduced,
                             weights = ~discwt, 
@@ -30,26 +26,46 @@ for (y in seq(2001, 2014, by=1)) {
   proportions[[paste0(y, "_cdi")]] <- svyciprop(~I(cdi==1), cdiff.design, method = "logit", level = 0.95)
   proportions[[paste0(y, "_aki")]] <- svyciprop(~I(aki==1), cdiff.design, method = "logit", level = 0.95)
   proportions[[paste0(y, "_ckd")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_ckd1")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_ckd2")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_ckd3")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_ckd4")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_ckd5")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_ckd6")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd1")]] <- svyciprop(~I(ckd1==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd2")]] <- svyciprop(~I(ckd2==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd3")]] <- svyciprop(~I(ckd3==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd4")]] <- svyciprop(~I(ckd4==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd5")]] <- svyciprop(~I(ckd5==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd6")]] <- svyciprop(~I(ckd6==1), cdiff.design, method = "logit", level = 0.95)
   proportions[[paste0(y, "_renal_failure")]] <- svyciprop(~I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0), cdiff.design, method = "logit", level = 0.95)
-  proportions[[paste0(y, "_renal_failure")]] <- svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
-  svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
+                                                #svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
   
   rm(cdi.and.renal.reduced)
   rm(cdiff.design)
   gc()
 }
+beep(3)
 
+proportions
 
+diseases <- c("cdi", "aki", "ckd", "ckd1", "ckd2", "ckd3", "ckd4", "ckd5", "ckd6", "renal_failure")
+y <- 2001
+d <- diseases[1]
+final.df <- data_frame(disease="", 
+                       year=2000, 
+                       theta=0,
+                       ci2.5=0,
+                       ci97.5=0)
+for (y in seq(2001, 2014, by=1)) {
+  for (d in diseases) {
+    df <- data_frame(disease=d, 
+                     year=y, 
+                     theta=as.vector(proportions[[paste0(y, "_", d)]]),
+                     ci2.5=attr(proportions[[paste0(y, "_", d)]], "ci")[[1]], 
+                     ci97.5=attr(proportions[[paste0(y, "_", d)]], "ci")[[2]])
+
+    final.df <- bind_rows(final.df, df)
+  }
+}
 @
 
 
-<<descriptive_stats, warning=FALSE, echo=FALSE, cache=TRUE>>=
+<<more_descriptive_stats, warning=FALSE, echo=FALSE, cache=TRUE>>=
 cdiff.ages <- filter(cdiff, !is.na(age))
 cdiff.design <- svydesign(ids = ~hospid, 
                           data = cdiff.ages, 
@@ -75,6 +91,14 @@ p <- cdiff.ages %>%
     labs(title="C. diff infections by age", y="Count", x="Age")
 print(p)
 @
+
+has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
+Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
+\cite{Masgala2014}
+
+
+In Figure \ref{age_dist_over_time}, we plot the
+
 
 
 Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
