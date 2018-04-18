@@ -1,7 +1,60 @@
 \chapter{Introduction}
 
-Clostridium Difficile Infection (often referred to as C. \textit{diff}, or CDI), 
-has been an increasing concern in hospitals and nursing homes, where it is most frequently acquired.
+\section{Overview of \cdiff}
+
+Clostridium \textit{difficile} Infection - also referred to by its shortened name, \cdiff, or simply CDI -
+has been an increasing concern in the last two decades among healthcare providers. 
+The organism itself is a resilliant endospore-forming bacterium, resistant to heat, acid, and antibiotics,
+and can survive on surfaces for up to 5 months, if proper sanitation is not carried out. \cite{Gerding2008}
+
+In past years, the most common \cdiff cases occurred in elderly patients, 65 years or older,
+who were on admitted as an inpatients in a hospital or nursing home setting, and given antimicrobial therapy.
+In fact, it is the most frequently 
+Antimicrobials deplete the healthy flora lining the intestines which 
+
+Adding to the complexity of the situation, CDI carriers can remain asymptomatic, making them stealth transporters
+and allowing the disease to propegate undetected until it is too late. 
+
+In 2013, the CDC estimated that around 250,000 Americans contracted \cdiff in a single year, causing 14,000 deaths.
+That estimate was later updated to half a million in 2015, causing 15,000 deaths. \cite{cdc2018} \cite{cdc2015} 
+Another study puts that number even higher, at 29,000 deaths in 2011. 
+
+\cdiff is also costly. The CDC estimates that in 2008, it cost acute healthcare facilities alone more than $4.8 billion.
+The mean cost of an incident of CDI was found to be $11,498 (inflation adjusted to 2008 dollars)
+and as high as $15,397 when CDI was hospital acquired. \cite{Dubberke2012}
+
+
+
+\section{Readmissions}
+
+A 2014 study done by the Agency for Healthcare Research and Quality (AHRQ) under the Healthcare Cost and Utilization
+Project (HCUP) found hospital readmissions accounted for about $41.3 billion in hospital costs.  \cite{Hines2014}
+
+Under the Readmission Reduction Program, a provision of the Affordable Care Act, 
+Hospitals face penalties on Medicare payments if they exceed certain 30-day readmission standards. While the 
+American Hospital Association strongly opposes the measure, citing a lack of control over the chain of events
+that can lead to readmission \cite{Rice2015} \cite{AHA2018}, the Affordable Care Act is still the rule of law, and hospitals must seek
+to reduce readmissions in order to avoid penalties.
+
+For this reason, readmission statistics are an important key metric for hospitals interested in optimizing 
+their operations. Using large surveys, researchers are able to determine trends and end results, but not necessarily 
+causes, of readmissions. Still, high level trends can point healthcare providers in a direction where they can
+more efficiently focus their attention. 
+
+
+
+
+
+\cite{Lessa2015}
+
+\section{Overview of the data}
+
+\subsection{The Nationwide Inpatient Sample (NIS)}
+
+\subsection{The Nationwide Readmissions Database (NRD)}
+
+
+
 \cite{Lamont2017}
 \cite{Lessa2015}
 
