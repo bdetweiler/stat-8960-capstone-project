@@ -72,6 +72,7 @@
 \begin{romanpages}          % start roman page numbering
 \tableofcontents            % generate and include a table of contents
 \listoffigures              % generate and include a list of figures
+\listoftables
 \end{romanpages}            % end roman page numbering
 
 <<ch3_includes, echo=FALSE, cache=FALSE, message=FALSE>>=
