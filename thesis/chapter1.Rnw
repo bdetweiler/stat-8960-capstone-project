@@ -95,7 +95,7 @@ End stage renal disease (ESRD) is diagnosed when CKD reaches its most severe poi
 The most common causes of ESRD are diabetes and high blood pressure. Risk of ESRD also increases with age.
 
 
-\section{Readmissions}
+\section{Readmissions and the ACA}
 
 A 2014 study done by the Agency for Healthcare Research and Quality (AHRQ) under the Healthcare Cost and Utilization
 Project (HCUP) found hospital readmissions accounted for about \$41.3 billion in hospital costs.  \cite{Hines2014}
@@ -111,7 +111,34 @@ their operations. Using large surveys, researchers are able to determine trends 
 causes, of readmissions. Still, high level trends can point healthcare providers in a direction where they can
 more efficiently focus their attention. 
 
+\subsection{Readmission measures}
 
+The Centers for Medicare \& Medicaid Services (CMS) sets guidelines that hospitals must follow to avoid penalization on Medicare payments. 
+The CMS measures "excess readmissions" as a ratio of predicted-to-expected readmissions and each hospital's relative performance, based on
+a 30-day risk standardized measure. All-cause unplanned readmissions to the same or another applicable acute care hospital, 
+ocurring within 30 days - for any reason, regardless of principal diagnosis - from the index admission are counted in this measure.
+Some planned readmissions are not counted. \cite{HRRP}
+
+For fiscal years 2013 to 2018, the following formula is used to calculate payment adjustment:
+
+\begin{equation} \label{eq1}
+\begin{split}
+  \text{Payment Readjustment Factor} &= 1 - min{0.03, \sum_{dx} \frac{\text{Payment(dx) \cdot max\big((\text{ERR}(dx) - 1.0), 0\big)}}{\text{All payments}}} \\
+\end{split}
+\end{equation}
+
+Where $dx$ is one of six measure cohorts: 
+
+\begin{itemize}
+  \item acute myocardial infarction (AMI)
+  \item heart failure (HF)
+  \item pneumonia
+  \item chronic obstructive pulmonary disease (COPD)
+  \item coronary artery bypass graft (CABG) surgeries
+  \item elective primary total hip and/or total knee arthroplasty (THA/TKA)
+\end{itemize}
+
+ERR is a hospital's performance measure $dx$, and payment refers to base operating DRG payments. \cite{HRRPPaymentAdjustment}
 
 
 
