@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage{url}
 \usepackage{lipsum}
 \usepackage{array}
@@ -27,6 +28,7 @@
 
 \addbibresource{refs.bib} %Imports bibliography file
 
+\newcommand{\cdifficile}{Clostridium \textit{difficile}}
 \newcommand{\cdiff}{C. \textit{diff}}
 
 %input macros (i.e. write your own macros file called mymacros.tex 
@@ -197,8 +199,6 @@ options(survey.lonely.psu="remove")
 <<chapter4, child='chapter4.Rnw'>>=
 @
 <<chapter5, child='chapter5.Rnw'>>=
-@
-<<conclusions, child='conclusions.Rnw'>>=
 @
 
 %now enable appendix numbering format and include any appendices

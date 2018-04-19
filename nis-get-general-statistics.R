@@ -1866,3 +1866,271 @@ write_csv( select(cdi.and.renal, nis_key,
            "data/cdiff_and_renal_all.csv")
 beep(3)
 
+
+proportions <- list() 
+cdi.and.renal.reduced <- list()
+y <- 2014
+for (y in seq(2001, 2014, by=1)) {
+
+  print(y)
+  
+  #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
+  cdi.and.renal.reduced <- read_csv(paste0('../data/cdiff_and_renal_all_', y, '.csv'))
+  cdiff.design <- svydesign(ids = ~hospid, 
+                            data = cdi.and.renal.reduced,
+                            weights = ~discwt, 
+                            strata = ~nis_stratum,
+                            nest=TRUE)
+  
+  proportions[[paste0(y, "_cdi")]] <- svyciprop(~I(cdi==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_aki")]] <- svyciprop(~I(aki==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd1")]] <- svyciprop(~I(ckd1==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd2")]] <- svyciprop(~I(ckd2==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd3")]] <- svyciprop(~I(ckd3==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd4")]] <- svyciprop(~I(ckd4==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd5")]] <- svyciprop(~I(ckd5==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd6")]] <- svyciprop(~I(ckd6==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_renal_failure")]] <- svyciprop(~I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0), cdiff.design, method = "logit", level = 0.95)
+                                                #svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
+  
+  rm(cdi.and.renal.reduced)
+  rm(cdiff.design)
+  gc()
+}
+beep(3)
+
+proportions
+
+diseases <- c("cdi", "aki", "ckd", "ckd1", "ckd2", "ckd3", "ckd4", "ckd5", "ckd6", "renal_failure")
+y <- 2001
+d <- diseases[1]
+final.df <- data_frame(disease="", 
+                       year=2000, 
+                       theta=0,
+                       ci2.5=0,
+                       ci97.5=0)
+for (y in seq(2001, 2014, by=1)) {
+  for (d in diseases) {
+    df <- data_frame(disease=d, 
+                     year=y, 
+                     theta=as.vector(proportions[[paste0(y, "_", d)]]),
+                     ci2.5=attr(proportions[[paste0(y, "_", d)]], "ci")[[1]], 
+                     ci97.5=attr(proportions[[paste0(y, "_", d)]], "ci")[[2]])
+
+    final.df <- bind_rows(final.df, df)
+  }
+}
+
+write_csv(final.df, "../data/proportions.csv")
+
+
+
+# echo "`l NIS* | grep -i CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'` + `l  NRD201* | grep CSV | awk '{print $5}' | awk '{s+=$1} END {print s}'`" | bc
+proportions <- list() 
+cdi.and.renal.reduced <- list()
+y <- 2014
+for (y in seq(2001, 2014, by=1)) {
+
+  print(y)
+  
+  #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
+  cdi.and.renal.reduced <- read_csv(paste0('../data/cdiff_and_renal_all_', y, '.csv'))
+  cdiff.design <- svydesign(ids = ~hospid, 
+                            data = cdi.and.renal.reduced,
+                            weights = ~discwt, 
+                            strata = ~nis_stratum,
+                            nest=TRUE)
+  
+  proportions[[paste0(y, "_cdi")]] <- svyciprop(~I(cdi==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_aki")]] <- svyciprop(~I(aki==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd")]] <- svyciprop(~I(ckd==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd1")]] <- svyciprop(~I(ckd1==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd2")]] <- svyciprop(~I(ckd2==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd3")]] <- svyciprop(~I(ckd3==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd4")]] <- svyciprop(~I(ckd4==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd5")]] <- svyciprop(~I(ckd5==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_ckd6")]] <- svyciprop(~I(ckd6==1), cdiff.design, method = "logit", level = 0.95)
+  proportions[[paste0(y, "_renal_failure")]] <- svyciprop(~I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0), cdiff.design, method = "logit", level = 0.95)
+                                                #svyciprop(~(I(cdi==1) & I(aki+ckd+ckd1+ckd2+ckd3+ckd4+ckd5+ckd6 > 0)), cdiff.design, method = "logit", level = 0.95)
+  
+  rm(cdi.and.renal.reduced)
+  rm(cdiff.design)
+  gc()
+}
+beep(3)
+
+proportions
+
+diseases <- c("cdi", "aki", "ckd", "ckd1", "ckd2", "ckd3", "ckd4", "ckd5", "ckd6", "renal_failure")
+y <- 2001
+d <- diseases[1]
+final.df <- data_frame(disease="", 
+                       year=2000, 
+                       theta=0,
+                       ci2.5=0,
+                       ci97.5=0)
+for (y in seq(2001, 2014, by=1)) {
+  for (d in diseases) {
+    df <- data_frame(disease=d, 
+                     year=y, 
+                     theta=as.vector(proportions[[paste0(y, "_", d)]]),
+                     ci2.5=attr(proportions[[paste0(y, "_", d)]], "ci")[[1]], 
+                     ci97.5=attr(proportions[[paste0(y, "_", d)]], "ci")[[2]])
+
+    final.df <- bind_rows(final.df, df)
+  }
+}
+
+
+cdiff.ages <- filter(cdiff, !is.na(age))
+cdiff.design <- svydesign(ids = ~hospid, 
+                          data = cdiff.ages, 
+                          weights = ~discwt, 
+                          strata = ~nis_stratum,
+                          nest=TRUE)
+
+mode <- mlv(cdiff.ages$age, method = "mfv")
+mode <- mode$M
+qntl <- svyquantile(~age, cdiff.design, c(0.25, 0.5, 0.75))
+
+xbar.weighted <- svymean(x = ~age, design=cdiff.design, deff=TRUE)
+
+p <- cdiff.ages %>% 
+  select(age, discwt) %>%
+  ggplot(aes(age, group=1, weight=discwt)) +
+    geom_histogram(stat="bin", bins=30) +
+    geom_vline(xintercept = qntl[[2]], col="red") +
+    geom_vline(xintercept = qntl[[1]], col="blue") +
+    geom_vline(xintercept = qntl[[3]], col="blue") +
+    labs(title="C. diff infections by age", y="Count", x="Age")
+print(p)
+
+
+
+ts.by.year <- list()
+
+from <- 1
+to <- 0
+for (i in 1:20) {
+  from <- to
+  to <- from + 5
+
+  age.window <- cdiff %>% 
+    filter(!is.na(age) & age >= from & age < to) %>% 
+    select(nis_year) %>%
+    group_by(nis_year) %>%
+    summarise(count=n())
+
+  
+  my.ts <- ts(age.window$count, start = 2001, end = 2014, frequency = 1)
+  
+  #if (i == 2001) {
+    ts.by.year[[paste0(from, "_", to)]] <- my.ts
+  #} else {
+    #ts(age.window$count, start = 2001, end = 2014, frequency = 1)
+  #}
+}
+
+plot.ts <- data.frame(year=2001:2014)
+plot.ts <- cbind(plot.ts, data.frame('0_5'=ts.by.year[['0_5']]))
+plot.ts <- cbind(plot.ts, data.frame('5_10'=ts.by.year[['5_10']]))
+plot.ts <- cbind(plot.ts, data.frame('10_15'=ts.by.year[['10_15']]))
+plot.ts <- cbind(plot.ts, data.frame('15_20'=ts.by.year[['15_20']]))
+plot.ts <- cbind(plot.ts, data.frame('20_25'=ts.by.year[['20_25']]))
+plot.ts <- cbind(plot.ts, data.frame('25_30'=ts.by.year[['25_30']]))
+plot.ts <- cbind(plot.ts, data.frame('30_35'=ts.by.year[['30_35']]))
+plot.ts <- cbind(plot.ts, data.frame('35_40'=ts.by.year[['35_40']]))
+plot.ts <- cbind(plot.ts, data.frame('40_45'=ts.by.year[['40_45']]))
+plot.ts <- cbind(plot.ts, data.frame('45_50'=ts.by.year[['45_50']]))
+plot.ts <- cbind(plot.ts, data.frame('50_55'=ts.by.year[['50_55']]))
+plot.ts <- cbind(plot.ts, data.frame('55_60'=ts.by.year[['55_60']]))
+plot.ts <- cbind(plot.ts, data.frame('60_65'=ts.by.year[['60_65']]))
+plot.ts <- cbind(plot.ts, data.frame('65_70'=ts.by.year[['65_70']]))
+plot.ts <- cbind(plot.ts, data.frame('70_75'=ts.by.year[['70_75']]))
+plot.ts <- cbind(plot.ts, data.frame('75_80'=ts.by.year[['75_80']]))
+plot.ts <- cbind(plot.ts, data.frame('80_85'=ts.by.year[['80_85']]))
+plot.ts <- cbind(plot.ts, data.frame('85_90'=ts.by.year[['85_90']]))
+plot.ts <- cbind(plot.ts, data.frame('90_95'=ts.by.year[['90_95']]))
+plot.ts <- cbind(plot.ts, data.frame('95_100'=ts.by.year[['95_100']]))
+
+plot.ts.m <- melt(plot.ts, id.vars=c('year'))
+
+labels <- gsub('_', '-', gsub('X', replacement = '', as.character(plot.ts.m$variable)))
+plot.ts.m$variable <- factor(labels, levels = unique(labels))
+
+cols <- c('0-5'   = "#e6e6ff",
+          '5-10'  = "#ccccff",
+          '10-15' = "#b3b3ff",
+          '15-20' = "#9999ff",
+          '20-25' = "#8080ff",
+          '25-30' = "#6666ff",
+          '30-35' = "#4d4dff",
+          '35-40' = "#3333ff",
+          '40-45' = "#1a1aff",
+          '45-50' = "#0000ff",
+          
+          # RED - increasing 
+          '50-55' = "#cc0000",
+          '55-60' = "#b30000",
+          '60-65' = "#990000",
+          '65-70' = "#800000",
+          '70-75' = "#660000",
+          
+          # GREEN - Somewhat decreasing
+          '75-80' = "#006600",
+          '80-85' = "#004d00",
+          '85-90' = "#008000",
+          '90-95' = "#003300",
+          
+          '95-100' = "#000000")
+
+plot.ts.m %>% 
+  ggplot(aes(x=year, y=value, colour=variable)) +
+    geom_line() +
+    scale_colour_manual(values = cols) +
+    labs(title="Time series of C. diff cases by 5-year age groups", x="Year", y="Count", colour="Ages")
+
+
+
+
+######################
+
+esrd <- list() 
+y <- 2014
+for (y in seq(2001, 2014, by=1)) {
+
+  print(y)
+  
+  #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
+  cdi.and.renal.reduced <- read_csv(paste0('../data/cdiff_and_renal_all_', y, '.csv'))
+  #cdiff.design <- svydesign(ids = ~hospid, 
+                            #data = cdi.and.renal.reduced,
+                            #weights = ~discwt, 
+                            #strata = ~nis_stratum,
+                            #nest=TRUE)
+ 
+  #fit <- svyglm(I(ckd6 == 1)~age, cdiff.design, family=quasibinomial())
+  
+  esrd[[y]] <- cdi.and.renal.reduced %>% 
+    filter(ckd6 == 1)  %>% 
+    select(age, nis_year, discwt)
+  
+ esrd[[2014]] 
+  rm(cdi.and.renal.reduced)
+  gc()
+}
+
+df <- esrd[[2001]]
+for (y in seq(from=2002, to=2014, by=1)) {
+  print(y)
+  df <- bind_rows(df, esrd[[y]])
+}
+
+write_csv(df, '/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/data/esrd.csv')
+
+ggplot(df, aes(x = age, y = nis_year, group = nis_year)) + 
+  geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
+  labs(title="ESRD distribution by age over time", x="Age", y="Year")
+
+beep(3)

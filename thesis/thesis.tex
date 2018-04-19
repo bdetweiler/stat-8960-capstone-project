@@ -56,6 +56,7 @@
 \usepackage{amssymb}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage{url}
 \usepackage{lipsum}
 \usepackage{array}
@@ -77,6 +78,7 @@
 
 \addbibresource{refs.bib} %Imports bibliography file
 
+\newcommand{\cdifficile}{Clostridium \textit{difficile}}
 \newcommand{\cdiff}{C. \textit{diff}}
 
 %input macros (i.e. write your own macros file called mymacros.tex 
@@ -155,14 +157,144 @@ CDI and renal failure conditions. We also discuss general CDI trends from 2001-2
 
 \chapter{Introduction}
 
-Clostridium Difficile Infection (often referred to as C. \textit{diff}, or CDI), 
-has been an increasing concern in hospitals and nursing homes, where it is most frequently acquired.
+\section{Overview of \cdifficile}
+
+Clostridium \textit{difficile} Infection - also referred to by its shortened name, \cdiff, or simply CDI -
+has been an increasing concern in the last two decades among healthcare providers. 
+The organism itself is a resilliant endospore-forming bacterium, resistant to heat, acid, and antibiotics,
+and can survive on surfaces for up to 5 months, if proper sanitation is not carried out. \cite{Gerding2008}
+
+In past years, the most common CDI cases occurred in elderly patients, 65 years or older,
+who were on admitted as an inpatients in a hospital or nursing home setting, and given antimicrobial therapy.
+In fact, it has become the most frequent nosocomial (hospital-acquired) disease, surpassing
+methicillin-resistant Staphylococcus aureus (MRSA). \cite{Gupta2014}
+
+Antimicrobials deplete the healthy gut flora the intestines which protect against harmful organisms like \cdiff.
+
+Adding to the complexity of the situation, CDI carriers can remain asymptomatic, making them stealth transporters
+and allowing the disease to propegate undetected until it is too late. 
+
+In 2013, the CDC estimated that around 250,000 Americans contracted \cdiff in a single year, causing 14,000 deaths.
+That estimate was later updated to half a million in 2015, causing 15,000 deaths. \cite{CDC2018}
+\cite{CDC2015} 
+Another study puts that number even higher, at 29,000 deaths in 2011. 
+
+\cdiff is also costly. The CDC estimates that in 2008, it cost acute healthcare facilities alone more than \$4.8 billion.
+The mean cost of an incident of CDI was found to be \$11,498 (inflation adjusted to 2008 dollars)
+and as high as \$15,397 when CDI was hospital acquired. \cite{Dubberke2012}
+
+
+\section{Overview of Renal Failure}
+
+While \cdiff is a singular diagnosis category, renal failure falls into one of two umbrella categories, acute kidney injury (AKI), 
+and chronic kidney disease (CKD). AKI is further broken into subcategories. Acute tubular necrosis is the most common form of AKI.
+Other subcategories include renal cortical necrosis, renal medullary necrosis, lesions, and a category for unspecified AKI. 
+
+Chronic kidney disease is broken into categories based on stages that are calculated using one of the estimated Glomerular Filtration Rate
+equations. The equations model kidney health as a function of age, sex, race, and blood creatinine, a waste product that is produced from
+normal muscle use. 
+
+\subsection{The MDRD Equation vs. the CKD-EPI Equation}
+
+The MDRD equation encodes sex and race (African American or not) and does not rely on height or weight due to using $1.73m^2$ surface area,
+the generally accepted mean human adult body surface area. 
+
+\begin{equation*}
+\begin{split}
+  GFR  &= 175 \times S_{cr} - 1.154 \times \text{Age}^{-0.203} \times 0.742 \cdot I(\text{F}) \times 1.212 \cdot I(\text{AA}) \\
+\end{split}
+\end{equation*}
+
+The CKD-EPI equation makes use of a 2-slope spline. It was shown to outperform the MDRD, with lower bias and increased precision.  \cite{Levey2009}
+
+\begin{equation*}
+\begin{split}
+  GFR &= 141 \times min\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{\alpha} \times max\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{-1.209} 
+  \times 0.993^{\text{Age}} \times 1.018 \cdot \text{I}(\text{F}) \times 1.159 \cdot \text{I}(\text{AA}) \\
+\end{split}
+\end{equation*}
+
+where:
+\begin{itemize}
+  \item F is female sex
+  \item AA is African American race
+  \item I is an indicator function that returns 1 if true, the reciporcal of the preceding term if false (thereby making the preceding term 1)
+  \item $S_{cr}$ is serum creatinine in mg/dL
+  \item $\kappa$ is 0.7 for females and 0.9 for males
+  \item $\alpha$ is -0.329 for females and -0.411 for males
+\end{itemize}
+\cite{eGFR2018} 
+
+\subsection{Classifying Chronic Kidney Disease}
+
+Once the GFR is calculated, patients can be placed into one of five categories. Table \ref{tab:gfr} shows the 
+GFR rating along with the stage of CKD and the level of kidney function. \textbf{585} is used in the ICD-9-CM coding system
+to indicate CKD. If the level is known, a more specific coding is used. \textbf{585.6} is used for end stage renal disease,
+and \textbf{585.9} is used if the level is unspecified.
+
+\begin{table}[]
+\centering
+\label{my-label}
+\begin{tabular}{lllll}
+CKD Stage & Description             & GFR        & Kidney Function & ICD-9-CM \\
+\hline
+1         & Normal kidney function  & 90+        & 90-100\%        & 585.1    \\
+2         & Mild loss               & 60-89      & 60-89\%         & 585.2    \\
+3         & Mild to severe          & 30-59      & 30-59\%         & 585.3    \\
+4         & Severe                  & 15-29      & 15-29\%         & 585.4    \\
+5         & Kidney failure          & 15 or less & 15\% or less    & 585.5    \\
+\end{tabular}\caption{GFR classifications}\label{tab:gfr}
+\end{table}
+
+\subsection{End stage renal disease}
+
+End stage renal disease (ESRD) is diagnosed when CKD reaches its most severe point and dialysis or a kidney transplant is needed to stay alive.
+The most common causes of ESRD are diabetes and high blood pressure. Risk of ESRD also increases with age.
+
+
+\section{Readmissions}
+
+A 2014 study done by the Agency for Healthcare Research and Quality (AHRQ) under the Healthcare Cost and Utilization
+Project (HCUP) found hospital readmissions accounted for about \$41.3 billion in hospital costs.  \cite{Hines2014}
+
+Under the Readmission Reduction Program, a provision of the Affordable Care Act, 
+Hospitals face penalties on Medicare payments if they exceed certain 30-day readmission standards. While the 
+American Hospital Association strongly opposes the measure, citing a lack of control over the chain of events
+that can lead to readmission \cite{Rice2015, AHA2018}, the Affordable Care Act is still the rule of law, and hospitals must seek
+to reduce readmissions in order to avoid penalties.
+
+For this reason, readmission statistics are an important key metric for hospitals interested in optimizing 
+their operations. Using large surveys, researchers are able to determine trends and end results, but not necessarily 
+causes, of readmissions. Still, high level trends can point healthcare providers in a direction where they can
+more efficiently focus their attention. 
+
+
+
+
+
+\cite{Lessa2015}
+
+\section{Overview of the data}
+
+\subsection{The Nationwide Inpatient Sample (NIS)}
+
+The Agency for Healthcare Research (AHRQ) has been conducting the National (later renamed to "Nationwide") Inpatient
+Sample since 1988, as part of the Healthcare Cost and Utilization Project (HCUP). It estimates a weighted 35 million
+hospitalizations per calendar year using around 7-8 million unweighted discharges per year. It is the largest database
+of its kind in the United States. \cite{NISOverview}
+
+\subsection{The Nationwide Readmissions Database (NRD)}
+
+Similar to the NIS, the NRD tracks hospitalizations. In addition, it tracks patients across admissions, using an ID key,
+an admission reference date, and a length of stay for each admission. This allows analysts to track anonymized readmission cases.
+\cite{NRDOverview}
+
+
+
 \cite{Lamont2017}
 \cite{Lessa2015}
 
 \section{Literature review}
-
-\lipsum
 
 \chapter{Methods}
 
@@ -188,688 +320,43 @@ The NIS is an annual survey of inpatient discharges dating back to 1988.
 
 \section{Trends}
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  disease = col\_character(),\\\#\#\ \  year = col\_double(),\\\#\#\ \  theta = col\_double(),\\\#\#\ \  ci2.5 = col\_double(),\\\#\#\ \  ci97.5 = col\_double()\\\#\# )}}\begin{verbatim}
+## [1] 3.102403
+\end{verbatim}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/disease_trends_cdi-1} 
+
+\end{knitrout}
+
 \cdiff has been on the rise since the first reported major outbreak of ribotype 027, a hypervirulent strain, in 2004 \cite{Pepin2004}. 
+Figure \ref{disease_trends_cdi} shows the trend for CDI from 2001-2014. Though the estimated proportion of inpatients with CDI is 
+relatively low, the number is increasing and reached 1\% of the inpatient population in 2014. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/disease_trends_cdi_renal-1} 
+
+\end{knitrout}
+
 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-## [1] 2001
-\end{verbatim}
 
 
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2002
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2003
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2004
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2005
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2006
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2007
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2008
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2009
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2010
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2011
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_character(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2012
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_integer(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_integer(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2013
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_integer(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_integer(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## [1] 2014
-\end{verbatim}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  nis\_key = col\_integer(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  nis\_stratum = col\_integer(),\\\#\#\ \  age = col\_integer(),\\\#\#\ \  discwt = col\_double(),\\\#\#\ \  hospid = col\_integer(),\\\#\#\ \  renlfail = col\_integer(),\\\#\#\ \  los = col\_integer(),\\\#\#\ \  died = col\_integer(),\\\#\#\ \  cdi = col\_integer(),\\\#\#\ \  aki = col\_integer(),\\\#\#\ \  ckd = col\_integer(),\\\#\#\ \  ckd1 = col\_integer(),\\\#\#\ \  ckd2 = col\_integer(),\\\#\#\ \  ckd3 = col\_integer(),\\\#\#\ \  ckd4 = col\_integer(),\\\#\#\ \  ckd5 = col\_integer(),\\\#\#\ \  ckd6 = col\_integer(),\\\#\#\ \  renal\_failure\_unspecified = col\_integer()\\\#\# )}}\begin{verbatim}
-## $`2001_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00400 0.00377     0
-## 
-## $`2001_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0165 0.0159  0.02
-## 
-## $`2001_ckd`
-##                        2.5% 97.5%
-## I(ckd == 1) 0.00874 0.00825  0.01
-## 
-## $`2001_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 2.90e-12 2.81e-12     0
-## 
-## $`2001_ckd2`
-##                           2.5% 97.5%
-## I(ckd2 == 1) 2.90e-12 2.81e-12     0
-## 
-## $`2001_ckd3`
-##                           2.5% 97.5%
-## I(ckd3 == 1) 2.90e-12 2.81e-12     0
-## 
-## $`2001_ckd4`
-##                           2.5% 97.5%
-## I(ckd4 == 1) 2.90e-12 2.81e-12     0
-## 
-## $`2001_ckd5`
-##                           2.5% 97.5%
-## I(ckd5 == 1) 2.90e-12 2.81e-12     0
-## 
-## $`2001_ckd6`
-##                           2.5% 97.5%
-## I(ckd6 == 1) 2.90e-12 2.81e-12     0
-## 
-## $`2001_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.0239 0.0231
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.02
-## 
-## $`2002_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00511 0.00477  0.01
-## 
-## $`2002_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0196 0.0187  0.02
-## 
-## $`2002_ckd`
-##                        2.5% 97.5%
-## I(ckd == 1) 0.00823 0.00777  0.01
-## 
-## $`2002_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2002_ckd2`
-##                           2.5% 97.5%
-## I(ckd2 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2002_ckd3`
-##                           2.5% 97.5%
-## I(ckd3 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2002_ckd4`
-##                           2.5% 97.5%
-## I(ckd4 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2002_ckd5`
-##                           2.5% 97.5%
-## I(ckd5 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2002_ckd6`
-##                           2.5% 97.5%
-## I(ckd6 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2002_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.0265 0.0254
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.03
-## 
-## $`2003_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00543 0.00511  0.01
-## 
-## $`2003_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0231 0.0222  0.02
-## 
-## $`2003_ckd`
-##                        2.5% 97.5%
-## I(ckd == 1) 0.00796 0.00746  0.01
-## 
-## $`2003_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2003_ckd2`
-##                           2.5% 97.5%
-## I(ckd2 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2003_ckd3`
-##                           2.5% 97.5%
-## I(ckd3 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2003_ckd4`
-##                           2.5% 97.5%
-## I(ckd4 == 1) 1.16e-07 1.63e-08     0
-## 
-## $`2003_ckd5`
-##                           2.5% 97.5%
-## I(ckd5 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2003_ckd6`
-##                           2.5% 97.5%
-## I(ckd6 == 1) 1.01e-06 1.42e-07     0
-## 
-## $`2003_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.0296 0.0285
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.03
-## 
-## $`2004_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00631 0.00597  0.01
-## 
-## $`2004_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0271 0.0260  0.03
-## 
-## $`2004_ckd`
-##                        2.5% 97.5%
-## I(ckd == 1) 0.00677 0.00643  0.01
-## 
-## $`2004_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2004_ckd2`
-##                           2.5% 97.5%
-## I(ckd2 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2004_ckd3`
-##                           2.5% 97.5%
-## I(ckd3 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2004_ckd4`
-##                           2.5% 97.5%
-## I(ckd4 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2004_ckd5`
-##                           2.5% 97.5%
-## I(ckd5 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2004_ckd6`
-##                           2.5% 97.5%
-## I(ckd6 == 1) 2.89e-12 2.79e-12     0
-## 
-## $`2004_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.0324 0.0312
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.03
-## 
-## $`2005_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00757 0.00716  0.01
-## 
-## $`2005_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0309 0.0297  0.03
-## 
-## $`2005_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0129 0.0124  0.01
-## 
-## $`2005_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 5.59e-05 3.49e-05     0
-## 
-## $`2005_ckd2`
-##                           2.5% 97.5%
-## I(ckd2 == 1) 0.000162 0.000139     0
-## 
-## $`2005_ckd3`
-##                           2.5% 97.5%
-## I(ckd3 == 1) 0.000429 0.000365     0
-## 
-## $`2005_ckd4`
-##                           2.5% 97.5%
-## I(ckd4 == 1) 0.000390 0.000352     0
-## 
-## $`2005_ckd5`
-##                           2.5% 97.5%
-## I(ckd5 == 1) 0.000247 0.000207     0
-## 
-## $`2005_ckd6`
-##                         2.5% 97.5%
-## I(ckd6 == 1) 0.00421 0.00397     0
-## 
-## $`2005_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.0456 0.0441
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.05
-## 
-## $`2006_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00787 0.00745  0.01
-## 
-## $`2006_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0361 0.0347  0.04
-## 
-## $`2006_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0239 0.0229  0.02
-## 
-## $`2006_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000216 0.000132     0
-## 
-## $`2006_ckd2`
-##                           2.5% 97.5%
-## I(ckd2 == 1) 0.000876 0.000758     0
-## 
-## $`2006_ckd3`
-##                         2.5% 97.5%
-## I(ckd3 == 1) 0.00330 0.00281     0
-## 
-## $`2006_ckd4`
-##                         2.5% 97.5%
-## I(ckd4 == 1) 0.00241 0.00219     0
-## 
-## $`2006_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00133 0.00116     0
-## 
-## $`2006_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0199 0.0188  0.02
-## 
-## $`2006_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.0780 0.0754
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.08
-## 
-## $`2007_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00810 0.00769  0.01
-## 
-## $`2007_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0434 0.0415  0.05
-## 
-## $`2007_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0436 0.0419  0.05
-## 
-## $`2007_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000160 0.000139     0
-## 
-## $`2007_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00122 0.00108     0
-## 
-## $`2007_ckd3`
-##                         2.5% 97.5%
-## I(ckd3 == 1) 0.00586 0.00527  0.01
-## 
-## $`2007_ckd4`
-##                         2.5% 97.5%
-## I(ckd4 == 1) 0.00377 0.00352     0
-## 
-## $`2007_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00146 0.00125     0
-## 
-## $`2007_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0217 0.0206  0.02
-## 
-## $`2007_renal_failure`
-##                                                                     2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.1023 0.0988
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.11
-## 
-## $`2008_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00853 0.00811  0.01
-## 
-## $`2008_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0537 0.0518  0.06
-## 
-## $`2008_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0391 0.0376  0.04
-## 
-## $`2008_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000275 0.000237     0
-## 
-## $`2008_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00186 0.00167     0
-## 
-## $`2008_ckd3`
-##                         2.5% 97.5%
-## I(ckd3 == 1) 0.00998 0.00904  0.01
-## 
-## $`2008_ckd4`
-##                         2.5% 97.5%
-## I(ckd4 == 1) 0.00591 0.00557  0.01
-## 
-## $`2008_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00159 0.00144     0
-## 
-## $`2008_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0222 0.0211  0.02
-## 
-## $`2008_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.113 0.110
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.12
-## 
-## $`2009_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00831 0.00793  0.01
-## 
-## $`2009_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0625 0.0602  0.06
-## 
-## $`2009_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0412 0.0395  0.04
-## 
-## $`2009_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000352 0.000303     0
-## 
-## $`2009_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00266 0.00242     0
-## 
-## $`2009_ckd3`
-##                       2.5% 97.5%
-## I(ckd3 == 1) 0.0155 0.0142  0.02
-## 
-## $`2009_ckd4`
-##                         2.5% 97.5%
-## I(ckd4 == 1) 0.00768 0.00727  0.01
-## 
-## $`2009_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00157 0.00146     0
-## 
-## $`2009_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0233 0.0222  0.02
-## 
-## $`2009_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.127 0.123
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.13
-## 
-## $`2010_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00867 0.00831  0.01
-## 
-## $`2010_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0691 0.0665  0.07
-## 
-## $`2010_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0402 0.0385  0.04
-## 
-## $`2010_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000536 0.000365     0
-## 
-## $`2010_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00316 0.00284     0
-## 
-## $`2010_ckd3`
-##                       2.5% 97.5%
-## I(ckd3 == 1) 0.0202 0.0187  0.02
-## 
-## $`2010_ckd4`
-##                         2.5% 97.5%
-## I(ckd4 == 1) 0.00894 0.00848  0.01
-## 
-## $`2010_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00152 0.00142     0
-## 
-## $`2010_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0244 0.0232  0.03
-## 
-## $`2010_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.137 0.133
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.14
-## 
-## $`2011_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00974 0.00933  0.01
-## 
-## $`2011_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0760 0.0735  0.08
-## 
-## $`2011_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0413 0.0395  0.04
-## 
-## $`2011_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000523 0.000463     0
-## 
-## $`2011_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00398 0.00365     0
-## 
-## $`2011_ckd3`
-##                     2.5% 97.5%
-## I(ckd3 == 1) 0.028 0.026  0.03
-## 
-## $`2011_ckd4`
-##                       2.5% 97.5%
-## I(ckd4 == 1) 0.0106 0.0101  0.01
-## 
-## $`2011_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00160 0.00152     0
-## 
-## $`2011_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0265 0.0252  0.03
-## 
-## $`2011_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.153 0.148
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.16
-## 
-## $`2012_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00947 0.00926  0.01
-## 
-## $`2012_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0785 0.0771  0.08
-## 
-## $`2012_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0374 0.0365  0.04
-## 
-## $`2012_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000600 0.000527     0
-## 
-## $`2012_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00447 0.00423     0
-## 
-## $`2012_ckd3`
-##                       2.5% 97.5%
-## I(ckd3 == 1) 0.0304 0.0292  0.03
-## 
-## $`2012_ckd4`
-##                       2.5% 97.5%
-## I(ckd4 == 1) 0.0108 0.0104  0.01
-## 
-## $`2012_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00160 0.00154     0
-## 
-## $`2012_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0257 0.0250  0.03
-## 
-## $`2012_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.153 0.150
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.16
-## 
-## $`2013_cdi`
-##                        2.5% 97.5%
-## I(cdi == 1) 0.00961 0.00941  0.01
-## 
-## $`2013_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0878 0.0864  0.09
-## 
-## $`2013_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0362 0.0353  0.04
-## 
-## $`2013_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000686 0.000605     0
-## 
-## $`2013_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00487 0.00462  0.01
-## 
-## $`2013_ckd3`
-##                       2.5% 97.5%
-## I(ckd3 == 1) 0.0347 0.0335  0.04
-## 
-## $`2013_ckd4`
-##                       2.5% 97.5%
-## I(ckd4 == 1) 0.0116 0.0112  0.01
-## 
-## $`2013_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00168 0.00161     0
-## 
-## $`2013_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0263 0.0256  0.03
-## 
-## $`2013_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.163 0.161
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.17
-## 
-## $`2014_cdi`
-##                      2.5% 97.5%
-## I(cdi == 1) 0.0102 0.0100  0.01
-## 
-## $`2014_aki`
-##                      2.5% 97.5%
-## I(aki == 1) 0.0970 0.0956   0.1
-## 
-## $`2014_ckd`
-##                      2.5% 97.5%
-## I(ckd == 1) 0.0360 0.0352  0.04
-## 
-## $`2014_ckd1`
-##                           2.5% 97.5%
-## I(ckd1 == 1) 0.000627 0.000584     0
-## 
-## $`2014_ckd2`
-##                         2.5% 97.5%
-## I(ckd2 == 1) 0.00514 0.00495  0.01
-## 
-## $`2014_ckd3`
-##                       2.5% 97.5%
-## I(ckd3 == 1) 0.0398 0.0388  0.04
-## 
-## $`2014_ckd4`
-##                       2.5% 97.5%
-## I(ckd4 == 1) 0.0127 0.0124  0.01
-## 
-## $`2014_ckd5`
-##                         2.5% 97.5%
-## I(ckd5 == 1) 0.00177 0.00171     0
-## 
-## $`2014_ckd6`
-##                       2.5% 97.5%
-## I(ckd6 == 1) 0.0264 0.0258  0.03
-## 
-## $`2014_renal_failure`
-##                                                                   2.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0) 0.174 0.172
-##                                                            97.5%
-## I(aki + ckd + ckd1 + ckd2 + ckd3 + ckd4 + ckd5 + ckd6 > 0)  0.18
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-
-
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
-
-{\centering \includegraphics[width=\maxwidth]{figure/by_age-1} 
-
-}
-
-\caption[The blue lines on either side represent the interquartile range, while the red line in the middle ]{The blue lines on either side represent the interquartile range, while the red line in the middle }\label{fig:by_age}
-\end{figure}
-
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  age = col\_integer(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  discwt = col\_double()\\\#\# )}}\end{kframe}
+\includegraphics[width=\maxwidth]{figure/disease_trends_esrd-1} 
 
 \end{knitrout}
+
+This proportion pales in comparison to renal failure, however, which has also been on the rise, with nearly 10\% of patients coded with
+some form of acute kidney injury (ICD-9-CM codes 584, 584.5, 584.6, 584.7, 584.8, and 584.9) in 2014. AKI has risen 
+by 0.619\% per year on average.
+
 
 has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
 Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
@@ -884,46 +371,9 @@ Increased age as a risk factor may be confounded by increased risk of other acqu
 \cite{Krapohl2013} \cite{Masgala2014}
 
 
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
-
-{\centering \includegraphics[width=\maxwidth]{figure/age_dist_over_time-1} 
-
-}
-
-\caption[Age distribution by year from 2001 to 2014]{Age distribution by year from 2001 to 2014. The distribution is becoming less left-skewed and more platykurtic.}\label{fig:age_dist_over_time}
-\end{figure}
-
-
-\end{knitrout}
-
-
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Don't know how to automatically pick scale for object of type ts. Defaulting to continuous.}}\end{kframe}\begin{figure}
-
-{\centering \includegraphics[width=\maxwidth]{figure/age_groups_over_time-1} 
-
-}
-
-\caption[Age distribution by year from 2001 to 2014]{Age distribution by year from 2001 to 2014. }\label{fig:age_groups_over_time}
-\end{figure}
-
-
-\end{knitrout}
-
 \chapter{Discussion}
 
-\lipsum
-
 \chapter{Conclusion and future work}
-
-\lipsum
-
-\chapter{Conclusion}
 
 %now enable appendix numbering format and include any appendices
 %\appendix
