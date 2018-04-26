@@ -1,0 +1,93 @@
+\chapter{Results}
+
+\section{Trends}
++@misc{eGFR2018,
++  title        = {Estimating Glomerular Filtration Rate},
++  journal      = {National Institute of Diabetes and Digestive and Kidney Diseases},
++  howpublished = {\url{https://www.niddk.nih.gov/health-information/communication-programs/nkdep/laboratory-evaluation/glomerular-filtration-rate/estimating}},
++  urldate       = {2018-04-14}
++}
++
++@article{Levey2009,
++  author       = {Andrew S. Levey and Lesley A. Stevens and Christopher H. Schmid and Yaping (Lucy) Zhang and Alejandro F. Castro, III and Harold I. Feldman and John W. Kusek and Paul Eggers and Frederick Van Lente and Tom Greene and Josef Coresh},
++  title        = {A New Equation to Estimate Glomerular Filtration Rate},
++  journal      = {Annals of Internal Medicine},
++  volume       = {150},
++  issue        = {9},
++  pages        = {604–612}
++}
++
++@article{Gupta2014,
++  author       = {Arjun Gupta and Sahil Khanna},
++  title        = {Community-acquired Clostridium difficile infection: an increasing public health threat},
++  journal      = {Infection and Drug Resistance},
++  volume       = {7},
++  pages        = {63–72},
++  doi          = {10.2147/IDR.S46780}
++}
++
++@misc{NISOverview,
++  author        = {{Healthcare Cost and Utilization Project, Agency for Healthcare Research and Quality}},
++  title         = {Overview of the National (Nationwide) Inpatient Sample ({NIS})},
++  howpublished  = {https://www.hcup-us.ahrq.gov/nisoverview.jsp},
++  urldate       = {2018-04-14},
++  lastchecked   = {2018-04-14}
++}
++
++@misc{NRDOverview,
++  author        = {{Healthcare Cost and Utilization Project, Agency for Healthcare Research and Quality}},
++  title         = {Overview of the Nationwide Inpatient Sample ({NRD})},
++  howpublished  = {https://www.hcup-us.ahrq.gov/nrdoverview.jsp},
++  urldate       = {2018-04-14},
++  lastchecked   = {2018-04-14}
+ }
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  disease = col\_character(),\\\#\#\ \  year = col\_double(),\\\#\#\ \  theta = col\_double(),\\\#\#\ \  ci2.5 = col\_double(),\\\#\#\ \  ci97.5 = col\_double()\\\#\# )}}\begin{verbatim}
+## [1] 3.102403
+\end{verbatim}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/disease_trends_cdi-1} 
+
+\end{knitrout}
+
+\cdiff has been on the rise since the first reported major outbreak of ribotype 027, a hypervirulent strain, in 2004 \cite{Pepin2004}. 
+Figure \ref{disease_trends_cdi} shows the trend for CDI from 2001-2014. Though the estimated proportion of inpatients with CDI is 
+relatively low, the number is increasing and reached 1\% of the inpatient population in 2014. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/disease_trends_cdi_renal-1} 
+
+\end{knitrout}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Parsed with column specification:\\\#\# cols(\\\#\#\ \  age = col\_integer(),\\\#\#\ \  nis\_year = col\_integer(),\\\#\#\ \  discwt = col\_double()\\\#\# )}}\end{kframe}
+\includegraphics[width=\maxwidth]{figure/disease_trends_esrd-1} 
+
+\end{knitrout}
+
+This proportion pales in comparison to renal failure, however, which has also been on the rise, with nearly 10\% of patients coded with
+some form of acute kidney injury (ICD-9-CM codes 584, 584.5, 584.6, 584.7, 584.8, and 584.9) in 2014. AKI has risen 
+by 0.619\% per year on average.
+
+
+has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
+Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
+\cite{Masgala2014}
+
+
+In Figure \ref{age_dist_over_time}, we plot the
+
+
+
+Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
+\cite{Krapohl2013} \cite{Masgala2014}
+

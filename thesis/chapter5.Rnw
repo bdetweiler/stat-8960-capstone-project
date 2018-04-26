@@ -1,1 +1,22 @@
 \chapter{Conclusion and future work}
+
+
+
+\section{Future work}
+
+Due to time constraints, we were unable to explore some of the larger questions that arose
+from this study. Is the trend in CDI expanding into younger members of the population due
+to community-acquired CDI, as shown by Gupta and Khanna? \cite{Gupta2014} Are antibiotics
+still being used liberally, causing \cdiff to spread into a broader population? More 
+work needs to be done to investigate these trends.
+
+
+On average, females were 1.397 times as likely to contract CDI. We did not investigate the
+reasons for this. One possible contributing factor was that women giving birth may be more susceptible to CDI, but 
+verification of this line of thinking is left to future work.
+
+Another topic we were unable to cover was mortality. If ESRD patients contracted CDI, what is their mortality rate?
+Findings at the National Kidney Foundation showed mortality to be at 3.8\% among patients with ESRD, compared to
+1.46\% for CDI patients without ESRD. \cite{Susman2013} 
+
+These findings should be verified and updated with newer data. 

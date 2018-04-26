@@ -1,76 +1,417 @@
 \chapter{Results}
 
+
 \section{Trends}
 
-<<disease_trends_cdi, warning=FALSE, echo=FALSE, cache=TRUE>>=
+<<fig:disease_trends_cdi, fig.cap="CDI trends show a somewhat linearly increasing trend. If we extrapolate to 2018, we have a rough idea of the proportion of the inpatient population we can expect to be diagnosed with CDI.">>=
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
 proportions <- read_csv('../data/proportions.csv')
 proportions <- filter(proportions, year > 2000)
+
+# Sort by highest proportion in our last year, 2014
 in.order <- proportions %>% 
   filter(year == 2014) %>%
   arrange(desc(theta)) %>%
   pull(disease) 
 proportions$disease <- factor(proportions$disease, levels=in.order)
 
-sum(proportions$theta)
+cdi.theta.2001 <- proportions %>% filter(disease == 'cdi' & year == 2001) %>% pull(theta)
+cdi.theta.2001.2.5 <- proportions %>% filter(disease == 'cdi' & year == 2001) %>% pull(ci2.5)
+cdi.theta.2001.97.5 <- proportions %>% filter(disease == 'cdi' & year == 2001) %>% pull(ci97.5)
+
+cdi.2001.people <- round(cdi.theta.2001 * 35400000)
+cdi.2001.people.2.5 <- round(cdi.theta.2001.2.5 * 35400000)
+cdi.2001.people.97.5 <- round(cdi.theta.2001.97.5 * 35400000)
+
+cdi.theta.2014 <- proportions %>% filter(disease == 'cdi' & year == 2014) %>% pull(theta)
+cdi.theta.2014.2.5 <- proportions %>% filter(disease == 'cdi' & year == 2014) %>% pull(ci2.5)
+cdi.theta.2014.97.5 <- proportions %>% filter(disease == 'cdi' & year == 2014) %>% pull(ci97.5)
+
+cdi.2014.people <- round(cdi.theta.2014 * 35400000)
+cdi.2014.people.2.5 <- round(cdi.theta.2014.2.5 * 35400000)
+cdi.2014.people.97.5<- round(cdi.theta.2014.97.5 * 35400000)
+
+delta <- cdi.theta.2014 - cdi.theta.2001
+
+delta.people <- round(delta * 35400000)
+
+cdi.dat <- proportions %>%
+  filter(disease == 'cdi')
+
+fit <- lm(theta~year, data=cdi.dat)
+fit2.5 <- lm(ci2.5~year, data=cdi.dat)
+fit97.5 <- lm(ci97.5~year, data=cdi.dat)
+ 
+est.2015 <- (tidy(summary(fit)$coefficients)[1,2] + 2015 * tidy(summary(fit)$coefficients)[2,2]) * 35400000
+est.2015.2.5 <- (tidy(summary(fit2.5)$coefficients)[1,2] + 2015 * tidy(summary(fit2.5)$coefficients)[2,2]) * 35400000
+est.2015.97.5 <- (tidy(summary(fit97.5)$coefficients)[1,2] + 2015 * tidy(summary(fit97.5)$coefficients)[2,2]) * 35400000
+
 proportions %>%
   filter(disease == 'cdi') %>%
-  ggplot(aes(x = year, y = theta, colour=disease)) +
+  ggplot(aes(x = year, y = theta)) +
     geom_errorbar(aes(ymin=ci2.5, ymax=ci97.5), colour="black", width=.1) +
     geom_line() +
+    xlim(2001, 2018) +
+    stat_smooth(method="lm", fullrange=TRUE) +
     geom_point(size=1) +
     labs(title="Inpatient CDI trends", x="Year", y="Proportion of inpatients")
+
+
 @
+\label{fig:disease_trends_cdi}
 
-\cdiff has been on the rise since the first reported major outbreak of ribotype 027, a hypervirulent strain, in 2004 \cite{Pepin2004}. 
-Figure \ref{disease_trends_cdi} shows the trend for CDI from 2001-2014. Though the estimated proportion of inpatients with CDI is 
-relatively low, the number is increasing and reached 1\% of the inpatient population in 2014. 
+Over the 14 year period, from 2010 - 2014, the proportion of inpatients with CDI increased from 
+\cip{\Sexpr{cdi.theta.2001}}{\Sexpr{cdi.theta.2001.2.5}}{\Sexpr{cdi.theta.2001.97.5}} in 2001, roughly 
+\ci{\Sexpr{cdi.2001.people}}{\Sexpr{cdi.2001.people.2.5}}{\Sexpr{cdi.2001.people.97.5}} people, to
+\cip{\Sexpr{cdi.theta.2014}}{\Sexpr{cdi.theta.2014.2.5}}{\Sexpr{cdi.theta.2014.97.5}} in 2014, or
+\ci{\Sexpr{cdi.2014.people}}{\Sexpr{cdi.2014.people.2.5}}{\Sexpr{cdi.2014.people.97.5}} people - 
+a difference of about \Sexpr{delta}\%, or \Sexpr{delta.people} people. 
 
-<<disease_trends_cdi_renal, warning=FALSE, echo=FALSE, cache=TRUE>>=
+
+
+<<fig:disease_trends_cdi_renal, fig.width=4, fig.cap="Comparitively, CDI occurrences are not increasing as rapidly as renal diseases. The sharp spikes from 2004-2006 were likely due to ICD-9-CM coding requirements implemented in October of 2005.">>=
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
+
+# Since AKI is a combination of multiple codes, we should combine CKD codes as well
+proportions <- read_csv('../data/proportions.csv')
+proportions <- filter(proportions, year > 2000)
+
+ckd <- proportions %>% 
+  filter(disease %in% c("ckd", "ckd1", "ckd2", "ckd3", "ckd4", "ckd5")) %>%
+  group_by(year) %>%
+  summarise(theta=sum(theta), ci2.5=sum(ci2.5), ci97.5=sum(ci97.5)) %>%
+  mutate(disease=rep(factor("chronic_kidney_disease"), 14))
+
+proportions <- bind_rows(proportions, ckd)
+
+proportions <- proportions %>%
+  filter(disease %in% c('chronic_kidney_disease', "aki", "ckd6", "cdi")) %>%
+  mutate(disease=replace(disease, disease=="chronic_kidney_disease", "CKD")) %>%
+  mutate(disease=replace(disease, disease=="aki", "AKI")) %>%
+  mutate(disease=replace(disease, disease=="ckd6", "ESRD")) %>%
+  mutate(disease=replace(disease, disease=="cdi", "CDI")) 
+
+in.order <-
+  proportions %>% 
+  filter(year == 2014) %>%
+  arrange(desc(theta)) %>% 
+  pull(disease) 
+
+proportions$disease <- factor(proportions$disease, levels=in.order)
+
 proportions %>%
-  filter(disease != 'renal_failure') %>%
   ggplot(aes(x = year, y = theta, colour=disease)) +
     geom_errorbar(aes(ymin=ci2.5, ymax=ci97.5), colour="black", width=.1) +
     geom_line() +
     geom_point(size=1) +
-    labs(title="Inpatient disease trends with CDI and Renal Failure", x="Year", y="Proportion of inpatients")
+    labs(title="CDI and Renal Failure trends", x="Year", y="Proportion of inpatients")
+
 aki.change <- proportions %>% 
-  filter(disease == 'aki') %>% 
+  filter(disease == 'AKI') %>% 
   pull(theta) %>% 
   diff(lag = 1) %>% 
   mean() * 100
  
-aki.change <- round(aki.change, digits = 3) 
+aki.change2.5 <- proportions %>% 
+  filter(disease == 'AKI') %>% 
+  pull(ci2.5) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+aki.change2.5 <- round(aki.change2.5, digits = 3) 
+
+aki.change97.5 <- proportions %>% 
+  filter(disease == 'AKI') %>% 
+  pull(ci97.5) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+aki.change97.5 <- round(aki.change97.5, digits = 3) 
+
+ckd.change <- proportions %>% 
+  filter(disease == 'CKD') %>% 
+  pull(theta) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+ 
+ckd.change2.5 <- proportions %>% 
+  filter(disease == 'CKD') %>% 
+  pull(ci2.5) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+ckd.change2.5 <- round(ckd.change2.5, digits = 3) 
+
+ckd.change97.5 <- proportions %>% 
+  filter(disease == 'CKD') %>% 
+  pull(ci97.5) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+ckd.change97.5 <- round(ckd.change97.5, digits = 3) 
+
+ckd.change <- proportions %>% 
+  filter(disease == 'CKD') %>% 
+  pull(theta) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+ 
+ckd.change2.5 <- proportions %>% 
+  filter(disease == 'CKD') %>% 
+  pull(ci2.5) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+ckd.change2.5 <- round(ckd.change2.5, digits = 3) 
+
+ckd.change97.5 <- proportions %>% 
+  filter(disease == 'CKD') %>% 
+  pull(ci97.5) %>% 
+  diff(lag = 1) %>% 
+  mean() * 100
+ckd.change97.5 <- round(ckd.change97.5, digits = 3) 
+@
+\label{fig:disease_trends_cdi_renal}
+
+
+
+<<disease_trends_esrd, fig.width=4, fig.cap="Age distribution for ESRD has remained consistent since ICD-9-CM coding standards changed in October, 2005.">>=
+df <- read_csv('../data/esrd.csv')
+ggplot(df, aes(x = age, y = nis_year, group = nis_year)) + 
+  geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
+  labs(title="ESRD distribution by age over time", x="Age", y="Year")
 @
 
+\label{fig:disease_trends_esrd}
+
+In Figures  \ref{fig:age_distribution_over_time} and \ref{fig:age_trends}, we can see the median age for inpatient CDI has been lowering over the years.
 
 
-<<disease_trends_esrd, warning=FALSE, echo=FALSE, cache=TRUE>>=
+<<age_trends, fig.cap="C. diff is trending into younger generations in recent years.">>=
+cdiff %>% 
+  filter(!is.na(age)) %>% 
+  select(age, nis_year) %>%
+  ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
+    #geom_joy(stat = "identity")
+    geom_density_ridges() +
+    labs(title="C. diff distribution by age over time", x="Age", y="Year")
+@
+\label{fig:age_distribution_over_time}
+
+<<cdi_age_ts, fig.width=5, fig.height=6, fig.cap="All age groups below 75 show a steady increase in CDI infections. 75 and older are down from their peaks in the mid 2000s.">>=
+
+ts.by.year <- readRDS('../data/cdi_ages_ts.rds')
+
+plot.ts <- data.frame(year=2001:2014)
+plot.ts <- cbind(plot.ts, data.frame('0_5'=ts.by.year[['0_5']]))
+plot.ts <- cbind(plot.ts, data.frame('5_10'=ts.by.year[['5_10']]))
+plot.ts <- cbind(plot.ts, data.frame('10_15'=ts.by.year[['10_15']]))
+plot.ts <- cbind(plot.ts, data.frame('15_20'=ts.by.year[['15_20']]))
+plot.ts <- cbind(plot.ts, data.frame('20_25'=ts.by.year[['20_25']]))
+plot.ts <- cbind(plot.ts, data.frame('25_30'=ts.by.year[['25_30']]))
+plot.ts <- cbind(plot.ts, data.frame('30_35'=ts.by.year[['30_35']]))
+plot.ts <- cbind(plot.ts, data.frame('35_40'=ts.by.year[['35_40']]))
+plot.ts <- cbind(plot.ts, data.frame('40_45'=ts.by.year[['40_45']]))
+plot.ts <- cbind(plot.ts, data.frame('45_50'=ts.by.year[['45_50']]))
+plot.ts <- cbind(plot.ts, data.frame('50_55'=ts.by.year[['50_55']]))
+plot.ts <- cbind(plot.ts, data.frame('55_60'=ts.by.year[['55_60']]))
+plot.ts <- cbind(plot.ts, data.frame('60_65'=ts.by.year[['60_65']]))
+plot.ts <- cbind(plot.ts, data.frame('65_70'=ts.by.year[['65_70']]))
+plot.ts <- cbind(plot.ts, data.frame('70_75'=ts.by.year[['70_75']]))
+plot.ts <- cbind(plot.ts, data.frame('75_80'=ts.by.year[['75_80']]))
+plot.ts <- cbind(plot.ts, data.frame('80_85'=ts.by.year[['80_85']]))
+plot.ts <- cbind(plot.ts, data.frame('85_90'=ts.by.year[['85_90']]))
+plot.ts <- cbind(plot.ts, data.frame('90_95'=ts.by.year[['90_95']]))
+
+plot.ts.m <- melt(plot.ts, id.vars=c('year'))
+
+labels <- gsub('_', '-', gsub('X', replacement = '', as.character(plot.ts.m$variable)))
+plot.ts.m$variable <- factor(labels, levels = unique(labels))
+
+cols <- c('0-5'   = "#e6e6ff",
+          '5-10'  = "#ccccff",
+          '10-15' = "#b3b3ff",
+          '15-20' = "#9999ff",
+          '20-25' = "#8080ff",
+          '25-30' = "#6666ff",
+          '30-35' = "#4d4dff",
+          '35-40' = "#3333ff",
+          '40-45' = "#1a1aff",
+          '45-50' = "#0000ff",
+          
+          # RED - increasing 
+          '50-55' = "#cc0000",
+          '55-60' = "#b30000",
+          '60-65' = "#990000",
+          '65-70' = "#800000",
+          '70-75' = "#660000",
+          
+          # GREEN - Somewhat decreasing
+          '75-80' = "#006600",
+          '80-85' = "#004d00",
+          '85-90' = "#008000",
+          '90-95' = "#003300",
+          
+          '95-100' = "#000000")
+plot.ts.m %>% 
+  ggplot(aes(x=year, y=value, colour=variable)) +
+    geom_line() +
+    scale_colour_manual(values = cols) +
+    labs(title="Time series of C. diff cases by 5-year age groups", x="Year", y="Estimated Cases", colour="Ages")
+
+@
+\label{fig:cdi_age_ts}
+
+<<fig:cdi_males_females, fig.width=4, fig.cap="Females are almost 1.4 times as likely to contract CDI than males.">>=
+df <- read_csv('../data/cdi-male-female.csv')
+
+mean.female.ratio <- df %>% pull(prop) %>% mean()
+
+df %>%
+  rename(Female=tot.female, Male=tot.male) %>%
+  select(year, Female, Male) %>%
+  melt(id.vars=c('year')) %>%
+  ggplot(aes(x = year, y = value, colour=variable)) +
+    geom_line() +
+    stat_smooth(method="loess") +
+    labs(title="CDI in Males vs. Females", x="Year", y="Estimated Infections")
+@
+\label{fig:cdi_males_vs_females}
+
+
+<<fig:age_quantile_trends, fig.cap="The median age for inpatient CDI admissions has been sharply declined since 2006. The vertical bars indicate a 95\\% confidence interaval.">>=
   #select(age, nis_year, discwt) %>%
   #ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
     #geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
     #labs(title="C. diff distribution by age over time", x="Age", y="Year")
-df <- read_csv('../data/esrd.csv')
-  ggplot(df, aes(x = age, y = nis_year, group = nis_year)) + 
-    geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
-    labs(title="ESRD distribution by age over time", x="Age", y="Year")
+df <- read_csv('../data/ages_quantiles.csv')
+df <- filter(df, year > 2000)
+df %>%
+  filter(disease == 'cdi') %>%
+  ggplot(aes(x = year, y = theta50)) +
+    geom_errorbar(aes(ymin=theta50_2.5, ymax=theta50_97.5), colour="black", width=.1) +
+    geom_line(aes(ymin=65, ymax=75)) +
+    #scale_y_discrete(labels=factor(seq(65, 75, by=1))) +
+    geom_point(size=1) +
+    labs(title="Inpatient Median Age Trends", x="Year", y="Age")
 @
 
-This proportion pales in comparison to renal failure, however, which has also been on the rise, with nearly 10\% of patients coded with
-some form of acute kidney injury (ICD-9-CM codes 584, 584.5, 584.6, 584.7, 584.8, and 584.9) in 2014. AKI has risen 
-by \Sexpr{aki.change}\% per year on average.
-
-
-has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
-Figure \ref{by_age} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
-\cite{Masgala2014}
-
-
-In Figure \ref{age_dist_over_time}, we plot the
+\label{fig:age_trends}
 
 
 
-Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
-\cite{Krapohl2013} \cite{Masgala2014}
+\section{Readmission risk modeling}
+
+
+
+<<readmission_model>>=
+
+sig.factor <- factor(c('HIGH', 'MID', 'LOW', 'NONE'), levels=c('HIGH', 'MID', 'LOW', 'NONE'))
+
+
+df <- data.frame(year=2009,
+                 readmission.day=0,
+                 name=NA,
+                 est=NA,
+                 significance=NA,
+                 se=NA,
+                 t=NA,
+                 p=NA)
+
+readmission.day <- 90
+for (readmission.day in c(30, 60, 90)) {
+ 
+  models <- readRDS(paste0('../data/', readmission.day, 'dayreadmissionmodels.rds'))
+  
+  y <- 2010 
+  for (y in seq(2010, 2014, by=1)) {
+  
+    fit <- models[[y]]
+  
+    fit.coef <- summary(fit)$coefficients
+    
+    fit.coef <- tidy(fit.coef) %>% rename(name=.rownames, est=Estimate, se=Std..Error, t=t.value, p=Pr...t..)
+    fit.coef <- fit.coef %>%
+      mutate(year=y) %>%
+      mutate(significance=ifelse(p < 0.0001, 'HIGH', ifelse(p < 0.002, 'MID', ifelse(p < 0.02, 'LOW', 'NONE')))) %>%
+      mutate(readmission.day=readmission.day)
+  
+   
+    df <- fit.coef %>% 
+      select(year, readmission.day, name, est, significance, se, t, p) %>% 
+      bind_rows(df) %>%
+      filter(year > 2009)
+
+  }
+
+}
+
+df <- df %>% 
+  mutate(name=replace(name, name=='chronic_kidney_disease1', 'CKD1')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease2', 'CKD2')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease3', 'CKD3')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease4', 'CKD4')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease5', 'CKD5')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease6', 'ESRD')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease_unk', 'CKD?')) %>%
+  mutate(name=replace(name, name=='renal_failure_unspecified', 'RF?')) %>%
+  mutate(name=replace(name, name=='acute_kidney_failure', 'AKI')) %>%
+  mutate(name=replace(name, name=='hosp_hcontrl_govt', 'Hosp_Govt')) %>%
+  mutate(name=replace(name, name=='hosp_hcontrl_priv_np', 'Hosp_NP')) %>%
+  mutate(name=replace(name, name=='hosp_urcat4', 'Metro_Size')) %>%
+  mutate(name=replace(name, name=='hosp_ur_teach_metro_teaching', 'Hosp_Teach')) %>%
+  mutate(name=replace(name, name=='hosp_ur_teach_metro', 'Hosp_Urban')) 
+
+# Filter only those that had a significant effect all 5 years
+  df <- df %>%
+    filter(name %in% c('AKI', 'CKD?', 'CKD3', 'CKD4', 'ESRD'))
+@
+
+
+
+
+<<fig:30_day_readmission_model, fig.width=6, fig.cap="Coefficient estimates for the 30-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
+  
+  df %>%
+    filter(significance != 'NONE') %>%
+    filter(name != '(Intercept)') %>%
+    filter(readmission.day==30) %>%
+    ggplot(aes(year, est, colour=name)) +
+      geom_line() +
+      geom_point() +
+      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
+      #facet_wrap(readmission.day~.) +
+      #facet_grid(name~.) +
+      labs(title="Coefficient estimate for each year's 30-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+  
+@
+
+<<fig:60_day_readmission_model, fig.width=6, fig.cap="Coefficient estimates for the 60-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
+  df %>%
+    filter(significance != 'NONE') %>%
+    filter(name != '(Intercept)') %>%
+    filter(readmission.day==60) %>%
+    ggplot(aes(year, est, colour=name)) +
+      geom_line() +
+      geom_point() +
+      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
+      #facet_wrap(readmission.day~.) +
+      #facet_grid(name~.) +
+      labs(title="Coefficient estimate for each year's 60-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+  
+@
+
+
+<<fig:90_day_readmission_model, fig.width=6, fig.cap="Coefficient estimates for the 90-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
+  df %>%
+    filter(significance != 'NONE') %>%
+    filter(name != '(Intercept)') %>%
+    filter(readmission.day==90) %>%
+    ggplot(aes(year, est, colour=name)) +
+      geom_line() +
+      geom_point() +
+      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
+      #facet_wrap(readmission.day~.) +
+      #facet_grid(name~.) +
+      labs(title="Coefficient estimate for each year's 90-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+  
+@
+
+
+%Proportion of ESRD and CDI that were readmitted
 

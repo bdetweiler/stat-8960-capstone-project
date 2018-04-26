@@ -1,5 +1,5 @@
 \begin{abstract}
-Clostridium Difficile Infection (C. \textit{diff}, or simply CDI) 
+\cdifficile Infection (\cdiff, or simply CDI) 
 is a highly contagious endospore forming bacterium that is transferred
 through physical contact with an infected surface. Symptoms range from diarrhea to
 life-threatening colitis and is most commonly acquired in a hospital setting where

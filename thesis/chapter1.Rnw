@@ -2,7 +2,7 @@
 
 \section{Overview of \cdifficile}
 
-Clostridium \textit{difficile} Infection - also referred to by its shortened name, \cdiff, or simply CDI -
+\cdifficile Infection - also referred to by its shortened name, \cdiff, or simply CDI -
 has been an increasing concern in the last two decades among healthcare providers. 
 The organism itself is a resilliant endospore-forming bacterium, resistant to heat, acid, and antibiotics,
 and can survive on surfaces for up to 5 months, if proper sanitation is not carried out. \cite{Gerding2008}
@@ -12,7 +12,7 @@ who were on admitted as an inpatients in a hospital or nursing home setting, and
 In fact, it has become the most frequent nosocomial (hospital-acquired) disease, surpassing
 methicillin-resistant Staphylococcus aureus (MRSA). \cite{Gupta2014}
 
-Antimicrobials deplete the healthy gut flora the intestines which protect against harmful organisms like \cdiff.
+Antimicrobials deplete the healthy gut flora the intestines which protect against harmful organisms like \cdiff. \cite{Lamont2017}
 
 Adding to the complexity of the situation, CDI carriers can remain asymptomatic, making them stealth transporters
 and allowing the disease to propegate undetected until it is too late. 
@@ -22,14 +22,14 @@ That estimate was later updated to half a million in 2015, causing 15,000 deaths
 \cite{CDC2015} 
 Another study puts that number even higher, at 29,000 deaths in 2011. 
 
-\cdiff is also costly. The CDC estimates that in 2008, it cost acute healthcare facilities alone more than \$4.8 billion.
+CDI is also costly. The CDC estimates that in 2008, it cost acute healthcare facilities alone more than \$4.8 billion.
 The mean cost of an incident of CDI was found to be \$11,498 (inflation adjusted to 2008 dollars)
 and as high as \$15,397 when CDI was hospital acquired. \cite{Dubberke2012}
 
 
 \section{Overview of Renal Failure}
 
-While \cdiff is a singular diagnosis category, renal failure falls into one of two umbrella categories, acute kidney injury (AKI), 
+While CDI is a singular diagnosis category, renal failure falls into one of two umbrella categories, acute kidney injury (AKI), 
 and chronic kidney disease (CKD). AKI is further broken into subcategories. Acute tubular necrosis is the most common form of AKI.
 Other subcategories include renal cortical necrosis, renal medullary necrosis, lesions, and a category for unspecified AKI. 
 
@@ -42,20 +42,20 @@ normal muscle use.
 The MDRD equation encodes sex and race (African American or not) and does not rely on height or weight due to using $1.73m^2$ surface area,
 the generally accepted mean human adult body surface area. 
 
-\begin{equation*}
+\begin{equation} \label{mdrd}
 \begin{split}
   GFR  &= 175 \times S_{cr} - 1.154 \times \text{Age}^{-0.203} \times 0.742 \cdot I(\text{F}) \times 1.212 \cdot I(\text{AA}) \\
 \end{split}
-\end{equation*}
+\end{equation}
 
-The CKD-EPI equation makes use of a 2-slope spline. It was shown to outperform the MDRD, with lower bias and increased precision.  \cite{Levey2009}
+The CKD Epidemiology (CKD-EPI) equation makes use of a 2-slope spline.  It was shown to outperform the MDRD, with lower bias and increased precision.  \cite{Levey2009, eGFR2018}
 
-\begin{equation*}
+\begin{equation} \label{ckdepi}
 \begin{split}
-  GFR &= 141 \times min\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{\alpha} \times max\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{-1.209} 
-  \times 0.993^{\text{Age}} \times 1.018 \cdot \text{I}(\text{F}) \times 1.159 \cdot \text{I}(\text{AA}) \\
+  GFR &= 141 \times min\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{\alpha} \times max\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{-1.209} \\
+      &\times 0.993^{\text{Age}} \times 1.018 \cdot \text{I}(\text{F}) \times 1.159 \cdot \text{I}(\text{AA}) \\
 \end{split}
-\end{equation*}
+\end{equation}
 
 where:
 \begin{itemize}
@@ -66,7 +66,7 @@ where:
   \item $\kappa$ is 0.7 for females and 0.9 for males
   \item $\alpha$ is -0.329 for females and -0.411 for males
 \end{itemize}
-\cite{eGFR2018} 
+
 
 \subsection{Classifying Chronic Kidney Disease}
 
@@ -81,7 +81,7 @@ and \textbf{585.9} is used if the level is unspecified.
 \begin{tabular}{lllll}
 CKD Stage & Description             & GFR        & Kidney Function & ICD-9-CM \\
 \hline
-1         & Normal kidney function  & 90+        & 90-100\%        & 585.1    \\
+1         & Normal function         & 90+        & 90-100\%        & 585.1    \\
 2         & Mild loss               & 60-89      & 60-89\%         & 585.2    \\
 3         & Mild to severe          & 30-59      & 30-59\%         & 585.3    \\
 4         & Severe                  & 15-29      & 15-29\%         & 585.4    \\
@@ -119,14 +119,14 @@ a 30-day risk standardized measure. All-cause unplanned readmissions to the same
 ocurring within 30 days - for any reason, regardless of principal diagnosis - from the index admission are counted in this measure.
 Some planned readmissions are not counted. \cite{HRRP}
 
-For fiscal years 2013 to 2018, the following formula is used to calculate payment adjustment:
+For fiscal years 2013 to 2018, the following formula is used to calculate the Payment Readjustment Factor (PRF):
 
-\begin{equation} \label{eq1}
+\begin{equation} \label{prf}
 \begin{split}
-  \text{Payment Readjustment Factor} &= 1 - min{0.03, \sum_{dx} \frac{\text{Payment(dx) \cdot max\big((\text{ERR}(dx) - 1.0), 0\big)}}{\text{All payments}}} \\
+  \text{PRF} &= 1 - min\bigg(0.03, \sum_{dx} \frac{\text{Payment}(dx) \cdot max\big((\text{ERR}(dx) - 1.0), 0\big)}{\text{All payments}}\bigg) \\
 \end{split}
 \end{equation}
-
+ 
 Where $dx$ is one of six measure cohorts: 
 
 \begin{itemize}
@@ -138,13 +138,14 @@ Where $dx$ is one of six measure cohorts:
   \item elective primary total hip and/or total knee arthroplasty (THA/TKA)
 \end{itemize}
 
-ERR is a hospital's performance measure $dx$, and payment refers to base operating DRG payments. \cite{HRRPPaymentAdjustment}
+ERR is a hospital's performance measure $dx$, and payment refers to base operating DRG payments. \cite{HRRPPaymentAdjustment, Lessa2015}
 
-
-
-\cite{Lessa2015}
 
 \section{Overview of the data}
+
+The Agency for Healthcare Research and Quality (AHRQ), under the Department of Health and Human Services (DHHS), sponsors the
+Healthcare Cost and Utilization Project (HCUP), a collection of databases including the Nationwide Inpatient Sample (NIS) and
+the Nationwide Readmissions Database (NRD). \cite{HCUPOverview}
 
 \subsection{The Nationwide Inpatient Sample (NIS)}
 
@@ -157,11 +158,86 @@ of its kind in the United States. \cite{NISOverview}
 
 Similar to the NIS, the NRD tracks hospitalizations. In addition, it tracks patients across admissions, using an ID key,
 an admission reference date, and a length of stay for each admission. This allows analysts to track anonymized readmission cases.
-\cite{NRDOverview}
+The NRD tracks around 14 million unweighted patients, when weighted, estimates about 36 million weighted patients across admissions 
+per calendar year. \cite{NRDOverview} 
+
+\subsection{Limitations}
+
+Working on such a rich dataset does not come without limits. Prior to obtaining the NIS or NRD, analysts must take the HCUP
+Data Usage Agreement (DUA). At a high level, HCUP requires that researchers protect individual identities. Cell sizes where $n \le 10$ 
+may not be reported. Attempting to identify individual patients or health care providers through vulnerability or penetration testing, 
+or any other means, is prohibited. Publication of any methodology that could identify individuals is prohibited.
+
+Furthermore, HCUP data may only be used for research, not for commercial or competitive purposes. Institutions may not be contacted
+to verify any of the data within the HCUP datasets either. 
+
+For the above reasons, the data may also not be posted online, and anyone wishing to work with or even see the data must take the DUA class and
+sign the agreement. \cite{HCUPDUA}
+
+In a couple of recent publications, Khera and Krumholz expanded on these base requirements and offered a checklist \cite{Krumholz2017} 
+for analysts to follow as they work with the NIS. In a followup study, they found only 10.5\% (95\% CI, 4.7\%-16.4\%) of published research
+projects based on NIS data followed all of the guidelines. \cite{Khera2017}
+
+Listed below are the guidelines from Khera and Krumholz, and notes on how we have conformed to them.
 
 
+\begin{itemize}
+  \item  \textbf{Section A: Research Design}
+  \begin{todolist}
+  \item[\done] Does the study consider that it can only detect disease conditions, procedures, and diagnostic tests in hospital settings?
+  
+  \textbf{Yes, we make no assumptions about events occurring outside of the hospital setting.}
+  
+  \item[\done] Does the study acknowledge that it includes encounters, not individual patients?
+  
+  \textbf{Yes, all of our assumptions are made upon the basis of inpatient discharges and readmissions, not individuals.}
+  
+  \item[\done] Does the study avoid diagnosis/procedure-specific volume assessments for units that are not part of the
+  sampling frame of the NIS, and are therefore not representatively sampled, including
+  
+  \begin{itemize}
+    \item geographic units, like U.S. states
+    \item healthcare facilities (after 2011)
+    \item individual healthcare providers?
+  \end{itemize} 
+          
+  \textbf{Yes, we only make assessments at the national level.}
+  
+  \end{todolist}
+  
+  \item  \textbf{Section B: Data Interpretation}
+  \begin{todolist}
+  \item[\done] Does the study attempt to identify disease conditions or procedures of interest using administrative 
+  codes or their combinations that have been previously validated?
+ 
+  \textbf{Yes, when checking for renal failure, the comorbidity indicators (\texttt{renlfail, cm\_renlfail}) were used 
+  before assessing ICD-9-CM codes.}
+  
+  \item[\done] Does the study limit its assessments to only in-hospital outcomes, rather than those occurring after discharge?
+  
+  \textbf{Yes, the only outcome assessments were readmission status and mortality (\texttt{died}), both of which are in-hospital events.}
+  
+  \item[\done] Does the study distinguish complications from comorbidities or clearly note where it cannot?
+  
+  \textbf{Yes, renal failure comorbidities were distinguished using the the comorbidity indicators (\texttt{renlfail, cm\_renlfail}). 
+  CDI while most often a complication, cannot usually be distinguished between complication and comorbidity however.}
+  
+  
+  \end{todolist}
+  
+  \item  \textbf{Section C: Data Analysis}
+  \begin{todolist}
+  \item[\done] Does the study clearly account for the survey design of the NIS and its components -clustering, stratification, and weighting?
+ 
+  \textbf{Yes, the R \texttt{survey} package was used to account for survey design.}
+  
+  \item[\done] Does the study adequately address changes in data structure over time (for trend analyses)?
+  
+  \textbf{Yes, since we are only doing national-level assessments, and we are not using ICD-10-CM codes in the 2015 datasets, 
+  we don't need to worry about the changes in the survey design.}
+  
+  \end{todolist}
+  
+\end{itemize}
 
-\cite{Lamont2017}
-\cite{Lessa2015}
 
-\section{Literature review}

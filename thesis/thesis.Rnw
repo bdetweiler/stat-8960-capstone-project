@@ -6,7 +6,13 @@
 \usepackage{amssymb}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\graphicspath{{figure/}}
 \usepackage{amsmath}
+\usepackage{listings}
+\usepackage{enumitem}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
 \usepackage{url}
 \usepackage{lipsum}
 \usepackage{array}
@@ -30,6 +36,15 @@
 
 \newcommand{\cdifficile}{Clostridium \textit{difficile}}
 \newcommand{\cdiff}{C. \textit{diff}}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+% Confidence interval
+\newcommand{\ci}[3]{#1 (95\% CI, #2-#3)}
+% Confidence interval with percent
+\newcommand{\cip}[3]{#1\% (95\% CI, #2\%-#3\%)}
 
 %input macros (i.e. write your own macros file called mymacros.tex 
 %and uncomment the next line)
@@ -96,16 +111,27 @@ library('tidyverse')
 library('broom')
 library('dplyr')
 library('beepr')
+library('Hmisc')
+library('stargazer')
+options(scipen=999)
+knit_hooks$set(inline = function(x) {
+  prettyNum(x, big.mark=",")
+})
 @
 
-<<read_cdiff, include=FALSE, warning=FALSE, cache=TRUE>>=
+<<set_knitr_options, include=FALSE, warning=FALSE>>=
+knitr::opts_chunk$set(
+  echo = FALSE,  warning = FALSE, message = FALSE, cache = TRUE, fig.height = 3, fig.width = 3, fig.align = 'center' 
+)
+@
+
+<<read_cdiff>>=
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis')
-cdiff <- read_csv('../data/cdiff.csv')
-# We don't need row numbers
-cdiff <- select(cdiff, -X1)
+# guess_max set the the number of rows means it makes no guesses about the data types and hence has no chance to get them wrong
+cdiff <- read_csv('../data/cdiff.csv', guess_max = 858204)
 @
 
-<<read_readmissions_30_day, include=FALSE, warning=FALSE, cache=TRUE>>=
+<<read_readmissions_30_day>>=
 readm.30 <- read_csv('../data/cdiff-readmissions-30-day-window.csv')
 @
 

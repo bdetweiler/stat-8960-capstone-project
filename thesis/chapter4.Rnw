@@ -1,1 +1,84 @@
 \chapter{Discussion}
+
+\section{Trends in CDI}
+<<fig:cdi_trends>>=
+#setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
+proportions <- read_csv('../data/proportions.csv')
+proportions <- filter(proportions, year > 2000)
+
+cdi.dat <- proportions %>%
+  filter(disease == 'cdi')
+
+fit <- lm(theta~year, data=cdi.dat)
+fit2.5 <- lm(ci2.5~year, data=cdi.dat)
+fit97.5 <- lm(ci97.5~year, data=cdi.dat)
+ 
+est.2015 <- (tidy(summary(fit)$coefficients)[1,2] + 2015 * tidy(summary(fit)$coefficients)[2,2]) * 35400000
+est.2015.2.5 <- (tidy(summary(fit2.5)$coefficients)[1,2] + 2015 * tidy(summary(fit2.5)$coefficients)[2,2]) * 35400000
+est.2015.97.5 <- (tidy(summary(fit97.5)$coefficients)[1,2] + 2015 * tidy(summary(fit97.5)$coefficients)[2,2]) * 35400000
+
+est.2018 <- (tidy(summary(fit)$coefficients)[1,2] + 2018 * tidy(summary(fit)$coefficients)[2,2]) * 35400000
+est.2018.2.5 <- (tidy(summary(fit2.5)$coefficients)[1,2] + 2018 * tidy(summary(fit2.5)$coefficients)[2,2]) * 35400000
+est.2018.97.5 <- (tidy(summary(fit97.5)$coefficients)[1,2] + 2018 * tidy(summary(fit97.5)$coefficients)[2,2]) * 35400000
+
+est.2020 <- (tidy(summary(fit)$coefficients)[1,2] + 2020 * tidy(summary(fit)$coefficients)[2,2]) * 35400000
+est.2020.2.5 <- (tidy(summary(fit2.5)$coefficients)[1,2] + 2020 * tidy(summary(fit2.5)$coefficients)[2,2]) * 35400000
+est.2020.97.5 <- (tidy(summary(fit97.5)$coefficients)[1,2] + 2020 * tidy(summary(fit97.5)$coefficients)[2,2]) * 35400000
+@
+
+\subsection{Increasing infection rates}
+
+\cdiff has been on the rise since the first reported major outbreak of ribotype 027, a hypervirulent strain, in 2004 \cite{Pepin2004}. 
+Figure \ref{fig:disease_trends_cdi} shows the trend for CDI using the data from 2001-2014, extrapolated through 2018. 
+Over 1\% of the inpatient population in 2014 was diagnosed with CDI. If this trend continues linearly, we can expect that number
+to increase to nearly 1.2\% by 2018. 
+
+While the CDC found that around half a million people contracted CDI in 2015, about 150,000 of those were not documented in 
+inpatient records, making their inpatient estimate around 350,000. \cite{CDC2018} This is somewhat consistent with our CDI linear model in 
+Figure \ref{fig:disease_trends_cdi}, which estimates about \ci{\Sexpr{est.2015}}{\Sexpr{est.2015.2.5}}{\Sexpr{est.2015.97.5}} people in 2015,
+without having the data.
+
+Using this model, we can expect CDI infections to increase to \ci{\Sexpr{est.2018}}{\Sexpr{est.2018.2.5}}{\Sexpr{est.2018.97.5}} hospital inpatients in 2018, and
+\ci{\Sexpr{est.2020}}{\Sexpr{est.2020.2.5}}{\Sexpr{est.2020.97.5}} in 2020, if the trend continues.
+
+This proportion pales in comparison to renal failure, however, which has also been on the rise, with nearly 10\% of patients coded with
+some form of acute kidney injury (ICD-9-CM codes \textbf{584}, and \textbf{584.5}-\textbf{584.9}) or chronic kidney disease 
+(ICD-9-CM codes \textbf{585} and \textbf{585.1}-\textbf{585.5}, as well as \textbf{585.9}) in 2014. AKI has risen 
+by \Sexpr{aki.change}\% per year on average.
+
+While renal failure is a broad general category, even more specific codings, including the most serious, 
+End-Stage Renal Disease, showed much higher inpatient rates than CDI. 
+This suggests that CDI is not yet a national epidemic. The trend should continue to be
+monitored, however, for drastic increases. If data for future years show the process breaking the previously linear trend, it could be an indication
+that something has changed, such as a mutation in the bacterium. Conversely, if infections make a downward turn, research should be done
+to determine what methods have been effective in fighting the disease.
+
+
+\subsection{Infections at a younger age}
+We showed a trend in CDI moving into younger age groups. This is consistent with findings by Gupta and Khanna \cite{Gupta2014}. 
+
+
+Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
+\cite{Krapohl2013, Masgala2014}
+%has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
+
+
+Figure \ref{fig:age_distribution_over_time} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
+
+%\cite{Masgala2014}
+
+In 2001, the median age for CDI was 73 (95\% CI, 72-74). In 2014, it had dropped to 68 (95\% CI, 68-69). 
+
+\section{Trends in renal failure}
+
+%\ref{fig:disease_trends_cdi_renal}
+
+The distribution of ESRD has remained consistent since the coding changes in 2005. 
+\label{fig:disease_trends_esrd}
+
+
+\section{Renal failure as a CDI readmission risk factor}
+
+In their 2015 meta-analysis, Phatharacharukul, et. al. found the pooled relative risk of \cdiff-associated diarrhea (CDAD)
+in patients with CKD were \ci{1.95}{1.81}{2.10} and \ci{2.63}{2.04}{3.38}, in ESRD patients. \cite{Phatharacharukul2015}
+Recurrent CDAD is the primary reason for CDI readmissions.

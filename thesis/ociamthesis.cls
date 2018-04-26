@@ -72,10 +72,11 @@
 % Define text area of page and margin offsets
 %
 \setlength{\topmargin}{0.0in}
-\setlength{\oddsidemargin}{0.33in}
-\setlength{\evensidemargin}{-0.08in}
+\setlength{\oddsidemargin}{.33in}
+%\setlength{\oddsidemargin}{0.33in}
+%\setlength{\evensidemargin}{-0.08in}
 \setlength{\textheight}{9.0in}
-\setlength{\textwidth}{6.0in}
+\setlength{\textwidth}{5.66in}
 
 %
 % Environments

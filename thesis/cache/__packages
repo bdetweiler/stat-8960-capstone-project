@@ -35,3 +35,7 @@ readr
 purrr
 broom
 beepr
+lattice
+Formula
+Hmisc
+stargazer

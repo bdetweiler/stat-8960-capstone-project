@@ -1,0 +1,29 @@
+\begin{table}
+  \centering
+  \caption{Good and bad columns.}
+  \label{tab:good}
+  \sisetup{table-number-alignment = center}
+  \begin{tabular}{
+    c
+    S[
+      table-figures-integer  = 1,
+      table-figures-decimal  = 3,
+      table-figures-exponent = 1
+    ]
+    @{\,\si{\kilogram}}
+    S[
+      table-figures-integer  = 2,
+      table-figures-decimal  = 2
+    ]
+  }
+    \toprule
+      Entry & \multicolumn{1}{c}{Mass} &
+        {Mass/\SI{e3}{\kilogram}} \\
+    \midrule
+      1 & 4.56e3  & 4.56 \\
+      2 & 2.40e3  & 2.40 \\
+      3 & 1.345e4 & 13.45 \\
+      4 & 4.5e2   & 0.45 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
