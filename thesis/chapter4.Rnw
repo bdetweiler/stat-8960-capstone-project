@@ -34,14 +34,18 @@ Over 1\% of the inpatient population in 2014 was diagnosed with CDI. If this tre
 to increase to nearly 1.2\% by 2018. 
 
 While the CDC found that around half a million people contracted CDI in 2015, about 150,000 of those were not documented in 
-inpatient records, making their inpatient estimate around 350,000. \cite{CDC2018} This is somewhat consistent with our CDI linear model in 
+inpatient records, making their inpatient estimate around 350,000 \cite{CDC2018}. This is somewhat consistent with our CDI linear model in 
 Figure \ref{fig:disease_trends_cdi}, which estimates about \ci{\Sexpr{est.2015}}{\Sexpr{est.2015.2.5}}{\Sexpr{est.2015.97.5}} people in 2015,
 without having the data.
 
-Using this model, we can expect CDI infections to increase to \ci{\Sexpr{est.2018}}{\Sexpr{est.2018.2.5}}{\Sexpr{est.2018.97.5}} hospital inpatients in 2018, and
+Using this model, we can expect \cdiff infections to increase to \ci{\Sexpr{est.2018}}{\Sexpr{est.2018.2.5}}{\Sexpr{est.2018.97.5}} hospital inpatients in 2018, and
 \ci{\Sexpr{est.2020}}{\Sexpr{est.2020.2.5}}{\Sexpr{est.2020.97.5}} in 2020, if the trend continues.
 
-This proportion pales in comparison to renal failure, however, which has also been on the rise, with nearly 10\% of patients coded with
+
+
+
+The proportion of \cdiff infected invididuals pales in comparison to those with renal failure, however, 
+which has also been on the rise, with nearly 10\% of patients coded with
 some form of acute kidney injury (ICD-9-CM codes \textbf{584}, and \textbf{584.5}-\textbf{584.9}) or chronic kidney disease 
 (ICD-9-CM codes \textbf{585} and \textbf{585.1}-\textbf{585.5}, as well as \textbf{585.9}) in 2014. AKI has risen 
 by \Sexpr{aki.change}\% per year on average.
@@ -54,31 +58,54 @@ that something has changed, such as a mutation in the bacterium. Conversely, if 
 to determine what methods have been effective in fighting the disease.
 
 
+We can also separate the trends over time by age groups, broken down into 5-year buckets. Figure \ref{fig:cdi_age_ts} shows more interesting trends.
+Noteably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
+The 50-75 year group are showing steady increases and are poised to take the lead on the number of CDI occurrences. 
+
+
 \subsection{Infections at a younger age}
-We showed a trend in CDI moving into younger age groups. This is consistent with findings by Gupta and Khanna \cite{Gupta2014}. 
+We showed a trend in CDI moving into younger age groups. 
+In 2001, the median age for CDI was \ci{73}{72}{74}. In 2014, it had dropped to \ci{68}{68}{69}.
+The age distribution of CDI becoming less left-skewed and more mesokurtic.
+Whether it ever reaches the conditions of a normal distribution is doubtful, 
+but the trend is troubling. This means that where CDI once flourished only in the elderly, it is beginning to move into younger demographics. 
+This is consistent with findings by Gupta and Khanna \cite{Gupta2014}, and could partly account for the rise in CDI numbers. 
+If the bacterium can infect younger, healthier individuals, there will be more opportunities for the disease to spread.
+
+When breaking down the distribution into age buckets of 5 year intervals, we see that the previously dominant 75+ age group where
+CDI once thrived, has been on something of a decline since 2011, while all other age groups continue to rise in CDI instances.
+The 70-75 age group is poised to become the most frequently infected group, overtaking the 75-85 groups, which had vastly
+outpaced all other groups in the mid-to-late 2000s.
+
+It is often reported that increased age (60-65 years old or greater) is a risk factor for CDI.
+There seems to be some disagreement on this in the literature, and speculation on whether the increased risk is confounded by other
+acquired comorbidities such as renal failure \cite{Krapohl2013, Masgala2014}.
 
 
-Increased age as a risk factor may be confounded by increased risk of other acquired comorbidities such as renal failure. 
-\cite{Krapohl2013, Masgala2014}
-%has  the elderly, and that continues to be the case today. Caroll and Bartlett \cite{Carroll2011}
-
-
-Figure \ref{fig:age_distribution_over_time} shows the distribution of \cdiff patients by age for all data from 2001-2014. 
-
-%\cite{Masgala2014}
-
-In 2001, the median age for CDI was 73 (95\% CI, 72-74). In 2014, it had dropped to 68 (95\% CI, 68-69). 
 
 \section{Trends in renal failure}
 
 %\ref{fig:disease_trends_cdi_renal}
 
-The distribution of ESRD has remained consistent since the coding changes in 2005. 
-\label{fig:disease_trends_esrd}
+The distribution of ESRD has remained consistent since the coding changes in 2005. AKI and CKD have skyrocketed since the coding changes,
+with nearly 20\% of the inpatient population having some form of renal failure, this segment represents a huge portion of inpatients.
+
+Figure \ref{fig:disease_trends_esrd} shows the distribution of ESRD cases by age over time. 
+This does appear to be fairly normal and doesn't appear to be changing drastically over time.
 
 
-\section{Renal failure as a CDI readmission risk factor}
+\section{CDI readmission risk factors}
 
-In their 2015 meta-analysis, Phatharacharukul, et. al. found the pooled relative risk of \cdiff-associated diarrhea (CDAD)
-in patients with CKD were \ci{1.95}{1.81}{2.10} and \ci{2.63}{2.04}{3.38}, in ESRD patients. \cite{Phatharacharukul2015}
-Recurrent CDAD is the primary reason for CDI readmissions.
+In their 2015 meta-analysis, Phatharacharukul, et. al. found that the pooled relative risk of \cdiff-associated diarrhea
+in patients with CKD and ESRD were \ci{1.95}{1.81}{2.10} and \ci{2.63}{2.04}{3.38} respectively \cite{Phatharacharukul2015}.
+This suggests that CKD and ESRD pose a significant risk to recurrent \cdiff-associated diarrhea, and thus, potential for readmission.
+
+Our findings support this, showing ESRD as a major predictor for CDI readmissions over the surveyed years 2010-2014. 
+AKI was also consistent across years, though with a smaller effect.
+CKD stages varied as predictors, and only stages 3, 4, and "unknown" were consistent across years. Perhaps the "unknown" cases
+err on the more sever side, but we have no methods for making that distinction. 
+CKD stage 5 showed some large effects, but was not consistent across years. 
+
+Finally, we saw hospital bedsize and metro/metro teaching categorization as having a very large, highly significant effect
+in the year 2014 only. This suggests something may have changed in either the healthcare system, or the NRD survey in 2014 that contributed to 
+increased readmissions. 

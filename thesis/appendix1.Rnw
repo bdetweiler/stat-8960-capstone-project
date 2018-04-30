@@ -1,3 +1,441 @@
-\chapter{Sample Title}
+\chapter{Regression Models}
 
-\lipsum
+%\begin{adjustbox}{angle=90}
+<<readmission_models, cache=TRUE>>=
+readmission.day <- 30
+#for (readmission.day in c(30, 60, 90)) {
+ 
+models <- readRDS(paste0('../data/', readmission.day, 'dayreadmissionmodels.rds'))
+
+y <- 2010 
+y <- 2011
+y <- 2012 
+y <- 2013 
+y <- 2014 
+
+fit2010 <- models[[2010]]
+fit2011 <- models[[2011]]
+fit2012 <- models[[2012]]
+fit2013 <- models[[2013]]
+fit2014 <- models[[2014]]
+
+# NOTE: Stargazer isn't working as-is, so I'm having to copy/paste the contents into a plain LaTeX table. :/
+#stargazer(fit2010, fit2011, fit2012, fit2013, fit2014, 
+          #star.char = c("*", "**", "***"),
+          #star.cutoffs = c(0.05, 0.01, 0.001),
+          #notes = c("+ p<0.1; * p<0.05; ** p<0.01; *** p<0.001"), 
+          #notes.append = F,
+          #align=TRUE)
+
+readmission.day <- 60
+#for (readmission.day in c(30, 60, 90)) {
+ 
+models <- readRDS(paste0('../data/', readmission.day, 'dayreadmissionmodels.rds'))
+
+y <- 2010 
+y <- 2011
+y <- 2012 
+y <- 2013 
+y <- 2014 
+
+fit2010 <- models[[2010]]
+fit2011 <- models[[2011]]
+fit2012 <- models[[2012]]
+fit2013 <- models[[2013]]
+fit2014 <- models[[2014]]
+
+# NOTE: Stargazer isn't working as-is, so I'm having to copy/paste the contents into a plain LaTeX table. :/
+#stargazer(fit2010, fit2011, fit2012, fit2013, fit2014, 
+          #star.char = c("*", "**", "***"),
+          #star.cutoffs = c(0.05, 0.01, 0.001),
+          #notes = c("+ p<0.1; * p<0.05; ** p<0.01; *** p<0.001"), 
+          #notes.append = F,
+          #align=TRUE)
+
+
+
+readmission.day <- 90
+#for (readmission.day in c(30, 60, 90)) {
+ 
+models <- readRDS(paste0('../data/', readmission.day, 'dayreadmissionmodels.rds'))
+
+y <- 2010 
+y <- 2011
+y <- 2012 
+y <- 2013 
+y <- 2014 
+
+fit2010 <- models[[2010]]
+fit2011 <- models[[2011]]
+fit2012 <- models[[2012]]
+fit2013 <- models[[2013]]
+fit2014 <- models[[2014]]
+
+# NOTE: Stargazer isn't working as-is, so I'm having to copy/paste the contents into a plain LaTeX table. :/
+#stargazer(fit2010, fit2011, fit2012, fit2013, fit2014, 
+          #star.char = c("*", "**", "***"),
+          #star.cutoffs = c(0.05, 0.01, 0.001),
+          #notes = c("+ p<0.1; * p<0.05; ** p<0.01; *** p<0.001"), 
+          #notes.append = F,
+          #align=TRUE)
+
+
+
+sig.factor <- factor(c('HIGH', 'MID', 'LOW', 'NONE'), levels=c('HIGH', 'MID', 'LOW', 'NONE'))
+
+
+df <- data.frame(year=2009,
+                 readmission.day=0,
+                 name=NA,
+                 est=NA,
+                 significance=NA,
+                 se=NA,
+                 t=NA,
+                 p=NA)
+
+readmission.day <- 90
+for (readmission.day in c(30, 60, 90)) {
+ 
+  models <- readRDS(paste0('../data/', readmission.day, 'dayreadmissionmodels.rds'))
+  
+  y <- 2010 
+  for (y in seq(2010, 2014, by=1)) {
+  
+    fit <- models[[y]]
+  
+    fit.coef <- summary(fit)$coefficients
+    
+    fit.coef <- tidy(fit.coef) %>% rename(name=.rownames, est=Estimate, se=Std..Error, t=t.value, p=Pr...t..)
+    fit.coef <- fit.coef %>%
+      mutate(year=y) %>%
+      mutate(significance=ifelse(p < 0.0001, 'HIGH', ifelse(p < 0.002, 'MID', ifelse(p < 0.02, 'LOW', 'NONE')))) %>%
+      mutate(readmission.day=readmission.day)
+  
+   
+    df <- fit.coef %>% 
+      select(year, readmission.day, name, est, significance, se, t, p) %>% 
+      bind_rows(df) %>%
+      filter(year > 2009)
+
+  }
+
+}
+
+df <- df %>% 
+  mutate(name=replace(name, name=='chronic_kidney_disease1', 'CKD1')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease2', 'CKD2')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease3', 'CKD3')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease4', 'CKD4')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease5', 'CKD5')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease6', 'ESRD')) %>%
+  mutate(name=replace(name, name=='chronic_kidney_disease_unk', 'CKD?')) %>%
+  mutate(name=replace(name, name=='renal_failure_unspecified', 'RF?')) %>%
+  mutate(name=replace(name, name=='acute_kidney_failure', 'AKI')) %>%
+  mutate(name=replace(name, name=='hosp_hcontrl_govt', 'Hosp_Govt')) %>%
+  mutate(name=replace(name, name=='hosp_hcontrl_priv_np', 'Hosp_NP')) %>%
+  mutate(name=replace(name, name=='hosp_urcat4', 'Metro_Size')) %>%
+  mutate(name=replace(name, name=='hosp_ur_teach_metro_teaching', 'Hosp_Teach')) %>%
+  mutate(name=replace(name, name=='hosp_ur_teach_metro', 'Hosp_Urban')) 
+
+# Filter only those that had a significant effect all 5 years
+  df <- df %>%
+    filter(name %in% c('AKI', 'CKD?', 'CKD3', 'CKD4', 'ESRD'))
+  
+@
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%  30 DAY READMISSIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table created by stargazer v.5.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Sun, Apr 29, 2018 - 12:59:45 PM
+% Requires LaTeX packages: dcolumn 
+\begin{table}
+\centering
+\resizebox{400pt}{!}{%
+
+\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{5}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-6} 
+\\[-1.8ex] & \multicolumn{5}{c}{\texttt{readmitted} (30-day readmission)} \\ 
+\\[-1.8ex] & \multicolumn{1}{c}{2010} & \multicolumn{1}{c}{2011} & \multicolumn{1}{c}{2012} & \multicolumn{1}{c}{2013} & \multicolumn{1}{c}{2014}\\ 
+
+\hline \\[-1.8ex] 
+ hosp\_hcontrl\_govt & 0.051 & -0.135 & -0.078 & -0.032 & 0.056 \\ 
+  & (0.079) & (0.095) & (0.074) & (0.066) & (0.068) \\ 
+  & & & & & \\ 
+ hosp\_hcontrl\_priv\_np & 0.084 & -0.041 & -0.021 & -0.003 & 0.060 \\ 
+  & (0.072) & (0.052) & (0.053) & (0.049) & (0.045) \\ 
+  & & & & & \\ 
+ hosp\_urcat4 & 0.084^{*} & 0.101^{*} & 0.109^{**} & 0.105^{**} & -0.005 \\ 
+  & (0.041) & (0.046) & (0.040) & (0.035) & (0.035) \\ 
+  & & & & & \\ 
+ hosp\_ur\_teach\_metro & -0.057 & -0.138 & -0.159 & -0.075 & 0.198^{*} \\ 
+  & (0.094) & (0.111) & (0.091) & (0.088) & (0.087) \\ 
+  & & & & & \\ 
+ hosp\_ur\_teach\_metro\_teaching & 0.025 & -0.040 & -0.062 & 0.022 & 0.347^{***} \\ 
+  & (0.103) & (0.119) & (0.097) & (0.089) & (0.084) \\ 
+  & & & & & \\ 
+ hosp\_bedsize & -0.027 & -0.019 & -0.017 & 0.026 & 0.112^{***} \\ 
+  & (0.029) & (0.029) & (0.026) & (0.024) & (0.025) \\ 
+  & & & & & \\ 
+ female & -0.079^{*} & -0.109^{**} & -0.028 & -0.079^{*} & -0.036 \\ 
+  & (0.038) & (0.034) & (0.034) & (0.032) & (0.031) \\ 
+  & & & & & \\ 
+ acute\_kidney\_failure & 0.193^{***} & 0.224^{***} & 0.209^{***} & 0.147^{***} & 0.199^{***} \\ 
+  & (0.046) & (0.042) & (0.042) & (0.038) & (0.036) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease2 & -0.033 & 0.064 & 0.511^{**} & 0.128 & 0.262 \\ 
+  & (0.224) & (0.200) & (0.167) & (0.158) & (0.148) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease3 & 0.310^{***} & 0.325^{***} & 0.231^{**} & 0.262^{***} & 0.180^{**} \\ 
+  & (0.082) & (0.079) & (0.074) & (0.055) & (0.061) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease4 & 0.461^{***} & 0.259^{*} & 0.473^{***} & 0.281^{**} & 0.312^{***} \\ 
+  & (0.122) & (0.101) & (0.101) & (0.087) & (0.085) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease5 & 0.696^{**} & 0.407 & 0.574^{*} & 0.656^{**} & 0.490 \\ 
+  & (0.219) & (0.260) & (0.284) & (0.225) & (0.299) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease6 & 0.650^{***} & 0.662^{***} & 0.715^{***} & 0.610^{***} & 0.719^{***} \\ 
+  & (0.072) & (0.073) & (0.057) & (0.058) & (0.058) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease\_unk & 0.270^{***} & 0.178^{**} & 0.224^{***} & 0.213^{***} & 0.284^{***} \\ 
+  & (0.059) & (0.059) & (0.061) & (0.061) & (0.066) \\ 
+  & & & & & \\ 
+ renal\_failure\_unspecified & 0.681 & 0.597 & 0.652 & -0.258 & -2.402 \\ 
+  & (0.482) & (0.429) & (0.577) & (0.535) & (8.869) \\ 
+  & & & & & \\ 
+ Constant & -1.649^{***} & -1.516^{***} & -1.616^{***} & -1.818^{***} & -2.114^{***} \\ 
+  & (0.131) & (0.119) & (0.101) & (0.097) & (0.099) \\ 
+  & & & & & \\ 
+\hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{35,103} & \multicolumn{1}{c}{38,412} & \multicolumn{1}{c}{38,847} & \multicolumn{1}{c}{39,737} & \multicolumn{1}{c}{40,115} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{5}{r}{+ $p<0.1$; * $p<0.05$; ** $p<0.01$; *** $p<0.001$} \\ 
+
+\end{tabular} 
+
+}
+\caption{Logistic regression coefficient estimates for 30-day readmissions, 2010-2014. Each year was fit independently. Standard error reported below the estimate in parentheses.}
+\label{30-day-readmission-fit}
+\end{table}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%  60 DAY READMISSIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table created by stargazer v.5.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Sun, Apr 29, 2018 - 01:05:40 PM
+% Requires LaTeX packages: dcolumn 
+\begin{table}
+\centering
+
+
+\resizebox{400pt}{!}{%
+
+  
+  
+\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{5}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-6} 
+\\[-1.8ex] & \multicolumn{5}{c}{\texttt{readmitted} (60-day readmission)} \\ 
+\\[-1.8ex] & \multicolumn{1}{c}{2010} & \multicolumn{1}{c}{2011} & \multicolumn{1}{c}{2012} & \multicolumn{1}{c}{2013} & \multicolumn{1}{c}{2014}\\ 
+
+\hline \\[-1.8ex] 
+ hosp\_hcontrl\_govt & 0.026 & -0.142^{*} & -0.092 & -0.067 & 0.031 \\ 
+  & (0.076) & (0.070) & (0.073) & (0.058) & (0.062) \\ 
+  & & & & & \\ 
+ hosp\_hcontrl\_priv\_np & 0.106 & -0.020 & -0.009 & 0.008 & 0.042 \\ 
+  & (0.066) & (0.056) & (0.054) & (0.044) & (0.042) \\ 
+  & & & & & \\ 
+ hosp\_urcat4 & 0.090^{*} & 0.108^{**} & 0.120^{**} & 0.121^{***} & -0.025 \\ 
+  & (0.041) & (0.042) & (0.039) & (0.033) & (0.033) \\ 
+  & & & & & \\ 
+ hosp\_ur\_teach\_metro & -0.027 & -0.137 & -0.104 & -0.042 & 0.317^{***} \\ 
+  & (0.096) & (0.099) & (0.088) & (0.086) & (0.084) \\ 
+  & & & & & \\ 
+ hosp\_ur\_teach\_metro\_teaching & 0.060 & -0.059 & -0.032 & 0.023 & 0.426^{***} \\ 
+  & (0.106) & (0.109) & (0.094) & (0.088) & (0.085) \\ 
+  & & & & & \\ 
+ hosp\_bedsize & -0.015 & 0.014 & 0.012 & 0.042 & 0.097^{***} \\ 
+  & (0.030) & (0.027) & (0.027) & (0.022) & (0.021) \\ 
+  & & & & & \\ 
+ female & -0.033 & -0.114^{**} & -0.003 & -0.064^{*} & -0.031 \\ 
+  & (0.035) & (0.035) & (0.032) & (0.030) & (0.028) \\ 
+  & & & & & \\ 
+ acute\_kidney\_failure & 0.300^{***} & 0.281^{***} & 0.218^{***} & 0.174^{***} & 0.243^{***} \\ 
+  & (0.038) & (0.043) & (0.041) & (0.035) & (0.035) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease2 & 0.024 & 0.084 & 0.496^{**} & 0.080 & 0.252 \\ 
+  & (0.204) & (0.186) & (0.158) & (0.145) & (0.149) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease3 & 0.388^{***} & 0.287^{**} & 0.198^{**} & 0.317^{***} & 0.184^{**} \\ 
+  & (0.077) & (0.088) & (0.069) & (0.058) & (0.056) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease4 & 0.474^{***} & 0.302^{**} & 0.462^{***} & 0.292^{***} & 0.366^{***} \\ 
+  & (0.114) & (0.110) & (0.118) & (0.081) & (0.082) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease5 & 0.603^{**} & 0.884^{***} & 0.507 & 0.611^{**} & 0.446 \\ 
+  & (0.224) & (0.256) & (0.270) & (0.221) & (0.300) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease6 & 0.637^{***} & 0.682^{***} & 0.733^{***} & 0.671^{***} & 0.730^{***} \\ 
+  & (0.065) & (0.065) & (0.061) & (0.054) & (0.058) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease\_unk & 0.229^{***} & 0.233^{***} & 0.217^{***} & 0.198^{***} & 0.271^{***} \\ 
+  & (0.061) & (0.060) & (0.054) & (0.058) & (0.063) \\ 
+  & & & & & \\ 
+ renal\_failure\_unspecified & 1.112^{*} & 0.447 & 0.575 & -1.060 & -1.099 \\ 
+  & (0.467) & (0.403) & (0.525) & (0.618) & (0.609) \\ 
+  & & & & & \\ 
+ Constant & -1.543^{***} & -1.370^{***} & -1.520^{***} & -1.661^{***} & -1.846^{***} \\ 
+  & (0.134) & (0.108) & (0.105) & (0.089) & (0.090) \\ 
+  & & & & & \\ 
+\hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{31,859} & \multicolumn{1}{c}{34,992} & \multicolumn{1}{c}{35,435} & \multicolumn{1}{c}{36,460} & \multicolumn{1}{c}{36,784} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{5}{r}{$^{+}$ p$<$0.1; $^{*}$ p$<$0.05; $^{**}$ p$<$0.01; $^{***}$ p$<$0.001} \\ 
+
+\end{tabular} 
+}
+
+\caption{Logistic regression coefficient estimates for 60-day readmissions, 2010-2014. Each year was fit independently. Standard error reported below the estimate in parentheses.}
+\label{60-day-readmission-fit}
+
+\end{table} 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%  90 DAY READMISSIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}
+\centering
+
+\resizebox{400pt}{!}{%
+
+\begin{tabular}{@{\extracolsep{5pt}}lD{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} D{.}{.}{-3} } 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{5}{c}{\textit{Dependent variable:}} \\ 
+\cline{2-6} 
+\\[-1.8ex] & \multicolumn{5}{c}{readmitted} \\ 
+\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)}\\ 
+\hline \\[-1.8ex] 
+ hosp\_hcontrl\_govt & 0.108 & -0.073 & -0.108 & -0.041 & -0.001 \\ 
+  & (0.083) & (0.068) & (0.071) & (0.059) & (0.062) \\ 
+  & & & & & \\ 
+ hosp\_hcontrl\_priv\_np & 0.150^{*} & 0.038 & -0.028 & 0.023 & 0.013 \\ 
+  & (0.071) & (0.051) & (0.058) & (0.049) & (0.042) \\ 
+  & & & & & \\ 
+ hosp\_urcat4 & 0.083 & 0.086^{*} & 0.103^{**} & 0.121^{***} & -0.016 \\ 
+  & (0.042) & (0.037) & (0.039) & (0.033) & (0.032) \\ 
+  & & & & & \\ 
+ hosp\_ur\_teach\_metro & -0.0003 & -0.065 & -0.079 & -0.029 & 0.297^{***} \\ 
+  & (0.100) & (0.096) & (0.089) & (0.087) & (0.085) \\ 
+  & & & & & \\ 
+ hosp\_ur\_teach\_metro\_teaching & 0.088 & 0.015 & 0.015 & 0.042 & 0.396^{***} \\ 
+  & (0.109) & (0.101) & (0.095) & (0.089) & (0.086) \\ 
+  & & & & & \\ 
+ hosp\_bedsize & -0.013 & 0.019 & 0.009 & 0.044^{*} & 0.079^{***} \\ 
+  & (0.030) & (0.025) & (0.027) & (0.022) & (0.021) \\ 
+  & & & & & \\ 
+ female & -0.052 & -0.112^{**} & -0.003 & -0.069^{*} & -0.029 \\ 
+  & (0.034) & (0.037) & (0.035) & (0.031) & (0.029) \\ 
+  & & & & & \\ 
+ acute\_kidney\_failure & 0.306^{***} & 0.291^{***} & 0.202^{***} & 0.198^{***} & 0.260^{***} \\ 
+  & (0.043) & (0.041) & (0.044) & (0.036) & (0.036) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease2 & 0.055 & 0.049 & 0.452^{**} & -0.069 & 0.277 \\ 
+  & (0.210) & (0.184) & (0.164) & (0.155) & (0.155) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease3 & 0.351^{***} & 0.245^{**} & 0.213^{**} & 0.331^{***} & 0.193^{***} \\ 
+  & (0.078) & (0.091) & (0.070) & (0.058) & (0.057) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease4 & 0.603^{***} & 0.323^{**} & 0.519^{***} & 0.357^{***} & 0.374^{***} \\ 
+  & (0.122) & (0.118) & (0.119) & (0.083) & (0.084) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease5 & 0.691^{**} & 0.761^{**} & 0.457 & 0.620^{**} & 0.472 \\ 
+  & (0.242) & (0.274) & (0.284) & (0.233) & (0.292) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease6 & 0.726^{***} & 0.641^{***} & 0.725^{***} & 0.669^{***} & 0.757^{***} \\ 
+  & (0.064) & (0.066) & (0.064) & (0.054) & (0.062) \\ 
+  & & & & & \\ 
+ chronic\_kidney\_disease\_unk & 0.237^{***} & 0.225^{***} & 0.280^{***} & 0.196^{**} & 0.267^{***} \\ 
+  & (0.068) & (0.066) & (0.058) & (0.062) & (0.066) \\ 
+  & & & & & \\ 
+ renal\_failure\_unspecified & 1.074^{*} & 0.309 & 0.571 & -0.398 & -1.343 \\ 
+  & (0.463) & (0.413) & (0.573) & (0.619) & (0.775) \\ 
+  & & & & & \\ 
+ Constant & -1.545^{***} & -1.389^{***} & -1.427^{***} & -1.641^{***} & -1.731^{***} \\ 
+  & (0.138) & (0.100) & (0.107) & (0.092) & (0.087) \\ 
+  & & & & & \\ 
+\hline \\[-1.8ex] 
+Observations & \multicolumn{1}{c}{28,694} & \multicolumn{1}{c}{31,473} & \multicolumn{1}{c}{31,958} & \multicolumn{1}{c}{32,915} & \multicolumn{1}{c}{32,974} \\ 
+\hline 
+\hline \\[-1.8ex] 
+\textit{Note:}  & \multicolumn{5}{r}{$^{+}$ p$<$0.1; $^{*}$ p$<$0.05; $^{**}$ p$<$0.01; $^{***}$ p$<$0.001} \\ 
+\end{tabular} 
+
+}
+
+\caption{Logistic regression coefficient estimates for 90-day readmissions, 2010-2014. Each year was fit independently. Standard error reported below the estimate in parentheses.}
+\label{90-day-readmission-fit}
+
+\end{table}
+
+
+
+<<30-day-readmission-model, fig.width=6, fig.cap="Coefficient estimates for the 30-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
+  df %>%
+    filter(significance != 'NONE') %>%
+    filter(name != '(Intercept)') %>%
+    filter(readmission.day == 30) %>%
+    ggplot(aes(year, est, colour=name)) +
+      geom_line() +
+      geom_point() +
+      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
+      labs(title="Coefficient estimate for each year's 30-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+  
+@
+\label{fig:30-day-readmission-model}
+
+
+<<60-day-readmission-model, fig.width=6, fig.cap="Coefficient estimates for the 60-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
+  df %>%
+    filter(significance != 'NONE') %>%
+    filter(name != '(Intercept)') %>%
+    filter(readmission.day == 60) %>%
+    ggplot(aes(year, est, colour=name)) +
+      geom_line() +
+      geom_point() +
+      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
+      labs(title="Coefficient estimate for each year's 60-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+  
+@
+\label{fig:60-day-readmission-model}
+
+
+<<90-day-readmission-model, fig.width=6, fig.cap="Coefficient estimates for the 90-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
+  df %>%
+    filter(significance != 'NONE') %>%
+    filter(name != '(Intercept)') %>%
+    filter(readmission.day == 90) %>%
+    ggplot(aes(year, est, colour=name)) +
+      geom_line() +
+      geom_point() +
+      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
+      labs(title="Coefficient estimate for each year's 90-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+  
+@
+\label{fig:90-day-readmission-model}
+
+

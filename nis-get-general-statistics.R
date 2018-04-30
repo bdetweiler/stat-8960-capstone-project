@@ -9,11 +9,12 @@ library('sqlsurvey')
 
 
 setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/')
-# MonetDBLite::monetdblite_shutdown()
+#MonetDBLite::monetdblite_shutdown()
+#con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nrd_db")
 con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
 
-
-
+row.count <- DBI::dbGetQuery(con, "SELECT COUNT(*) as count FROM nrd")
+row.count
 patient.counts <- list()
 patient.counts[["total"]] <- DBI::dbGetQuery(con, "SELECT nis_year, COUNT(nis_key) AS n FROM NIS GROUP BY nis_year")
 

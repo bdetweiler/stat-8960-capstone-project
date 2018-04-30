@@ -3,7 +3,7 @@
 
 \section{Trends}
 
-<<fig:disease_trends_cdi, fig.cap="CDI trends show a somewhat linearly increasing trend. If we extrapolate to 2018, we have a rough idea of the proportion of the inpatient population we can expect to be diagnosed with CDI.">>=
+<<disease_trends_cdi, fig.cap="CDI trends show a somewhat linearly increasing trend. If we extrapolate to 2018, we have a rough idea of the proportion of the inpatient population we can expect to be diagnosed with CDI.">>=
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
 proportions <- read_csv('../data/proportions.csv')
 proportions <- filter(proportions, year > 2000)
@@ -56,20 +56,94 @@ proportions %>%
     geom_point(size=1) +
     labs(title="Inpatient CDI trends", x="Year", y="Proportion of inpatients")
 
-
 @
 \label{fig:disease_trends_cdi}
 
+<<age_distribution_over_time, fig.width=4, fig.cap="CDI is trending into younger generations in recent years.">>=
+cdiff %>% 
+  filter(!is.na(age)) %>% 
+  select(age, nis_year) %>%
+  ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
+    #geom_joy(stat = "identity")
+    geom_density_ridges() +
+    labs(title="CDI distribution by age over time", x="Age", y="Year")
+@
+\label{fig:age_distribution_over_time}
+
+<<cdi_kurtosis_trends, fig.width=4, fig.cap="The age distrubution of CDI is becoming more platykurtic and less left-skewed, indicating that the CDI is starting to infect younger people in recent years. ">>=
+ages <- cdiff %>% filter(!is.na(age)) %>% select(age)
+mode <- mlv(ages$age, method = "mfv")
+q25 <- quantile(ages$age, 0.25)
+q75 <- quantile(ages$age, 0.75)
+xbar <- mean(ages$age)
+med <- median(ages$age)
+
+cdiff.by.age.and.year <- cdiff %>% 
+  filter(!is.na(age)) %>% 
+  select(age, nis_year)
+
+years <- cdiff.by.age.and.year %>% 
+  select(nis_year) %>% 
+  unique() %>% 
+  pull(nis_year)
+
+y <- years[1]
+skew <- list()
+kurt <- list()
+for (y in years) {
+  cdiff.by.age <- cdiff.by.age.and.year %>% 
+    filter(nis_year == y) %>% 
+    pull(age)
+  
+  skew[[y]] <- skewness(cdiff.by.age)  
+  kurt[[y]] <- kurtosis(cdiff.by.age) 
+}
+
+data.frame(year=years, skewness=unlist(skew), kurtosis=unlist(kurt)) %>%
+  ggplot(aes(x=year, y=skewness)) +
+    geom_line(stat="identity", col="red") +
+    geom_line(aes(x=year, y=kurtosis), col="blue") +
+    labs(title="Skewness and Kurtosis of age distribution", x="Year", y="Skewness (red), Kurtosis (blue)")
+
+
+@
+\label{fig:cdi_kurtosis_trends}
+
+<<age_quantile_trends, fig.cap="The median age for inpatient CDI admissions has been sharply declined since 2006. The vertical bars indicate a 95\\% confidence interaval.">>=
+df <- read_csv('../data/ages_quantiles.csv')
+df <- filter(df, year > 2000)
+df %>%
+  filter(disease == 'cdi') %>%
+  ggplot(aes(x = year, y = theta50)) +
+    geom_errorbar(aes(ymin=theta50_2.5, ymax=theta50_97.5), colour="black", width=.1) +
+    geom_line(aes(ymin=65, ymax=75)) +
+    geom_point(size=1) +
+    labs(title="Inpatient Median Age Trends", x="Year", y="Age")
+@
+
+\label{fig:age_quantile_trends}
+
+
+
 Over the 14 year period, from 2010 - 2014, the proportion of inpatients with CDI increased from 
 \cip{\Sexpr{cdi.theta.2001}}{\Sexpr{cdi.theta.2001.2.5}}{\Sexpr{cdi.theta.2001.97.5}} in 2001, roughly 
-\ci{\Sexpr{cdi.2001.people}}{\Sexpr{cdi.2001.people.2.5}}{\Sexpr{cdi.2001.people.97.5}} people, to
+\ci{\Sexpr{cdi.2001.people}}{\Sexpr{cdi.2001.people.2.5}}{\Sexpr{cdi.2001.people.97.5}} cases, to
 \cip{\Sexpr{cdi.theta.2014}}{\Sexpr{cdi.theta.2014.2.5}}{\Sexpr{cdi.theta.2014.97.5}} in 2014, or
-\ci{\Sexpr{cdi.2014.people}}{\Sexpr{cdi.2014.people.2.5}}{\Sexpr{cdi.2014.people.97.5}} people - 
+\ci{\Sexpr{cdi.2014.people}}{\Sexpr{cdi.2014.people.2.5}}{\Sexpr{cdi.2014.people.97.5}} cases - 
 a difference of about \Sexpr{delta}\%, or \Sexpr{delta.people} people. 
 
+In Figures \ref{fig:disease_trends_cdi} and \ref{fig:age_distribution_over_time}, we can see the median age for inpatient CDI has been lowering over the years.
+In fact, the entire distribution of CDI cases by age is becoming less left-skewed and more mesokurtic indicating a trend toward a more normal distribution 
+(Figure \ref{fig:cdi_kurtosis_trends}). 
+
+Figure \ref{fig:age_quantile_trends} shows the median age of CDI lowering from 73 years old in the mid-2000s, to about 68 years old in 2014. 
+
+We can also separate the trends over time by age groups, broken down into 5-year buckets. Figure \ref{fig:cdi_age_ts} shows more interesting trends.
+Noteably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
+The 50-75 year group are showing steady increases and are poised to take the lead on the number of CDI occurrences. 
 
 
-<<fig:disease_trends_cdi_renal, fig.width=4, fig.cap="Comparitively, CDI occurrences are not increasing as rapidly as renal diseases. The sharp spikes from 2004-2006 were likely due to ICD-9-CM coding requirements implemented in October of 2005.">>=
+<<disease_trends_cdi_renal, fig.width=4, fig.cap="Comparitively, CDI occurrences are not increasing as rapidly as renal diseases. The sharp spikes from 2004-2006 were likely due to ICD-9-CM coding requirements implemented in October of 2005.">>=
 #setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
 
 # Since AKI is a combination of multiple codes, we should combine CKD codes as well
@@ -176,22 +250,10 @@ ggplot(df, aes(x = age, y = nis_year, group = nis_year)) +
   geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
   labs(title="ESRD distribution by age over time", x="Age", y="Year")
 @
-
 \label{fig:disease_trends_esrd}
 
-In Figures  \ref{fig:age_distribution_over_time} and \ref{fig:age_trends}, we can see the median age for inpatient CDI has been lowering over the years.
 
 
-<<age_trends, fig.cap="C. diff is trending into younger generations in recent years.">>=
-cdiff %>% 
-  filter(!is.na(age)) %>% 
-  select(age, nis_year) %>%
-  ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
-    #geom_joy(stat = "identity")
-    geom_density_ridges() +
-    labs(title="C. diff distribution by age over time", x="Age", y="Year")
-@
-\label{fig:age_distribution_over_time}
 
 <<cdi_age_ts, fig.width=5, fig.height=6, fig.cap="All age groups below 75 show a steady increase in CDI infections. 75 and older are down from their peaks in the mid 2000s.">>=
 
@@ -252,12 +314,12 @@ plot.ts.m %>%
   ggplot(aes(x=year, y=value, colour=variable)) +
     geom_line() +
     scale_colour_manual(values = cols) +
-    labs(title="Time series of C. diff cases by 5-year age groups", x="Year", y="Estimated Cases", colour="Ages")
+    labs(title="Time series of CDI cases by 5-year age groups", x="Year", y="Estimated Cases", colour="Ages")
 
 @
 \label{fig:cdi_age_ts}
 
-<<fig:cdi_males_females, fig.width=4, fig.cap="Females are almost 1.4 times as likely to contract CDI than males.">>=
+<<cdi_males_females, fig.width=4, fig.cap="Females are almost 1.4 times as likely to contract CDI than males.">>=
 df <- read_csv('../data/cdi-male-female.csv')
 
 mean.female.ratio <- df %>% pull(prop) %>% mean()
@@ -271,31 +333,43 @@ df %>%
     stat_smooth(method="loess") +
     labs(title="CDI in Males vs. Females", x="Year", y="Estimated Infections")
 @
-\label{fig:cdi_males_vs_females}
-
-
-<<fig:age_quantile_trends, fig.cap="The median age for inpatient CDI admissions has been sharply declined since 2006. The vertical bars indicate a 95\\% confidence interaval.">>=
-  #select(age, nis_year, discwt) %>%
-  #ggplot(aes(x = age, y = nis_year, group = nis_year)) + 
-    #geom_density_ridges(aes(height=..density.., weight=discwt), stat="density") +
-    #labs(title="C. diff distribution by age over time", x="Age", y="Year")
-df <- read_csv('../data/ages_quantiles.csv')
-df <- filter(df, year > 2000)
-df %>%
-  filter(disease == 'cdi') %>%
-  ggplot(aes(x = year, y = theta50)) +
-    geom_errorbar(aes(ymin=theta50_2.5, ymax=theta50_97.5), colour="black", width=.1) +
-    geom_line(aes(ymin=65, ymax=75)) +
-    #scale_y_discrete(labels=factor(seq(65, 75, by=1))) +
-    geom_point(size=1) +
-    labs(title="Inpatient Median Age Trends", x="Year", y="Age")
-@
-
-\label{fig:age_trends}
+\label{fig:cdi_males_females}
 
 
 
-\section{Readmission risk modeling}
+Lastly, we look at the differences in males and females. Figure \ref{fig:cdi_males_females} shows that women are, on average,
+\Sexpr{round(mean.female.ratio / (1 - mean.female.ratio), digits=3)} times more likely to contract CDI than males. 
+
+
+
+
+
+%The risk for 30-, 60-, and 90-day readmission of CDI patients was modeled as a logistic regression on the following %NRD variables: 
+
+  %Hospital control isn't quantifiable, it's categorical
+  %h\_contrl
+  %hosp\_urcat4
+  %hosp\_ur\_teach\_metro
+  %hosp\_bedsize
+  %female
+
+  %acute\_kidney\_disease
+
+  %m <- svyglm(readmitted~hosp_hcontrl_govt +
+              %hosp_hcontrl_priv_np +
+              %hosp_urcat4 +
+              %hosp_ur_teach_metro +
+              %hosp_ur_teach_metro_teaching +
+              %hosp_bedsize +
+              %female +
+              %acute_kidney_failure +
+              %chronic_kidney_disease2 +
+              %chronic_kidney_disease3 +
+              %chronic_kidney_disease4 +
+              %chronic_kidney_disease5 +
+              %chronic_kidney_disease6 +
+              %chronic_kidney_disease_unk +
+              %renal_failure_unspecified,
 
 
 
@@ -360,58 +434,45 @@ df <- df %>%
 # Filter only those that had a significant effect all 5 years
   df <- df %>%
     filter(name %in% c('AKI', 'CKD?', 'CKD3', 'CKD4', 'ESRD'))
+  
 @
 
 
+<<readmission-model-avg, fig.width=6, fig.cap="Mean coefficient estimates for the 30-, 60-, and 90-day readmission models. Here, we capture the overall effects by averaging the 30-, 60-, and 90-day readmission coefficients to get a more general idea of how the coefficients are behaving across all readmissions. We only show only coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
 
-
-<<fig:30_day_readmission_model, fig.width=6, fig.cap="Coefficient estimates for the 30-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
-  
   df %>%
     filter(significance != 'NONE') %>%
     filter(name != '(Intercept)') %>%
-    filter(readmission.day==30) %>%
+    group_by(name, year) %>%
+    summarise(est = mean(est), est.se = mean(se)) %>%
     ggplot(aes(year, est, colour=name)) +
       geom_line() +
       geom_point() +
-      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
-      #facet_wrap(readmission.day~.) +
-      #facet_grid(name~.) +
-      labs(title="Coefficient estimate for each year's 30-day model", x="Year", y="Coef. est.", colour="Coef. Name")
+      geom_errorbar(aes(ymin = (est - est.se), ymax = (est + est.se)), width = 0.2) +
+      labs(title="Coefficient estimate averages for all-day models by year", x="Year", y="Coef. est.", colour="Coef. Name")
   
 @
+\label{fig:readmission-model-avg}
 
-<<fig:60_day_readmission_model, fig.width=6, fig.cap="Coefficient estimates for the 60-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
-  df %>%
-    filter(significance != 'NONE') %>%
-    filter(name != '(Intercept)') %>%
-    filter(readmission.day==60) %>%
-    ggplot(aes(year, est, colour=name)) +
-      geom_line() +
-      geom_point() +
-      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
-      #facet_wrap(readmission.day~.) +
-      #facet_grid(name~.) +
-      labs(title="Coefficient estimate for each year's 60-day model", x="Year", y="Coef. est.", colour="Coef. Name")
-  
-@
+\section{Readmission risk modeling}
 
+Dealing with 12 individual model fittings is cumbersome, particularly when trying to convey results.
+But by modeling each readmission window and year individually, we can capture nuances exclusive to those subsets.
+For instance, metropolitan and metropolitan teaching hospitals, and hospitals with larger bedsizes showed virtually no effect on readmissions for years 2010-2013. 
+However, in 2014 the coefficients were quite large and highly significant (see Tables \ref{30-day-readmission-fit}, \ref{60-day-readmission-fit}, and \ref{90-day-readmission-fit}).
+If we had fit across all years, these may have showed up as somewhat significant and with less of an overall effect, and we would have missed the point:
+Something happened in 2014 causing larger metropolitan and metropolitan teaching hospitals to have a large, significant effect on CDI readmissions. 
 
-<<fig:90_day_readmission_model, fig.width=6, fig.cap="Coefficient estimates for the 90-day readmission model. Here, we only show coefficients that were statistically significant across all years. ESRD is highly significant and a strong predictor of readmission.">>=
-  df %>%
-    filter(significance != 'NONE') %>%
-    filter(name != '(Intercept)') %>%
-    filter(readmission.day==90) %>%
-    ggplot(aes(year, est, colour=name)) +
-      geom_line() +
-      geom_point() +
-      geom_errorbar(aes(ymin = (est - se), ymax = (est + se)), width = 0.2) +
-      #facet_wrap(readmission.day~.) +
-      #facet_grid(name~.) +
-      labs(title="Coefficient estimate for each year's 90-day model", x="Year", y="Coef. est.", colour="Coef. Name")
-  
-@
+Another benefit is clarity. We can more easily detect the signal from the noise. Coefficients that show up on some years as statistically significant and not at all
+on other years could just be noise. But a variable that shows up as significant across all years is probably a signal. 
+
+The only coefficients that showed significance across all years at $p < 0.01$, were \texttt{AKI}, \texttt{CKD3}, \texttt{CKD4} (CKD Stages 3 and 4), 
+\texttt{CDK?} (CKD unknown), and \texttt{ESRD}. Furthermore, \texttt{AKI} and \texttt{ESRD} showed high significance at $p < 0.001$ across all years.
+This indicates that there is a strong, consistent effect on readmission for patients with CDI
+(see Appendix A, figures \ref{fig:30-day-readmission-model}, \ref{fig:60-day-readmission-model}, and \ref{fig:90-day-readmission-model}).
+
+Because the the 30-, 60-, and 90-day readmission model coefficients were all fairly similar, 
+we can average the coefficients and get condensed estimates for a general readmission model (Figure \ref{fig:readmission-model-avg}).
 
 
-%Proportion of ESRD and CDI that were readmitted
 

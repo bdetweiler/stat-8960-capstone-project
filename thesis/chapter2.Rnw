@@ -8,9 +8,8 @@
 All analyses were done in \Sexpr{sessionInfo()$R.version$version.string} on an \Sexpr{latexTranslate(sessionInfo()$platform)} 
 running \Sexpr{sessionInfo()$running}. 
 Complex survey designs of the NIS and NRD  were accounted for using the \texttt{survey} package, version 
-\Sexpr{sessionInfo(package = c('survey'))$otherPkgs$survey$Version}. \cite{Lumley2018} Data were stored and retrieved in
-MonetDB using MonetDBLite version \Sexpr{sessionInfo()$otherPkgs$MonetDBLite$Version}.
-\cite{Muehleisen2018}
+\Sexpr{sessionInfo(package = c('survey'))$otherPkgs$survey$Version} \cite{Lumley2018}. Data were stored and retrieved in
+MonetDB using MonetDBLite version \Sexpr{sessionInfo()$otherPkgs$MonetDBLite$Version} \cite{Muehleisen2018}.
 
 \section{Data source}
 
@@ -20,7 +19,7 @@ School of Medicine. Both datasets originate in comma-separated variables (CSV) f
 The NIS covers between 7-8 million unweighted patients per calendar year, resulting in file sizes around 3 GB on average,
 totaling around 43 GB of raw ASCII text.
 
-\begin{lstlisting}[language=Bash]
+\begin{lstlisting}[language=Bash,caption={Showing file sizes for the NIS dataset from 2001-2014},captionpos=b]
   $ l -ha NIS* | awk '{print $5, $9}'
   2.7G NIS2001.csv                                                          
   2.9G NIS2002.csv                                                          
@@ -48,7 +47,7 @@ diagnoses and procedures. Finally, the hospital file contains information on the
 The NRD is a record of around 14 million unweighted admissions per calendar year with identifiers that allow analysts 
 to track readmissions from a particular index event.
 
-\begin{lstlisting}[language=Bash]
+\begin{lstlisting}[language=Bash,caption={Showing file sizes for the NRD dataset from 2010-2014},captionpos=b]
   $ l -ha NRD*/*.CSV | awk '{print $5, $9}' | sed -e 's/ /\t/'
   5.0G    NRD2010/NRD_2010_Core_V2.CSV
   3.4G    NRD2010/NRD_2010_DX_PR_GRPS_V2.CSV
@@ -86,7 +85,7 @@ integration and good community support.
 It also fits well in the data warehousing space, being a pioneer in column-store technologies. 
 
 Column-store databases partition each column as an array, making data retrieval extremely fast when
-only a subset of the columns need to be loaded into memory. \cite{MonetDB}
+only a subset of the columns need to be loaded into memory \cite{MonetDB}.
 
 \subsection{Diagnosis and procedure codes}
 
@@ -98,24 +97,25 @@ Although we had access to the 2015 NRD data, it was not used due to the added co
 data for NIS, which would have caused inconsistencies in trend analysis. 
 
 With the acknowledgement that ICD-9-CM codes are not perfect \cite{Uchiyama2015}, they are still the best thing we have for longitudinal 
-epidemiological studies on a large scale. 
+epidemiological studies on a large scale. The ICD-9-CM diagnosis codes are stored in  fields \texttt{dx1, dx2,} $\hdots$ \texttt{dx30}.
+\texttt{dx1} is the principal diagnosis, or the diagnosis primarily responsible for the patient being admitted. This is not always clear cut,
+as patients often have multiple diseases, and any one could be responsible for their admission, so in these cases, they are often
+coded with consideration to cost and reimbursement. 
 
-All diagnosis fields, \texttt{dx1, dx2,} $\hdots$ \texttt{dx30} were queried for code \textbf{00845} (\textit{Intestinal infection due to Clostridium difficile}). 
-The decision not to look exclusively at \texttt{dx1}, the principal diagnosis, was deliberate, due to the nature of \cdiff. Patients rarely contract CDI
+These were queried for code \textbf{00845} (\textit{Intestinal infection due to Clostridium difficile}). 
+The decision not to look exclusively at \texttt{dx1}, the principal diagnosis, was deliberate, due to the nature of CDI. Patients rarely contract CDI
 independently. It is typically contracted while in a hospital setting while being treated for a separate disease. 
 
 To complicate matters, ICD-9-CM codings are not an exact science, and are often done based on cost and seriousness of comorbid conditions. Coders must use
-their judgement for determining a principal diagnosis when comorbid conditions are present. \cite{Avery2011} For this reason, we simply simply queried for
+their judgement for determining a principal diagnosis when comorbid conditions are present \cite{Avery2011}. For this reason, we simply queried for
 the presence of the condition on any diagnosis field. 
 
-The same was done for renal failure codes.
+The same was done for renal failure codes, shown in table \ref{icd9renal}. 
 
 \begin{table}[]
 \centering
-\caption{ICD-9-CM renal failure codes}
-\label{icd9renal}
 \begin{tabular}{ll}
-Code  & Description          \\
+ICD-9-CM Code  & Description          \\
 \hline
 584   & Acute kidney failure \\
 584.5 &	Acute kidney failure with lesion of tubular necrosis convert \\
@@ -128,18 +128,20 @@ Code  & Description          \\
 585.2 &	Chronic kidney disease, Stage II (mild) \\
 585.3 &	Chronic kidney disease, Stage III (moderate) \\
 585.4 &	Chronic kidney disease, Stage IV (severe) \\
-585.5 &	Chronic kidney disease, Stage V (mild) \\
+585.5 &	Chronic kidney disease, Stage V (end stage) \\
 585.6 &	End stage renal disease \\
 585.9 &	Chronic kidney disease, unspecified \\
 586   &	Renal failure, unspecified \\
 \end{tabular}
+\caption{ICD-9-CM renal failure codes}
+\label{icd9renal}
 \end{table}
 
 For trend analysis, the CDI and renal failure selections were joined. This provided full samples of
 CDI and renal patients, as well as patients with both.
 
 
-\subsection{Determining index admissions and radmissions}
+\subsection{Determining index admissions and readmissions}
 
 Unlike the NIS, the NRD allows tracking patients across hospital visits within a given calendar year.
 The field \texttt{nrd\_visitlink} provides a key that identifies a single patient across multiple visits.
@@ -159,9 +161,9 @@ the index event was stored in a "patient profile" object. The remaining patient 
 If the event contained a CDI identifier and fell within the given readmission day window (30, 60, and 90 days, separately),
 the event was considered a readmission and the number of readmissions were stored. If the patient died on a readmission,
 that was also stored. If the secondary event fell outside of the readmission window, it was considered another index event, 
-and the process started over.
+and the process started over. The state diagram is shown in Figure \label{fig:readmission-state-diagram}.
 
-The following additional rules were applied for determining index events for \textit{d}-day readmissons, where $d = \{30, 60, 90\}$:
+The following additional rules were applied for determining index events for \textit{d}-day readmissons, where $d \in \{30, 60, 90\}$:
 
 \begin{enumerate}
     \item For years 2010-2014: ($1 \le \text{DMONTH} \le 12 - ceil(d/30)$)
@@ -174,11 +176,11 @@ The following additional rules were applied for determining index events for \te
     
     \item $\text{LOS} > 0$
     
-    A length of stay equal to zero represents transfers and same-day stays that were combined which represents a more complex type of care. \cite{NRDIntroduction2013}
+    A length of stay equal to zero represents transfers and same-day stays that were combined which represents a more complex type of care \cite{NRDIntroduction2013}.
     
     \item $AGE > 0$
   
-    About 70\% of infants under one year of age carry \cdiff without showing signs or symptoms. \cite{Lamont2017} 
+    About 70\% of infants under one year of age carry \cdiff without showing signs or symptoms of infection \cite{Lamont2017}. 
     
 \end{enumerate}
 
@@ -192,7 +194,7 @@ The following additional rules were applied for determining index events for \te
 Additional rules include cutting off index events by October, November, or December, depending on whether we are looking for 90, 60, 30 day readmissions, respectively;
 filtering out deaths on index events;
 lengths of stay that included transfers and same-day stays;
-and infants less than 1 year of age, where \cdiff is common but shows no symptoms.}
+and infants less than 1 year of age, where \cdiff bacteria are common but the patient shows no symptoms.}
 \end{figure}
 
 
@@ -200,7 +202,7 @@ and infants less than 1 year of age, where \cdiff is common but shows no symptom
 
 To determine renal failure comorbidities, the \texttt{cm\_renlfail} flag was first used, and then more specific ICD-9-CM codes were identified. Acute kidney failure, 
 or acute kidney injury (AKI) were grouped by all sub-category codes into a single AKI category. This included codes \textbf{584}, \textbf{584.5}, \textbf{584.6}, \textbf{584.7}, 
-\textbf{584.8}, and \textbf{584.9}. 
+\textbf{584.8}, and \textbf{584.9} (see Table \ref{icd9renal}).
 
 Chronic kidney disease (CKD) stages were individually analyzed, but unspecified or unknown CKD cases were grouped, (ICD-9-CM codes \textbf{585} and \textbf{585.9}). 
 
@@ -215,20 +217,81 @@ Patients' age is included in the eGFR formula, and as such, would be a confoundi
 
 \section{Statistical analysis}
 
-Descriptive and inferrential statistics were done using the NIS and NRD complex survey design, 
+Descriptive and inferential statistics were done using the NIS and NRD complex survey design, 
 supplying \texttt{hospid} as the clusters, \texttt{nis\_stratum} as the strata, and \texttt{discwt} as the weighting. 
-Lonely primary sampling units (PSU) - in our case, hospitals - were excluded using \texttt{options(survey.lonely.psu="remove")}. \cite{LonelyPSUs}
+Lonely primary sampling units (PSU) - in our case, hospitals - were excluded using \texttt{options(survey.lonely.psu="remove")} \cite{LonelyPSUs}.
 
 The primary readmission analysis was done with multivariable logistic regression to determine the effect of the covariates and confounding variables
-on the likelihood of being readmitted with CDI under the three readmission windows, 30, 60, and 90 days. 
+on the likelihood of being readmitted with CDI under the three readmission windows, 30, 60, and 90 days. Logistic regression is used throughout
+the medical literature to explain effects on a binary outcome variable. At its core is a linear model that is both effective and easy to explain. 
+
+The odds are given by
+
+\begin{equation} \label{logistic}
+    Pr(\text{readmitted}) = \frac{e^{\beta \mathbf{X}}}{1 - e^{\beta \mathbf{X}}}
+\end{equation}
+
+where $\mathbf{X}$ is a matrix consisting of a constant (slope), and the feature variables shown in Table \ref{logistic-regression-features}.
+The full list of regression coefficient estimates are provided in Appendix A
+(Tables \ref{30-day-readmission-fit}, \ref{60-day-readmission-fit}, and \ref{90-day-readmission-fit}).
+
+
+Note the following:
+
+\begin{itemize}
+  \item \texttt{hosp\_hcontrl\_govt} and \texttt{hosp\_hcontrl\_priv\_np} were compared against a baseline of 
+        \texttt{hosp\_hcontrl\_priv\_invest\_own}, which represents a hospital's control/ownership of private, investor owned (proprietary)
+  \item \texttt{hosp\_urcat4} is a discrete variable from 1 to 4, representing the smallest to largest areas. In this case, an increasing integer
+        size corresponds to an increasing metropolitain area size. The original variable used a descending order, where 1 was the largest and 4 was the
+        smallest, so we reversed the order to make the variable naturally meaningful without the need for dummy variables
+  \item \texttt{hosp\_ur\_teach\_metro} and \texttt{hosp\_ur\_teach\_metro\_teaching} were compared against a baseline of \texttt{hosp\_ur\_nonmetro}, 
+        which did not distinguish between teaching and non-teaching because rural hospitals  were rare 
+  \item \texttt{hosp\_bedsize} is a discrete variable from 1 to 3, indicating small, medium, and large hosptital bedsizes
+  \item \texttt{female} is a binary variable, 0 is male, 1 is female
+  \item \texttt{acute\_kidney\_failure} grouped all forms of AKI. The baseline is not having any form of AKI
+  \item \texttt{chronic\_kidney\_disease2-6} and \texttt{chronic\_kidney\_disease\_unk} are the various stages of CKD, compared against a baseline of CKD Stage 1 (mostly healthy)
+  \item \texttt{renal\_failure\_unspecified} was compared against not having any unspecified renal failure
+\end{itemize}
+
+\begin{table}[]
+\centering
+\begin{tabular}{ll}
+  NRD variable   & Description \\
+\hline
+  hosp\_hcontrl\_govt            & Hospital's ownership/control - Government, nonfederal  \\
+  hosp\_hcontrl\_priv\_np         & Hospital's ownership/control - Private, not-profit  \\ \\
+  %hosp\_hcontrl\_priv\_invest\_own & NO & YES & Hospital's ownership/control category - Private, invest-own  \\ \\
+  hosp\_urcat4                  & Urban-rural categorization (1-4, smallest to largest) \\
+  %hosp\_ur\_nonmetro & NO & YES & Hospital teaching status - non-metro \\
+  hosp\_ur\_teach\_metro          & Hospital teaching status - metro, non-teaching  \\
+  hosp\_ur\_teach\_metro\_teaching & Hospital teaching status - metro, teaching \\
+  hosp\_bedsize                 & Hospital bedsize (1-3, small to large)\\
+  %male    & NO & YES & Sex, male \\
+  female                       & Sex, binary, female \\
+  acute\_kidney\_failure         & AKI, all types \\
+  chronic\_kidney\_disease2      & CKD Stage 2 \\
+  chronic\_kidney\_disease3      & CKD Stage 3 \\
+  chronic\_kidney\_disease4      & CKD Stage 4 \\
+  chronic\_kidney\_disease5      & CKD Stage 5 \\
+  chronic\_kidney\_disease6      & ESRD \\
+  chronic\_kidney\_disease\_unk  & CKD, unknown \\
+  renal\_failure\_unspecified    & Renal failure, unspecified \\
+\end{tabular}
+\caption{ICD-9-CM renal failure codes}
+\label{logistic-regression-features}
+\end{table}
+
+Age was not included, because it is factored in to the CKD stage classification in the GFR equations, \ref{mdrd} and \ref{ckdepi}.
 
 The model was fitted independently on each year's data. 
-We could have included the years as independent variables and attempted to fit the entire dataset, but we chose not to. The primary reason being, the dataset is very large,
-so a single all-year fit was somewhat impractical due to hardware resource limitations. More academically, however, we are able to capture more nuance in modelling individual
-years, given each year is a separate independent data set, and medical trends do change over time. Fitting 5 years of data all at once, is likely to miss smaller subtleties, 
-such as increases or decreases in a particular coefficient over time. 
+Another approach would be to include the years as independent variables and attempt to fit the entire dataset. Because the dataset is very large,
+a single all-year fit was somewhat impractical due to hardware resource limitations. From a practical aspect, we are able to capture more nuance in modeling individual
+years, given each year is a separate independent data set, and medical trends do change over time. Fitting 5 years of data all at once is likely to miss smaller subtleties, 
+such as increases or decreases in particular coefficient estimates over time. 
 
-Variance estimation was done using Jackknife Repeated Replication (JRR), specifically the JKn approach. Replication methods have shown better
-precision and reduced bias compared to Taylor Series Linearization. \cite{Chowdhury2013, Smith2000}
+Variance estimation was done using the non-parametric method of Jackknife Repeated Replication (JRR), 
+specifically the JKn approach, which is the default in the \texttt{survey} package. Details on JKn and other approaches
+to variance estmiation can be found in \cite{Heeringa2017}.
+Replication methods have shown better precision and reduced bias compared to Taylor Series Linearization \cite{Chowdhury2013, Smith2000}. 
 
-All charts were done with the \texttt{ggplot2} package. 
+All charts were done with the \texttt{ggplot2} package \cite{Wickham2016}, and the coefficient tables in Appendix A were done with the \texttt{stargazer} package \cite{Hlavac2018}. 

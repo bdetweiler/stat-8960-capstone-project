@@ -21,7 +21,7 @@
 \raggedbottom
 
 %define the default submitted text
-\newcommand{\submittedtext}{{A thesis submitted for}}
+\newcommand{\submittedtext}{{A project submitted for}}
 
 %
 % DECLARATIONS
@@ -102,8 +102,10 @@
   \null\vfill
   \begin{center}
     { \Huge {\bfseries {\@title}} \par}
-{\large \vspace*{40mm} {\logo \par} \vspace*{25mm}}
+{\large \vspace*{25mm} {\logo \par} \vspace*{25mm}}
     {{\Large \@author} \par}
+\vspace*{1ex}
+    {Under the advisory supervision of \\ Dora Matache, Ph.D., Renuga Vivekanandan, M.D., and Ryan Walters, Ph.D. \par}
 {\large \vspace*{1ex}
     {{\@college} \par}
 \vspace*{1ex}

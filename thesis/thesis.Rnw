@@ -6,8 +6,12 @@
 \usepackage{amssymb}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{adjustbox}
+\usepackage{rotating}
 \graphicspath{{figure/}}
 \usepackage{amsmath}
+\usepackage{dcolumn}
 \usepackage{listings}
 \usepackage{enumitem}
 \newlist{todolist}{itemize}{2}
@@ -58,7 +62,7 @@
 
 %\renewcommand{\submittedtext}{change the default text here if needed}
 \degree{Master of Science}     %the degree
-\degreedate{May 13, 2017}         %the degree date
+\degreedate{May 4, 2017}         %the degree date
 
 %end the preamble and start the document
 \begin{document}
@@ -112,7 +116,10 @@ library('broom')
 library('dplyr')
 library('beepr')
 library('Hmisc')
+library('e1071')
 library('stargazer')
+
+#library('qicharts2')
 options(scipen=999)
 knit_hooks$set(inline = function(x) {
   prettyNum(x, big.mark=",")
@@ -229,9 +236,9 @@ options(survey.lonely.psu="remove")
 @
 
 %now enable appendix numbering format and include any appendices
-%\appendix
-%<<appendix1, child='appendix1.Rnw'>>=
-%@
+\appendix
+<<appendix1, child='appendix1.Rnw'>>=
+@
 %<<appendix2, child='appendix2.Rnw'>>=
 %@
 
