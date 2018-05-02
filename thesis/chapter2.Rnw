@@ -242,11 +242,11 @@ Note the following:
   \item \texttt{hosp\_hcontrl\_govt} and \texttt{hosp\_hcontrl\_priv\_np} were compared against a baseline of 
         \texttt{hosp\_hcontrl\_priv\_invest\_own}, which represents a hospital's control/ownership of private, investor owned (proprietary)
   \item \texttt{hosp\_urcat4} is a discrete variable from 1 to 4, representing the smallest to largest areas. In this case, an increasing integer
-        size corresponds to an increasing metropolitain area size. The original variable used a descending order, where 1 was the largest and 4 was the
+        size corresponds to an increasing metropolitan area size. The original variable used a descending order, where 1 was the largest and 4 was the
         smallest, so we reversed the order to make the variable naturally meaningful without the need for dummy variables
   \item \texttt{hosp\_ur\_teach\_metro} and \texttt{hosp\_ur\_teach\_metro\_teaching} were compared against a baseline of \texttt{hosp\_ur\_nonmetro}, 
         which did not distinguish between teaching and non-teaching because rural hospitals  were rare 
-  \item \texttt{hosp\_bedsize} is a discrete variable from 1 to 3, indicating small, medium, and large hosptital bedsizes
+  \item \texttt{hosp\_bedsize} is a discrete variable from 1 to 3, indicating small, medium, and large hospital bedsizes
   \item \texttt{female} is a binary variable, 0 is male, 1 is female
   \item \texttt{acute\_kidney\_failure} grouped all forms of AKI. The baseline is not having any form of AKI
   \item \texttt{chronic\_kidney\_disease2-6} and \texttt{chronic\_kidney\_disease\_unk} are the various stages of CKD, compared against a baseline of CKD Stage 1 (mostly healthy)
@@ -291,7 +291,10 @@ such as increases or decreases in particular coefficient estimates over time.
 
 Variance estimation was done using the non-parametric method of Jackknife Repeated Replication (JRR), 
 specifically the JKn approach, which is the default in the \texttt{survey} package. Details on JKn and other approaches
-to variance estmiation can be found in \cite{Heeringa2017}.
+to variance estimation can be found in \cite{Heeringa2017}.
 Replication methods have shown better precision and reduced bias compared to Taylor Series Linearization \cite{Chowdhury2013, Smith2000}. 
 
 All charts were done with the \texttt{ggplot2} package \cite{Wickham2016}, and the coefficient tables in Appendix A were done with the \texttt{stargazer} package \cite{Hlavac2018}. 
+
+All code for this project can be found on the author's GitHub account at \cite{Detweiler2018}. A journal has also been kept, documenting the research process, which can
+be found on the author's website at \cite{DetweilerWebsite2018}.

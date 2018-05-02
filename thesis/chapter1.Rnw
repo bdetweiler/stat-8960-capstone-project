@@ -42,7 +42,7 @@ age, sex, and race play in the diagnosis of CKD.
 
 \subsection{The MDRD and CKD-EPI Equations}
 
-Pateints are classified as having a particular CKD stage by testing their Glomerular Filtration Rate (GFR) using one of two equations.
+Patients are classified as having a particular CKD stage by testing their Glomerular Filtration Rate (GFR) using one of two equations.
 Both equations measure the creatinine in a patient's blood with a serum creatinine test. Creatinine is a waste product produced by normal
 muscle wear and tear. 
 

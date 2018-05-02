@@ -139,7 +139,7 @@ In fact, the entire distribution of CDI cases by age is becoming less left-skewe
 Figure \ref{fig:age_quantile_trends} shows the median age of CDI lowering from 73 years old in the mid-2000s, to about 68 years old in 2014. 
 
 We can also separate the trends over time by age groups, broken down into 5-year buckets. Figure \ref{fig:cdi_age_ts} shows more interesting trends.
-Noteably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
+Notably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
 The 50-75 year group are showing steady increases and are poised to take the lead on the number of CDI occurrences. 
 
 
@@ -431,6 +431,7 @@ df <- df %>%
   mutate(name=replace(name, name=='hosp_ur_teach_metro_teaching', 'Hosp_Teach')) %>%
   mutate(name=replace(name, name=='hosp_ur_teach_metro', 'Hosp_Urban')) 
 
+
 # Filter only those that had a significant effect all 5 years
   df <- df %>%
     filter(name %in% c('AKI', 'CKD?', 'CKD3', 'CKD4', 'ESRD'))
@@ -453,6 +454,7 @@ df <- df %>%
   
 @
 \label{fig:readmission-model-avg}
+
 
 \section{Readmission risk modeling}
 

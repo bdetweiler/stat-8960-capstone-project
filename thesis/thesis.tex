@@ -220,7 +220,7 @@ age, sex, and race play in the diagnosis of CKD.
 
 \subsection{The MDRD and CKD-EPI Equations}
 
-Pateints are classified as having a particular CKD stage by testing their Glomerular Filtration Rate (GFR) using one of two equations.
+Patients are classified as having a particular CKD stage by testing their Glomerular Filtration Rate (GFR) using one of two equations.
 Both equations measure the creatinine in a patient's blood with a serum creatinine test. Creatinine is a waste product produced by normal
 muscle wear and tear. 
 
@@ -695,11 +695,11 @@ Note the following:
   \item \texttt{hosp\_hcontrl\_govt} and \texttt{hosp\_hcontrl\_priv\_np} were compared against a baseline of 
         \texttt{hosp\_hcontrl\_priv\_invest\_own}, which represents a hospital's control/ownership of private, investor owned (proprietary)
   \item \texttt{hosp\_urcat4} is a discrete variable from 1 to 4, representing the smallest to largest areas. In this case, an increasing integer
-        size corresponds to an increasing metropolitain area size. The original variable used a descending order, where 1 was the largest and 4 was the
+        size corresponds to an increasing metropolitan area size. The original variable used a descending order, where 1 was the largest and 4 was the
         smallest, so we reversed the order to make the variable naturally meaningful without the need for dummy variables
   \item \texttt{hosp\_ur\_teach\_metro} and \texttt{hosp\_ur\_teach\_metro\_teaching} were compared against a baseline of \texttt{hosp\_ur\_nonmetro}, 
         which did not distinguish between teaching and non-teaching because rural hospitals  were rare 
-  \item \texttt{hosp\_bedsize} is a discrete variable from 1 to 3, indicating small, medium, and large hosptital bedsizes
+  \item \texttt{hosp\_bedsize} is a discrete variable from 1 to 3, indicating small, medium, and large hospital bedsizes
   \item \texttt{female} is a binary variable, 0 is male, 1 is female
   \item \texttt{acute\_kidney\_failure} grouped all forms of AKI. The baseline is not having any form of AKI
   \item \texttt{chronic\_kidney\_disease2-6} and \texttt{chronic\_kidney\_disease\_unk} are the various stages of CKD, compared against a baseline of CKD Stage 1 (mostly healthy)
@@ -744,10 +744,13 @@ such as increases or decreases in particular coefficient estimates over time.
 
 Variance estimation was done using the non-parametric method of Jackknife Repeated Replication (JRR), 
 specifically the JKn approach, which is the default in the \texttt{survey} package. Details on JKn and other approaches
-to variance estmiation can be found in \cite{Heeringa2017}.
+to variance estimation can be found in \cite{Heeringa2017}.
 Replication methods have shown better precision and reduced bias compared to Taylor Series Linearization \cite{Chowdhury2013, Smith2000}. 
 
 All charts were done with the \texttt{ggplot2} package \cite{Wickham2016}, and the coefficient tables in Appendix A were done with the \texttt{stargazer} package \cite{Hlavac2018}. 
+
+All code for this project can be found on the author's GitHub account at \cite{Detweiler2018}. A journal has also been kept, documenting the research process, which can
+be found on the author's website at \cite{DetweilerWebsite2018}.
 
 \chapter{Results}
 
@@ -827,7 +830,7 @@ In fact, the entire distribution of CDI cases by age is becoming less left-skewe
 Figure \ref{fig:age_quantile_trends} shows the median age of CDI lowering from 73 years old in the mid-2000s, to about 68 years old in 2014. 
 
 We can also separate the trends over time by age groups, broken down into 5-year buckets. Figure \ref{fig:cdi_age_ts} shows more interesting trends.
-Noteably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
+Notably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
 The 50-75 year group are showing steady increases and are poised to take the lead on the number of CDI occurrences. 
 
 
@@ -947,6 +950,7 @@ Lastly, we look at the differences in males and females. Figure \ref{fig:cdi_mal
 \end{knitrout}
 \label{fig:readmission-model-avg}
 
+
 \section{Readmission risk modeling}
 
 Dealing with 12 individual model fittings is cumbersome, particularly when trying to convey results.
@@ -993,7 +997,7 @@ Using this model, we can expect \cdiff infections to increase to \ci{437,605.1}{
 
 
 
-The proportion of \cdiff infected invididuals pales in comparison to those with renal failure, however, 
+The proportion of \cdiff infected individuals pales in comparison to those with renal failure, however, 
 which has also been on the rise, with nearly 10\% of patients coded with
 some form of acute kidney injury (ICD-9-CM codes \textbf{584}, and \textbf{584.5}-\textbf{584.9}) or chronic kidney disease 
 (ICD-9-CM codes \textbf{585} and \textbf{585.1}-\textbf{585.5}, as well as \textbf{585.9}) in 2014. AKI has risen 
@@ -1008,7 +1012,7 @@ to determine what methods have been effective in fighting the disease.
 
 
 We can also separate the trends over time by age groups, broken down into 5-year buckets. Figure \ref{fig:cdi_age_ts} shows more interesting trends.
-Noteably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
+Notably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
 The 50-75 year group are showing steady increases and are poised to take the lead on the number of CDI occurrences. 
 
 
@@ -1068,7 +1072,7 @@ CDI is usually, by nature, a complication, acquired most often in a hospital
 setting while being treated for other illnesses. The increasing proportion of 
 renal failure patients is bound to contribute to the growing CDI population.
 
-The CDI population in general is trending toward younger people.
+The CDI population in general is trending toward younger people. 
 
 Various comorbidities, often associated with age, appear to be strong predictors
 for CDI readmissions. In particular, ESRD has shown to be a consistently strong
