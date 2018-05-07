@@ -136,7 +136,12 @@ In Figures \ref{fig:disease_trends_cdi} and \ref{fig:age_distribution_over_time}
 In fact, the entire distribution of CDI cases by age is becoming less left-skewed and more mesokurtic indicating a trend toward a more normal distribution 
 (Figure \ref{fig:cdi_kurtosis_trends}). 
 
-Figure \ref{fig:age_quantile_trends} shows the median age of CDI lowering from 73 years old in the mid-2000s, to about 68 years old in 2014. 
+Figure \ref{fig:age_quantile_trends} shows the median age of CDI lowering from 73 years old in the mid-2000s, to about 68 years old in 2014. The ESRD distribution
+over age (shown in Figure \ref{fig:disease_trends_esrd}) does not seem to have changed much since the ICD-9-CM 
+coding standards were changed in 2005 to require more specific identifiers for renal failure patients.
+
+Renal failure patients as a whole have become a very significant proportion of the inpatient population, far outpacing CDI, as shown in Figure \ref{fig:disease_trends_cdi_renal}.
+
 
 We can also separate the trends over time by age groups, broken down into 5-year buckets. Figure \ref{fig:cdi_age_ts} shows more interesting trends.
 Notably, nearly every age group is increasing in the number of CDI cases, except the 75-90 year groups, which appear to be on something of a downward trend.
@@ -241,7 +246,6 @@ ckd.change97.5 <- proportions %>%
 ckd.change97.5 <- round(ckd.change97.5, digits = 3) 
 @
 \label{fig:disease_trends_cdi_renal}
-
 
 
 <<disease_trends_esrd, fig.width=4, fig.cap="Age distribution for ESRD has remained consistent since ICD-9-CM coding standards changed in October, 2005.">>=
@@ -377,7 +381,6 @@ Lastly, we look at the differences in males and females. Figure \ref{fig:cdi_mal
 
 sig.factor <- factor(c('HIGH', 'MID', 'LOW', 'NONE'), levels=c('HIGH', 'MID', 'LOW', 'NONE'))
 
-
 df <- data.frame(year=2009,
                  readmission.day=0,
                  name=NA,
@@ -392,11 +395,8 @@ for (readmission.day in c(30, 60, 90)) {
  
   models <- readRDS(paste0('../data/', readmission.day, 'dayreadmissionmodels.rds'))
   
-  y <- 2010 
   for (y in seq(2010, 2014, by=1)) {
-  
-    fit <- models[[y]]
-  
+
     fit.coef <- summary(fit)$coefficients
     
     fit.coef <- tidy(fit.coef) %>% rename(name=.rownames, est=Estimate, se=Std..Error, t=t.value, p=Pr...t..)
@@ -463,7 +463,11 @@ But by modeling each readmission window and year individually, we can capture nu
 For instance, metropolitan and metropolitan teaching hospitals, and hospitals with larger bedsizes showed virtually no effect on readmissions for years 2010-2013. 
 However, in 2014 the coefficients were quite large and highly significant (see Tables \ref{30-day-readmission-fit}, \ref{60-day-readmission-fit}, and \ref{90-day-readmission-fit}).
 If we had fit across all years, these may have showed up as somewhat significant and with less of an overall effect, and we would have missed the point:
-Something happened in 2014 causing larger metropolitan and metropolitan teaching hospitals to have a large, significant effect on CDI readmissions. 
+Something happened in 2014 (see Appendix A, tables \ref{30-day-readmission-fit}, \ref{60-day-readmission-fit}, \ref{90-day-readmission-fit}) 
+causing larger metropolitan and metropolitan teaching hospitals to have a large, significant effect on CDI readmissions. 
+
+
+
 
 Another benefit is clarity. We can more easily detect the signal from the noise. Coefficients that show up on some years as statistically significant and not at all
 on other years could just be noise. But a variable that shows up as significant across all years is probably a signal. 

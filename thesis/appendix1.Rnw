@@ -328,7 +328,7 @@ Observations & \multicolumn{1}{c}{31,859} & \multicolumn{1}{c}{34,992} & \multic
  & \multicolumn{5}{c}{\textit{Dependent variable:}} \\ 
 \cline{2-6} 
 \\[-1.8ex] & \multicolumn{5}{c}{readmitted} \\ 
-\\[-1.8ex] & \multicolumn{1}{c}{(1)} & \multicolumn{1}{c}{(2)} & \multicolumn{1}{c}{(3)} & \multicolumn{1}{c}{(4)} & \multicolumn{1}{c}{(5)}\\ 
+\\[-1.8ex] & \multicolumn{1}{c}{2010} & \multicolumn{1}{c}{2011} & \multicolumn{1}{c}{2012} & \multicolumn{1}{c}{2013} & \multicolumn{1}{c}{2014}\\ 
 \hline \\[-1.8ex] 
  hosp\_hcontrl\_govt & 0.108 & -0.073 & -0.108 & -0.041 & -0.001 \\ 
   & (0.083) & (0.068) & (0.071) & (0.059) & (0.062) \\ 

@@ -96,8 +96,8 @@ This does appear to be fairly normal and doesn't appear to be changing drastical
 
 \section{CDI readmission risk factors}
 
-In their 2015 meta-analysis, Phatharacharukul, et. al. found that the pooled relative risk of \cdiff-associated diarrhea
-in patients with CKD and ESRD were \ci{1.95}{1.81}{2.10} and \ci{2.63}{2.04}{3.38} respectively \cite{Phatharacharukul2015}.
+In their 2015 meta-analysis, Phatharacharukul, et. al. \cite{Phatharacharukul2015} found that the pooled relative risk of \cdiff-associated diarrhea
+in patients with CKD and ESRD were \ci{1.95}{1.81}{2.10} and \ci{2.63}{2.04}{3.38} respectively. 
 This suggests that CKD and ESRD pose a significant risk to recurrent \cdiff-associated diarrhea, and thus, potential for readmission.
 
 Our findings support this, showing ESRD as a major predictor for CDI readmissions over the surveyed years 2010-2014. 

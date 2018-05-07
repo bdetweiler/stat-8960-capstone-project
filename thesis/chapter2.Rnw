@@ -155,14 +155,25 @@ The NRD leaves readmission determination up to the analyst. First an index event
 We selected all cases of CDI (ICD-9-CM code \textbf{00845}) and retrieved all unique \texttt{nrd\_visitlink}
 identifiers. Then a second query was performed retrieving all events for the \texttt{nrd\_visitlink} identifiers.
 
+
 We then grouped the cases first by \texttt{nrd\_visitlink}, then chronologically. Then, we scanned for the first
 occurrence of a CDI event (ICDM-9-CM code \textbf{00845}) and marked it as the index event. All information from
 the index event was stored in a "patient profile" object. The remaining patient admissions, if any, were scanned.
 If the event contained a CDI identifier and fell within the given readmission day window (30, 60, and 90 days, separately),
 the event was considered a readmission and the number of readmissions were stored. If the patient died on a readmission,
 that was also stored. If the secondary event fell outside of the readmission window, it was considered another index event, 
-and the process started over. The state diagram is shown in Figure \label{fig:readmission-state-diagram}.
+and the process started over. The state diagram is shown in Figure \ref{fig:readmission-state-diagram}.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{readmission-state-diagram.png} 
+\caption{State diagram for determining what constitutes an index admission and a subsequent readmission.
+Additional rules include cutting off index events by October, November, or December, depending on whether we are looking for 90, 60, 30 day readmissions, respectively;
+filtering out deaths on index events;
+lengths of stay that included transfers and same-day stays;
+and infants less than 1 year of age, where \cdiff bacteria are common but the patient shows no symptoms.}
+\label{fig:readmission-state-diagram} 
+\end{figure}
 The following additional rules were applied for determining index events for \textit{d}-day readmissons, where $d \in \{30, 60, 90\}$:
 
 \begin{enumerate}
@@ -185,17 +196,6 @@ The following additional rules were applied for determining index events for \te
 \end{enumerate}
 
 
-
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.5]{readmission-state-diagram.png} 
-\label{fig:readmission-state-diagram} 
-\caption{State diagram for determining what constitutes an index admission and a subsequent readmission.
-Additional rules include cutting off index events by October, November, or December, depending on whether we are looking for 90, 60, 30 day readmissions, respectively;
-filtering out deaths on index events;
-lengths of stay that included transfers and same-day stays;
-and infants less than 1 year of age, where \cdiff bacteria are common but the patient shows no symptoms.}
-\end{figure}
 
 
 \subsection{Choosing features}

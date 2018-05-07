@@ -118,6 +118,7 @@ library('beepr')
 library('Hmisc')
 library('e1071')
 library('stargazer')
+library('poliscidata')
 
 #library('qicharts2')
 options(scipen=999)

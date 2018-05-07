@@ -44,4 +44,7 @@ have also shown to be extremely effective in patients with recurrent \cdiff-asso
 treatment codes are available in either the NIS or the NRD. Ideally, these would be factored into a future study to
 determine the effects of treatments on readmission rates. 
 
+Other model fits may be of interest as well. A generalized additive model may fit non-linear data more closely and
+provide more accurate coefficient estimates. The \texttt{survey} package currently only supports generalized linear models
+at the time of this writing, so this would need to be created to account for the complex survey design.
 
