@@ -9,6 +9,104 @@ library('sqlsurvey')
 
 
 setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/')
+
+
+cdiff <- read_csv('data/cdiff.csv', guess_max = 858204)
+
+cdiff
+
+cdiff.preg <- cdiff %>%
+  mutate(pregnant=as.integer(grepl("V22", dx1)  |
+                             grepl("V22", dx2)  |
+                             grepl("V22", dx3)  |
+                             grepl("V22", dx4)  |
+                             grepl("V22", dx5)  |
+                             grepl("V22", dx6)  |
+                             grepl("V22", dx7)  |
+                             grepl("V22", dx8)  |
+                             grepl("V22", dx9)  |
+                             grepl("V22", dx10) |
+                             grepl("V22", dx11) |
+                             grepl("V22", dx12) |
+                             grepl("V22", dx13) |
+                             grepl("V22", dx14) |
+                             grepl("V22", dx15) |
+                             grepl("V22", dx16) |
+                             grepl("V22", dx17) |
+                             grepl("V22", dx18) |
+                             grepl("V22", dx19) |
+                             grepl("V22", dx20) |
+                             grepl("V22", dx21) |
+                             grepl("V22", dx22) |
+                             grepl("V22", dx23) |
+                             grepl("V22", dx24) |
+                             grepl("V22", dx25) |
+                             grepl("V22", dx26) |
+                             grepl("V22", dx27) |
+                             grepl("V22", dx28) |
+                             grepl("V22", dx29) |
+                             grepl("V22", dx30)))
+
+write_csv(cdiff.preg, "data/cdiff-pregnant.csv")
+
+cdiff.preg
+
+  #filter(grepl("V22", dx1) | grepl("V22", dx2)) %>%
+                              #|
+                           #dx3  == '00845' |
+                           #dx4  == '00845' |
+                           #dx5  == '00845' |
+                           #dx6  == '00845' |
+                           #dx7  == '00845' |
+                           #dx8  == '00845' |
+                           #dx9  == '00845' |
+                           #dx10 == '00845' |
+                           #dx11 == '00845' |
+                           #dx12 == '00845' |
+                           #dx13 == '00845' |
+                           #dx14 == '00845' |
+                           #dx15 == '00845' |
+                           #dx16 == '00845' |
+                           #dx17 == '00845' |
+                           #dx18 == '00845' |
+                           #dx19 == '00845' |
+                           #dx20 == '00845' |
+                           #dx21 == '00845' |
+                           #dx22 == '00845' |
+                           #dx23 == '00845' |
+                           #dx24 == '00845' |
+                           #dx25 == '00845' |
+                           #dx26 == '00845' |
+                           #dx27 == '00845' |
+                           #dx28 == '00845' |
+                           #dx29 == '00845' |
+                           #dx30 == '00845'))) %>%
+  #mutate(cdi=replace(cdi, is.na(cdi), 0))
+
+                  #nis.DX3  = '00845' OR
+                  #nis.DX4  = '00845' OR
+                  #nis.DX5  = '00845' OR
+                  #nis.DX6  = '00845' OR
+                  #nis.DX7  = '00845' OR
+                  #nis.DX8  = '00845' OR
+                  #nis.DX9  = '00845' OR
+                  #nis.DX10 = '00845' OR
+                  #nis.DX11 = '00845' OR
+                  #nis.DX12 = '00845' OR
+                  #nis.DX13 = '00845' OR
+                  #nis.DX14 = '00845' OR
+                  #nis.DX15 = '00845' OR
+                  #nis.DX16 = '00845' OR
+                  #nis.DX17 = '00845' OR
+                  #nis.DX18 = '00845' OR
+                  #nis.DX19 = '00845' OR
+                  #nis.DX20 = '00845' OR
+                  #nis.DX21 = '00845' OR
+                  #nis.DX22 = '00845' OR
+                  #nis.DX23 = '00845' OR
+                  #nis.DX24 = '00845' OR
+                  #nis.DX25 = '00845') 
+
 #MonetDBLite::monetdblite_shutdown()
 #con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nrd_db")
 con <- DBI::dbConnect(MonetDBLite::MonetDBLite(), "data/nis_db")
@@ -2421,15 +2519,17 @@ saveRDS(ts.by.year, '../data/cdi_ages_ts.rds')
 
 
 
-df <- data_frame(year=2000, tot.female=-1, tot.male=-1, prop=0, prop2.5=0, prop97.5=0)
-male.female <- list()
-### Get males vs females
+df <- data_frame(year=2000, tot.preg=-1, tot.not.preg=-1, prop=0, prop2.5=0, prop97.5=0)
+female.preg <- list()
+### Get female pregnancy
 y <- 2001
 for (y in 2001:2014) {
-  mf <- cdiff %>% select(female, age, hospid, nis_stratum, discwt, nis_year) %>%
+  mf <- cdiff %>% 
+    select(female, age, hospid, nis_stratum, discwt, nis_year) %>%
     filter(!is.na(female)) %>%
+    filter(female == 1) %>%
     filter(nis_year == y)
-  
+ mf 
   
   ds <- svydesign(ids = ~hospid, 
                   data = mf,

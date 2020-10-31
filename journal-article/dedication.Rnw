@@ -1,0 +1,5 @@
+\begin{dedication}
+This thesis is dedicated to\\
+my balls \\
+for some special reason\\
+\end{dedication}

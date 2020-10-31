@@ -1,0 +1,257 @@
+\documentclass[12pt]{ociamthesis}  % default square logo 
+%\documentclass[12pt,beltcrest]{ociamthesis} % use old belt crest logo
+%\documentclass[12pt,shieldcrest]{ociamthesis} % use older shield crest logo
+
+%load any additional packages
+\usepackage{amssymb}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{adjustbox}
+\usepackage{rotating}
+\graphicspath{{figure/}}
+\usepackage{amsmath}
+\usepackage{dcolumn}
+\usepackage{listings}
+\usepackage{enumitem}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+\usepackage{pifont}
+\usepackage{url}
+\usepackage{lipsum}
+\usepackage{array}
+\usepackage{float}
+\usepackage[%
+  backend=bibtex      % biber or bibtex
+ ,style=numeric-comp    % Alphabeticalsch
+ %,style=numeric-comp  % numerical-compressed
+ ,sorting=none        % no sorting
+ ,sortcites=true      % some other example options ...
+ ,block=none
+ ,indexing=false
+ ,citereset=none
+ ,isbn=true
+ ,url=true
+ ,doi=true            % prints doi
+ ,natbib=true         % if you need natbib functions
+]{biblatex}
+
+\addbibresource{refs.bib} %Imports bibliography file
+
+\newcommand{\cdifficile}{Clostridium \textit{difficile}}
+\newcommand{\cdiff}{C. \textit{diff}}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\done}{\rlap{$\square$}{\raisebox{2pt}{\large\hspace{1pt}\cmark}}%
+\hspace{-2.5pt}}
+\newcommand{\wontfix}{\rlap{$\square$}{\large\hspace{1pt}\xmark}}
+% Confidence interval
+\newcommand{\ci}[3]{#1 (95\% CI, #2-#3)}
+% Confidence interval with percent
+\newcommand{\cip}[3]{#1\% (95\% CI, #2\%-#3\%)}
+
+%input macros (i.e. write your own macros file called mymacros.tex 
+%and uncomment the next line)
+%\include{mymacros}
+
+%note \\[1ex] is a line break in the title
+\title{A Longitudinal Study of the Effect of Renal Failure on Readmission Rates of Patients with \textit{Clostridium Difficile}}
+
+\author{Brian Detweiler, M.S., University of Nebraska, Omaha, Renuga Vivekanandan, M.D., Creighton University}
+%\college{College of Arts and Sciences}  %your college
+
+%\renewcommand{\submittedtext}{change the default text here if needed}
+%\degree{Master of Science}     %the degree
+\degreedate{August 1, 2018}         %the degree date
+
+%end the preamble and start the document
+\begin{document}
+
+%this baselineskip gives sufficient line spacing for an examiner to easily
+%markup the thesis with comments
+\baselineskip=18pt plus1pt
+
+%set the number of sectioning levels that get number and appear in the contents
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+
+\maketitle                  % create a title page from the preamble info
+
+% include a dedication.Rnw file
+%<<dedication, child='dedication.Rnw'>>=
+%@
+ 
+% include an acknowledgements.Rnw file%
+%<<acknowledgements, child='acknowledgements.Rnw'>>=
+%@
+
+% include the abstract
+<<abstract, child='abstract.Rnw'>>=
+@
+
+\begin{romanpages}          % start roman page numbering
+\tableofcontents            % generate and include a table of contents
+\listoffigures              % generate and include a list of figures
+\listoftables
+\end{romanpages}            % end roman page numbering
+
+<<ch3_includes, echo=FALSE, cache=FALSE, message=FALSE>>=
+library("devtools")
+library('MonetDB.R')
+# install.packages('MonetDBLite')
+library('MonetDBLite')
+library('DBI')
+library('ggplot2')
+library('scales')
+library('ggjoy')
+library('ggridges')
+library('reshape2')
+library('modeest')
+library('survey')
+library('spatstat')
+library('magrittr')
+library('tidyverse')
+library('broom')
+library('dplyr')
+library('beepr')
+library('Hmisc')
+library('e1071')
+library('stargazer')
+library('poliscidata')
+
+#library('qicharts2')
+options(scipen=999)
+knit_hooks$set(inline = function(x) {
+  prettyNum(x, big.mark=",")
+})
+@
+
+<<set_knitr_options, include=FALSE, warning=FALSE>>=
+knitr::opts_chunk$set(
+  echo = FALSE,  warning = FALSE, message = FALSE, cache = TRUE, fig.height = 3, fig.width = 3, fig.align = 'center' 
+)
+@
+
+<<read_cdiff>>=
+#setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis')
+# guess_max set the the number of rows means it makes no guesses about the data types and hence has no chance to get them wrong
+cdiff <- read_csv('../data/cdiff.csv', guess_max = 858204)
+@
+
+<<read_readmissions_30_day>>=
+readm.30 <- read_csv('../data/cdiff-readmissions-30-day-window.csv')
+@
+
+<<read_readmissions_60_day, include=FALSE, warning=FALSE, cache=TRUE>>=
+readm.60 <- read_csv('../data/cdiff-readmissions-60-day-window.csv')
+@
+
+<<read_readmissions_90_day, include=FALSE, warning=FALSE, cache=TRUE>>=
+readm.90 <- read_csv('../data/cdiff-readmissions-90-day-window.csv')
+@
+
+
+<<read_db, include=FALSE, warning=FALSE, cache=TRUE>>=
+#setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis')
+# MonetDB connection to a permanent file
+# Call the below line if you get an error about connecting
+# MonetDBLite::monetdblite_shutdown()
+@
+
+<<survey_functions, echo=FALSE, message=FALSE, warning=FALSE>>=
+options(survey.adjust.domain.lonely=TRUE)
+options(survey.lonely.psu="remove")
+
+#x <- ~age
+#by <- ~nis_year
+#design <- cdiff.design
+#svyby_barplot <- function(x, by, design) {
+  # Credit to: https://github.com/AU-BURGr/UnConf2017/issues/6
+  # Loads required packages if not already loaded  
+  #library(labelled)
+  #library(reshape2)
+  #library(ggplot2)
+  #library(survey)
+  # Extracts variable names to insert them as legend in the plot
+  #var_x <- paste(deparse(substitute(design)), "$variables$", x[2], sep = "")
+
+#var_x 
+#var_label(eval(parse(text = var_x)))
+  #lab_x <- var_label(eval(parse(text = var_x)))
+#lab_x  
+  #lab_leg <- paste(deparse(substitute(design)), "$variables$", by[2], sep = "")
+  #lab_leg <- var_label(eval(parse(text = lab_leg)))
+  ## Uses the survey package to compute estimates and confidence intervals 
+  #byout <- svyby(x, by, design, FUN=svymean, na.rm=TRUE, vartype="ci")
+  ### Fixing an apparent bug of survey package that pastes variable name and modality name in the svyby output
+  ## Counting the number of character to delete
+  #y <- as.numeric(nchar(x)[2])
+#byout
+  ##prepares a table with the right format for ggplot2
+#
+  #col_est <- (ncol(byout)-1)/3
+  #estimates <- melt(byout[,1:col_est+1])
+  #low_ci <- melt(byout[,(col_est+1):(col_est*2)+1])
+  #high_ci <- melt(byout[,(col_est*2+1):(col_est*3)+1])
+  #out <- cbind(estimates, low_ci[,2], high_ci[,2])
+  #out$by <- byout[,1]
+  #colnames(out) <- c("cat", "est", "lci", "hci", "by")
+ ## if y, take out the variable name
+  #if(y>0){
+   #out[,1] <- substring(out[,1], y+1)
+ #}  
+## si, factorisée, on réintègre les facteurs de la variable d'origine 
+## pour afficher les résultats dans le même ordre
+#if (!is.null(levels(eval(parse(text = var_x))))) {
+  #out$cat <- factor(out$cat, levels(eval(parse(text = var_x)))) 
+#}
+#
+## Produces the graph
+#graph <- ggplot(data=out, aes(x=cat, y=est, fill=by))
+#graph + theme(panel.border = element_blank(),
+              #panel.grid.major = element_blank()) + 
+  #geom_bar(stat="identity", position=position_dodge()) +
+  #geom_errorbar(aes(ymin=lci, ymax=hci), width=.1, position=position_dodge(0.9) ) +
+  #geom_point(position=position_dodge(0.9)) +
+  #scale_y_continuous(limits = c(-0.5,100)) +
+  #theme (axis.text.x = element_text(angle=90, vjust=0.5)) +
+  #scale_fill_discrete(name=lab_leg) +
+##    labs(title = svy_lab) +
+  #xlab(lab_x) +
+  #ylab("%")
+#
+#}
+@
+
+%now include the files of latex for each of the chapters etc
+<<chapter1, child='chapter1.Rnw'>>=
+@
+<<chapter2, child='chapter2.Rnw'>>=
+@
+<<chapter3, child='chapter3.Rnw'>>=
+@
+<<chapter4, child='chapter4.Rnw'>>=
+@
+<<chapter5, child='chapter5.Rnw'>>=
+@
+
+%now enable appendix numbering format and include any appendices
+\appendix
+<<appendix1, child='appendix1.Rnw'>>=
+@
+%<<appendix2, child='appendix2.Rnw'>>=
+%@
+
+%next line adds the Bibliography to the contents page
+%\addcontentsline{toc}{chapter}{Bibliography}
+%uncomment next line to change bibliography name to references
+%\renewcommand{\bibname}{References}
+%\bibliography{refs}        %use a bibtex bibliography file refs.bib
+% \bibliographystyle{plain}  %use the plain bibliography style
+% \bibliographystyle{apalike}
+\renewcommand{\bibname}{References}
+\printbibliography
+%Sets the bibliography style to UNSRT and imports the 
+%bibliography file "samples.bib".
+\end{document}

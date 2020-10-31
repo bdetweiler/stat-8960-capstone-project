@@ -1,0 +1,50 @@
+\chapter{Conclusion and future work}
+
+
+\section{Conclusion}
+
+CDI is usually, by nature, a complication, acquired most often in a hospital
+setting while being treated for other illnesses. The increasing proportion of 
+renal failure patients is bound to contribute to the growing CDI population.
+
+The CDI population in general is trending toward younger people. 
+
+Various comorbidities, often associated with age, appear to be strong predictors
+for CDI readmissions. In particular, ESRD has shown to be a consistently strong
+predictor of CDI readmissions. In addition, AKI and CKD stages 2 and 3, as well as "unknown" CKD
+stages were consistent predictors for CDI readmission. 
+
+
+\section{Future work}
+
+Some larger questions arose from this study. 
+Is the trend in CDI expanding into younger members of the population due
+to community-acquired CDI, as shown by Gupta and Khanna? \cite{Gupta2014} Are antibiotics
+still being used liberally, causing CDI to spread into a broader population? More 
+work should be done to investigate these trends.
+
+While it is frequently reported that increased age is a risk factor for CDI, is it, in fact, 
+due to age? Is it possibly due to other comorbidities that are, in fact, linked to increased age?
+It is possible that age is merely correlated with increased risk of CDI, not a cause.
+On its surface, this might not be practical. Increased age is still a good predictor for CDI risk, 
+but if it confounded by latent factors, it would be more valuable to know what those factors are. 
+
+On average, females were \Sexpr{round(mean.female.ratio / (1 - mean.female.ratio), digits=3)} 
+times as likely to contract CDI. We did not investigate the
+reasons for this. One possible contributing factor was that women giving birth may be more susceptible to CDI, but 
+verification of this line of thinking is left to future work.
+
+Mortality would also be an outcome variable of interest. If ESRD patients contract CDI, what is their mortality rate?
+Findings at the National Kidney Foundation showed mortality to be at 3.8\% among CDI patients with ESRD, compared to
+1.46\% for CDI patients without ESRD \cite{Susman2013}. These findings should be verified and updated with newer data. 
+
+We did not have the data to support treatment studies. Drugs such as \textit{Vanco} and \textit{Dificid} have shown to
+be effective on CDI, but to what extent do each contribute to reduced risk of readmission? Fecal microbiota transplants
+have also shown to be extremely effective in patients with recurrent \cdiff-associated diarrhea. However, none of these
+treatment codes are available in either the NIS or the NRD. Ideally, these would be factored into a future study to
+determine the effects of treatments on readmission rates. 
+
+Other model fits may be of interest as well. A generalized additive model may fit non-linear data more closely and
+provide more accurate coefficient estimates. The \texttt{survey} package currently only supports generalized linear models
+at the time of this writing, so this would need to be created to account for the complex survey design.
+

@@ -1,0 +1,5 @@
+\begin{abstract}
+In this study we analyze H-CUP data using the \textit{National Inpatient Sample} from 2001-2014, visualizing trends and 
+discussing potential causes and further areas of study.
+We also assess the risk of 30, 60, and 90 day readmissions in patients with comorbid \cdiff infection and renal failure conditions
+\end{abstract}

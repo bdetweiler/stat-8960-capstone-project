@@ -1,0 +1,276 @@
+\chapter{Introduction}
+
+\section{Overview of \cdifficile}
+
+\cdifficile, or \cdiff Infection (CDI) -
+has been an increasing concern in the last two decades among healthcare providers. 
+The organism itself is a resilient endospore-forming bacterium, resistant to heat, acid, and antibiotics,
+and can survive on surfaces for up to 5 months, if proper sanitation is not carried out \cite{Gerding2008}.
+
+In past years, the most common CDI cases occurred in elderly patients, 65 years or older,
+who were admitted as inpatients in a hospital or nursing home setting, and given antimicrobial therapy.
+In fact, it has become the most frequent nosocomial (hospital-acquired) disease, surpassing
+methicillin-resistant Staphylococcus aureus (MRSA) \cite{Gupta2014}.
+
+Antimicrobials deplete the healthy gut flora of the intestines which protect against harmful organisms like \cdiff \cite{Lamont2017}.
+
+Adding to the complexity of the situation, \cdiff carriers can remain asymptomatic, making them stealth transporters
+and allowing the disease to propagate undetected until it is too late. 
+
+In 2013, the CDC estimated that around 250,000 Americans contracted CDI in a single year, causing 14,000 deaths.
+That estimate was later updated to half a million in 2015, causing 15,000 deaths \cite{CDC2015, CDC2018}.
+Another study puts that number even higher, at 29,000 deaths in 2011. 
+
+CDI is also costly. The CDC estimates that in 2008, it cost acute healthcare facilities alone more than \$4.8 billion.
+The mean cost of an incident of CDI was found to be \$11,498 (inflation adjusted to 2008 dollars)
+and as high as \$15,397 when CDI was hospital acquired \cite{Dubberke2012}.
+
+
+\section{Overview of Renal Failure}
+
+While CDI is a singular diagnosis category, renal failure falls into one of two umbrella categories, acute kidney injury (AKI), 
+and chronic kidney disease (CKD). AKI is further broken into subcategories. Acute tubular necrosis is the most common form of AKI.
+Other subcategories include renal cortical necrosis, renal medullary necrosis, lesions, and a category for unspecified AKI. 
+
+When evaluating the effect of renal failure on outcome variables, we first need to understand how renal failure is classified.
+
+Chronic kidney disease is broken into categories based on stages that are calculated using one of the estimated Glomerular Filtration Rate
+(GFR) equations. The equations model kidney health as a function of age, sex, race, and blood creatinine, a waste product that is produced from
+normal muscle use. One of two formulas may be used, the Modification of Diet in Renal Disease (MDRD) formula, or the newer
+Chronic Kidney Disease Epidemiology Collaboration (CKD-EPI) formula \cite{eGFR2018}. The models are included below to show the roles that
+age, sex, and race play in the diagnosis of CKD.
+
+\subsection{The MDRD Equation vs. the CKD-EPI Equation}
+
+Pateints are classified as having a particular CKD stage by testing their Glomerular Filtration Rate (GFR) using one of two equations.
+Both equations measure the creatinine in a patient's blood with a serum creatinine test. Creatinine is a waste product produced by normal
+muscle wear and tear. 
+
+The MDRD equation encodes sex and race (African American or not) and does not rely on height or weight due to using $1.73m^2$ surface area,
+the generally accepted mean human adult body surface area. 
+
+\begin{equation} \label{mdrd}
+\begin{split}
+  GFR  &= 175 \times S_{cr} - 1.154 \times \text{Age}^{-0.203} \times 0.742 \cdot I(\text{F}) \times 1.212 \cdot I(\text{AA}) \\
+\end{split}
+\end{equation}
+
+where:
+\begin{itemize}
+  \item F is female sex
+  \item AA is African American race
+  \item I is an indicator function that returns 1 if true, the reciprocal of the preceding term if false (thereby making the preceding term 1)
+  \item $S_{cr}$ is serum creatinine in mg/dL
+\end{itemize} \cite{Levey1999}
+
+The CKD Epidemiology (CKD-EPI) was a single equation selected out of a large number of candidate equations, that uses transformations of continuous
+variables and additional variables and interactions. Serum creatinine is modeled as a 2-slope spline with sex-specific knots at 0.7 mg/dL for women 
+and 0.9 mg/dL for men. It was shown to outperform the MDRD, with lower bias and increased precision.  \cite{Levey2009, eGFR2018}
+
+\begin{equation} \label{ckdepi}
+\begin{split}
+  GFR &= 141 \times min\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{\alpha} \times max\bigg(\frac{S_{cr}}{\kappa}, 1\bigg)^{-1.209} \\
+      &\times 0.993^{\text{Age}} \times 1.018 \cdot \text{I}(\text{F}) \times 1.159 \cdot \text{I}(\text{AA}) \\
+\end{split}
+\end{equation}
+
+where:
+\begin{itemize}
+  \item $\kappa$ is 0.7 for females and 0.9 for males
+  \item $\alpha$ is -0.329 for females and -0.411 for males
+\end{itemize} \cite{Levey2009}
+
+\subsection{Classifying Chronic Kidney Disease}
+
+Once the GFR is calculated using either the MDRD or the CKD-EPI formulas, 
+patients can be placed into one of five categories. Table \ref{tab:gfr} shows the 
+GFR rating along with the stage of CKD and the level of kidney function. \textbf{585} is used in the ICD-9-CM coding system
+to indicate CKD. If the level is known, a more specific coding is used. \textbf{585.1-585.5} indicate CKD Stage 1 through 5.
+\textbf{585.6} is used for end stage renal disease (dialysis or transplant), and \textbf{585.9} is used if the level is unspecified.
+
+\begin{table}[]
+\centering
+\label{my-label}
+\begin{tabular}{lllll}
+CKD Stage & Description             & GFR        & Kidney Function & ICD-9-CM \\
+\hline
+1         & Normal function         & 90+        & 90-100\%        & 585.1    \\
+2         & Mild loss               & 60-89      & 60-89\%         & 585.2    \\
+3         & Mild to severe          & 30-59      & 30-59\%         & 585.3    \\
+4         & Severe                  & 15-29      & 15-29\%         & 585.4    \\
+5         & Kidney failure          & 15 or less & 15\% or less    & 585.5    \\
+\end{tabular}\caption{GFR classifications for stages of Chronic Kidney Disease}\label{tab:gfr}
+\end{table}
+
+\subsection{End stage renal disease}
+
+When CKD reaches Stage 5, it is considered end stage renal disease (ESRD). Dialysis or a kidney transplant is needed to stay alive.
+The most common causes of ESRD are diabetes and high blood pressure. Risk of ESRD also increases with age. 
+
+
+\section{Index Admissions and Readmissions}
+
+An inpatient admission begins on the first day a patient is admitted to a hospital under a doctor's order. The 
+last day before discharge is the last inpatient day \cite{Medicare}.
+
+Readmissions are subsequent admissions from a given \textit{index} admission within a specified time interval.
+Methods and inclusion/exclusion criteria for determining an index admission and readmissions vary. 
+
+\subsection{Readmissions and the ACA}
+
+A 2014 study done by the Agency for Healthcare Research and Quality (AHRQ) under the Healthcare Cost and Utilization
+Project (HCUP) found hospital readmissions accounted for about \$41.3 billion in hospital costs \cite{Hines2014}.
+
+Under the Readmission Reduction Program, a provision of the Affordable Care Act, 
+Hospitals face penalties on Medicare payments if they exceed certain 30-day readmission standards. While the 
+American Hospital Association strongly opposes the measure, citing a lack of control over the chain of events
+that can lead to readmission \cite{Rice2015, AHA2018}, the Affordable Care Act is still the rule of law, and hospitals must seek
+to reduce readmissions in order to avoid penalties.
+
+For this reason, readmission statistics are an important key metric for hospitals interested in optimizing 
+their operations. Using large surveys, researchers are able to determine trends and end results, but not necessarily 
+causes, of readmissions. Still, high level trends can point healthcare providers in a direction where they can
+more efficiently focus their attention. Studies like this one focus on narrow cases where a better understanding can 
+contribute to reduced readmissions and an overall reduction in penalties.
+
+\subsection{Readmission measures}
+
+The Centers for Medicare \& Medicaid Services (CMS) sets guidelines that hospitals must follow to avoid penalization on Medicare payments. 
+The CMS measures "excess readmissions" as a ratio of predicted-to-expected readmissions and each hospital's relative performance, based on
+a 30-day risk standardized measure. All-cause unplanned readmissions to the same or another applicable acute care hospital, 
+occurring within 30 days - for any reason, regardless of principal diagnosis - from the index admission are counted in this measure.
+Some planned readmissions are not counted \cite{HRRP}. 
+
+For fiscal years 2013 to 2018, the following formula is used to calculate the Payment Readjustment Factor (PRF):
+
+\begin{equation} \label{prf}
+\begin{split}
+  \text{PRF} &= 1 - min\bigg(0.03, \sum_{dx} \frac{\text{Payment}(dx) \cdot max\big((\text{ERR}(dx) - 1.0), 0\big)}{\text{All payments}}\bigg) \\
+\end{split}
+\end{equation}
+ 
+Where $dx$ is one of six measure cohorts: 
+
+\begin{itemize}
+  \item acute myocardial infarction (AMI)
+  \item heart failure (HF)
+  \item pneumonia
+  \item chronic obstructive pulmonary disease (COPD)
+  \item coronary artery bypass graft (CABG) surgeries
+  \item elective primary total hip and/or total knee arthroplasty (THA/TKA)
+\end{itemize}
+
+ERR is a hospital's performance measure against $dx$, and payment refers to base operating DRG payments \cite{HRRPPaymentAdjustment, Lessa2015}.
+
+
+\section{Overview of the data}
+
+The data obtained for this study comes from the Agency for Healthcare Research and Quality (AHRQ),
+under the Department of Health and Human Services (DHHS). ARHQ sponsors the
+Healthcare Cost and Utilization Project (HCUP), a collection of databases including the Nationwide Inpatient Sample (NIS) and
+the Nationwide Readmissions Database (NRD) \cite{HCUPOverview}. For this study, we obtained years 2001-2014 of the NIS, and
+2010-2014 of the NRD.
+
+Both datasets are based on complex survey designs. The Primary Sampling Units (PSUs) are hospitals, stratified by region,
+teaching status, and bedsize. Weights are calculated for each discharge which are used to "map" the sample back to an unbiased
+representation of the survey population \cite{Heeringa2017}.
+
+\subsection{The Nationwide Inpatient Sample (NIS)}
+
+The Agency for Healthcare Research (AHRQ) has been conducting the National (later renamed to "Nationwide") Inpatient
+Sample since 1988, as part of the Healthcare Cost and Utilization Project (HCUP). It estimates a weighted 35 million
+hospitalizations per calendar year using around 7-8 million unweighted discharges per year. It is the largest database
+of its kind in the United States \cite{NISOverview}.
+
+\subsection{The Nationwide Readmissions Database (NRD)}
+
+Similar to the NIS, the NRD tracks hospitalizations. In addition, it tracks patients across admissions, using an ID key,
+an admission reference date, and a length of stay for each admission. This allows analysts to track anonymized readmission cases.
+The NRD tracks around 14 million unweighted patients, when weighted, estimates about 36 million weighted patients across admissions 
+per calendar year \cite{NRDOverview}.
+
+\subsection{Limitations}
+
+Working on such a rich dataset does not come without limits. Prior to obtaining the NIS or NRD, analysts must take the HCUP
+Data Usage Agreement (DUA). At a high level, HCUP requires that researchers protect individual identities. Cell sizes (groups of people)
+where $n \le 10$ may not be reported. Attempting to identify individual patients or health care providers through vulnerability or penetration testing, 
+or any other means, is prohibited. For instance, if an analyst noticed that a certain hospital used a particular coding scheme that was unique 
+to that hospital and could be used to identify aspects of a patient, the analyst may not use this information. Furthermore, probing for such
+vulnerabilities is prohibited as well. Publication of any methodology that could identify individuals is prohibited.
+
+Furthermore, HCUP data may only be used for research, not for commercial or competitive purposes. Institutions may not be contacted
+to verify any of the data within the HCUP datasets either. 
+
+For the above reasons, the data may also not be posted online, and anyone wishing to work with or even see the data must take the DUA class and
+sign the agreement \cite{HCUPDUA}.
+
+In a couple of recent publications, Khera and Krumholz expanded on these base requirements and offered a checklist \cite{Krumholz2017} 
+for analysts to follow as they work with the NIS. In a followup study, they found only 10.5\% (95\% CI, 4.7\%-16.4\%) of published research
+projects based on NIS data followed all of the guidelines \cite{Khera2017}.
+
+Listed below are the guidelines from Khera and Krumholz, and notes on how we have conformed to them.
+
+
+\begin{itemize}
+  \item  \textbf{Section A: Research Design}
+  \begin{todolist}
+  \item[\done] Does the study consider that it can only detect disease conditions, procedures, and diagnostic tests in hospital settings?
+  
+  \textbf{Yes, we make no assumptions about events occurring outside of the hospital setting.}
+  
+  \item[\done] Does the study acknowledge that it includes encounters, not individual patients?
+  
+  \textbf{Yes, all of our assumptions are made upon the basis of inpatient discharges and readmissions, not individuals.}
+  
+  \item[\done] Does the study avoid diagnosis/procedure-specific volume assessments for units that are not part of the
+  sampling frame of the NIS, and are therefore not representatively sampled, including
+  
+  \begin{itemize}
+    \item geographic units, like U.S. states
+    \item healthcare facilities (after 2011)
+    \item individual healthcare providers?
+  \end{itemize} 
+          
+  \textbf{Yes, we only make assessments at the national level.}
+  
+  \end{todolist}
+  
+  \item  \textbf{Section B: Data Interpretation}
+  \begin{todolist}
+  \item[\done] Does the study attempt to identify disease conditions or procedures of interest using administrative 
+  codes or their combinations that have been previously validated?
+ 
+  \textbf{Yes, when checking for renal failure, the comorbidity indicators (\texttt{renlfail, cm\_renlfail}) were used 
+  before assessing ICD-9-CM codes.}
+  
+  \item[\done] Does the study limit its assessments to only in-hospital outcomes, rather than those occurring after discharge?
+  
+  \textbf{Yes, the only outcome assessments were readmission status and mortality (\texttt{died}), both of which are in-hospital events.}
+  
+  \item[\done] Does the study distinguish complications from comorbidities or clearly note where it cannot?
+  
+  \textbf{Yes, renal failure comorbidities were distinguished using the the comorbidity indicators (\texttt{renlfail, cm\_renlfail}). 
+  CDI while most often a complication, cannot usually be distinguished between complication and comorbidity however.}
+  
+  
+  \end{todolist}
+  
+  \item  \textbf{Section C: Data Analysis}
+  \begin{todolist}
+  \item[\done] Does the study clearly account for the survey design of the NIS and its components -clustering, stratification, and weighting?
+ 
+  \textbf{Yes, the R \texttt{survey} package was used to account for survey design.}
+  
+  \item[\done] Does the study adequately address changes in data structure over time (for trend analyses)?
+  
+  \textbf{Yes, since we are only doing national-level assessments, and we are not using ICD-10-CM codes in the 2015 datasets, 
+  we don't need to worry about the changes in the survey design.}
+  
+  \end{todolist}
+  
+\end{itemize}
+
+\subsection{Goals}
+
+The goals of this study are to evaluate trends in CDI and renal failure over the period of 2001-2014 using the NIS, and 
+to determine risk factors of readmission for CDI patients over the period of 2010-2014 using the NRD.

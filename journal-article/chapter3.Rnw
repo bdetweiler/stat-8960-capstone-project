@@ -482,22 +482,3 @@ we can average the coefficients and get condensed estimates for a general readmi
 
 
 
-<<pregnancy, fig.cap="Pregnancy">>=
-#setwd('/home/bdetweiler/src/Data_Science/stat-8960-capstone-project/thesis/')
-df <- read_csv('../data/cdi-male-female.csv')
-
-mean.female.ratio <- df %>% pull(prop) %>% mean()
-
-df %>%
-  rename(Female=tot.female, Male=tot.male) %>%
-  select(year, Female, Male) %>%
-  melt(id.vars=c('year')) %>%
-  ggplot(aes(x = year, y = value, colour=variable)) +
-    geom_line() +
-    stat_smooth(method="loess") +
-    labs(title="CDI in Males vs. Females", x="Year", y="Estimated Infections")
-
-
-@
-\label{fig:disease_trends_cdi}
-

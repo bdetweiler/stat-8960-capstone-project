@@ -1,7 +1,7 @@
 library('knitr')
 library("devtools")
 library('MonetDB.R')
-install.packages('MonetDBLite')
+#install.packages('MonetDBLite')
 library('MonetDBLite')
 library('MASS')
 library('leaps')
